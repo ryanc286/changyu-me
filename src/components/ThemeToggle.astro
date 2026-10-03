@@ -1,0 +1,164 @@
+---
+/*
+  Light / dark toggle, fixed top right.
+  The new theme grows out of the button as a circle (View Transitions API).
+  Browsers without it, or visitors who prefer reduced motion, get an instant switch.
+*/
+---
+
+<button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+  <!-- Moon: shown in light mode -->
+  <svg class="icon icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path
+      d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linejoin="round"></path>
+  </svg>
+  <!-- Sun: shown in dark mode -->
+  <svg class="icon icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"></circle>
+    <path
+      d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linecap="round"></path>
+  </svg>
+</button>
+
+<style>
+  .theme-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 50;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition:
+      background-color var(--duration) var(--ease-out),
+      color var(--duration) var(--ease-out),
+      border-color var(--duration) var(--ease-out);
+  }
+  .theme-toggle:hover {
+    background: var(--color-surface);
+    border-color: var(--color-line);
+    color: var(--color-text);
+  }
+  .theme-toggle:active .icon {
+    scale: 0.9;
+  }
+
+  .icon {
+    grid-area: 1 / 1;
+    transition:
+      opacity 300ms var(--ease-out),
+      rotate 400ms var(--ease-out),
+      scale 150ms var(--ease-out);
+  }
+  .icon-sun {
+    opacity: 0;
+    rotate: -90deg;
+  }
+  :global([data-theme='dark']) .icon-moon {
+    opacity: 0;
+    rotate: 90deg;
+  }
+  :global([data-theme='dark']) .icon-sun {
+    opacity: 1;
+    rotate: 0deg;
+  }
+
+  @media (min-width: 768px) {
+    .theme-toggle {
+      top: 24px;
+      right: 24px;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Circular reveal: the new page snapshot grows from the button */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+</style>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const root = document.documentElement;
+  const themeColor = document.querySelector('meta[name="theme-color"]');
+  const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  type Theme = 'light' | 'dark';
+
+  const current = (): Theme => (root.dataset.theme === 'dark' ? 'dark' : 'light');
+
+  const apply = (theme: Theme) => {
+    root.dataset.theme = theme;
+    themeColor?.setAttribute('content', theme === 'dark' ? '#141413' : '#f7f7f5');
+    button?.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  };
+
+  const getStored = (): Theme | null => {
+    try {
+      const v = localStorage.getItem('theme');
+      return v === 'light' || v === 'dark' ? v : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const store = (theme: Theme) => {
+    try {
+      localStorage.setItem('theme', theme);
+    } catch {}
+  };
+
+  apply(current());
+
+  button?.addEventListener('click', () => {
+    const next: Theme = current() === 'dark' ? 'light' : 'dark';
+    store(next);
+
+    if (!document.startViewTransition || reduceMotion.matches) {
+      apply(next);
+      return;
+    }
+
+    // Circle starts at the button and grows to cover the farthest corner
+    const rect = button.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+
+    const transition = document.startViewTransition(() => apply(next));
+    transition.ready.then(() => {
+      root.animate(
+        {
+          clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`],
+        },
+        {
+          duration: 550,
+          easing: 'cubic-bezier(0.65, 0, 0.35, 1)',
+          pseudoElement: '::view-transition-new(root)',
+        },
+      );
+    });
+  });
+
+  // If the visitor never picked a theme, keep following the system setting
+  systemDark.addEventListener('change', (e) => {
+    if (!getStored()) apply(e.matches ? 'dark' : 'light');
+  });
+</script>
