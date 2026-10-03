@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+import WorkList from '../components/WorkList.astro';
+import ToolList from '../components/ToolList.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base>
+  <main class="container stack">
+    <section class="intro">
+      <h1>Hi, I'm Yu, a designer who makes complex things clear.</h1>
+      <p>
+        I care about systems thinking, asking the right questions, and turning messy rules into
+        products people trust. I'm currently designing payment and money tools for 65M+ users at{' '}
+        <a href="https://paypay.ne.jp/" rel="noopener">PayPay</a>.
+      </p>
+      <p>
+        Previously, I worked on growth and engagement at{' '}
+        <a href="https://carousell.com/" rel="noopener">Carousell</a> across Taiwan and Singapore,
+        where I rebuilt sign-up and the notification center.
+      </p>
+      <p>
+        Outside work, I mentor designers at <a href="[AAPD URL]" rel="noopener">AAPD</a> and build
+        small tools with code and AI.
+      </p>
+    </section>
+
+    <WorkList />
+    <ToolList />
+    <Footer />
+  </main>
+</Base>
+
+<style>
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    padding-top: var(--space-7);
+    padding-bottom: var(--space-7);
+  }
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  h1 {
+    margin: 0 0 var(--space-1);
+    font-size: var(--text-lg);
+    line-height: 1.4;
+    font-weight: 600;
+  }
+  p {
+    margin: 0;
+    color: var(--color-text-body);
+  }
+  @media (max-width: 520px) {
+    .stack {
+      gap: var(--space-5);
+      padding-top: var(--space-6);
+      padding-bottom: var(--space-6);
+    }
+  }
+</style>

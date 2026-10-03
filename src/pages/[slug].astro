@@ -1,0 +1,17 @@
+---
+import { getCollection, render } from 'astro:content';
+import Case from '../layouts/Case.astro';
+
+export async function getStaticPaths() {
+  const work = await getCollection('work', ({ data }) => !data.draft);
+  return work.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, company, summary, result } = entry.data;
+---
+
+<Case title={title} eyebrow={company} summary={result ? `${summary} · ${result}` : summary}>
+  <Content />
+</Case>

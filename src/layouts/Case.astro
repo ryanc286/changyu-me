@@ -1,0 +1,59 @@
+---
+// Temporary case study template. Will be redesigned in step 3.
+import Base from './Base.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  eyebrow: string;
+  summary?: string;
+}
+const { title, eyebrow, summary } = Astro.props;
+---
+
+<Base title={`${title} · Chang Yu`} description={summary}>
+  <main class="container stack">
+    <a href="/" class="back">Back to home</a>
+    <header>
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{title}</h1>
+      {summary && <p class="summary">{summary}</p>}
+    </header>
+    <article class="prose">
+      <slot />
+    </article>
+    <Footer />
+  </main>
+</Base>
+
+<style>
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-7);
+  }
+  .back {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+  .eyebrow {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+  h1 {
+    margin: var(--space-1) 0;
+    font-size: 2rem;
+    line-height: 1.2;
+    font-weight: 600;
+  }
+  .summary {
+    margin: 0;
+    color: var(--color-text-body);
+  }
+  .prose {
+    color: var(--color-text-body);
+  }
+</style>

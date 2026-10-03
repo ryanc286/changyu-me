@@ -1,0 +1,213 @@
+---
+import { getCollection } from 'astro:content';
+
+const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<section aria-labelledby="work-title">
+  <h2 id="work-title" class="section-title">Selected work</h2>
+  <ul class="list" data-hover-list>
+    {
+      items.map(({ id, data }) => (
+        <li>
+          <a href={`/${id}`} class="row" data-cover={data.cover} data-title={data.title}>
+            <span class="main">
+              <span class="title">{data.title}</span>
+              <span class="meta">
+                {data.summary}
+                {data.result && <> · {data.result}</>}
+              </span>
+            </span>
+            <span class="company">{data.company}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <!-- Floating cover preview. Desktop only, follows the cursor. -->
+  <div class="preview" data-preview aria-hidden="true">
+    <img data-preview-img alt="" />
+    <span class="preview-fallback" data-preview-fallback></span>
+  </div>
+</section>
+
+<style>
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  li {
+    border-top: 1px solid var(--color-line);
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-4);
+    padding: 14px 12px;
+    margin: 0 -12px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: background-color var(--duration) var(--ease-out);
+  }
+  .row:hover {
+    background: var(--color-surface);
+  }
+  .main {
+    display: flex;
+    flex-direction: column;
+  }
+  .title {
+    font-weight: 500;
+  }
+  .row:hover .title {
+    text-decoration: underline;
+  }
+  .meta,
+  .company {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+  .company {
+    white-space: nowrap;
+  }
+
+  /* Phone: company moves next to the title, meta below */
+  @media (max-width: 520px) {
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      column-gap: var(--space-3);
+      row-gap: 2px;
+    }
+    .main {
+      display: contents;
+    }
+    .title {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .company {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .meta {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+  }
+
+  .preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    width: 280px;
+    aspect-ratio: 3 / 2;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    pointer-events: none;
+    opacity: 0;
+    scale: 0.96;
+    transition:
+      opacity var(--duration) var(--ease-out),
+      scale var(--duration) var(--ease-out);
+  }
+  .preview.is-visible {
+    opacity: 1;
+    scale: 1;
+  }
+  .preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .preview-fallback {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-text-muted);
+  }
+  .preview.no-image .preview-fallback {
+    display: flex;
+  }
+  .preview.no-image img {
+    display: none;
+  }
+</style>
+
+<script>
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const list = document.querySelector<HTMLElement>('[data-hover-list]');
+  const preview = document.querySelector<HTMLElement>('[data-preview]');
+  const img = document.querySelector<HTMLImageElement>('[data-preview-img]');
+  const fallback = document.querySelector<HTMLElement>('[data-preview-fallback]');
+
+  if (canHover && list && preview && img && fallback) {
+    const OFFSET_X = 24;
+    const OFFSET_Y = -90;
+    let targetX = 0;
+    let targetY = 0;
+    let x = 0;
+    let y = 0;
+    let frame = 0;
+
+    const place = () => {
+      // Ease toward the cursor for a soft follow. Snap if reduced motion is on.
+      const k = reduceMotion ? 1 : 0.18;
+      x += (targetX - x) * k;
+      y += (targetY - y) * k;
+      preview.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      if (Math.abs(targetX - x) > 0.5 || Math.abs(targetY - y) > 0.5) {
+        frame = requestAnimationFrame(place);
+      } else {
+        frame = 0;
+      }
+    };
+
+    const setTarget = (e: PointerEvent) => {
+      const w = preview.offsetWidth;
+      const fitsRight = e.clientX + OFFSET_X + w < window.innerWidth - 16;
+      targetX = fitsRight ? e.clientX + OFFSET_X : e.clientX - OFFSET_X - w;
+      targetY = Math.max(16, e.clientY + OFFSET_Y);
+      if (!frame) frame = requestAnimationFrame(place);
+    };
+
+    list.querySelectorAll<HTMLAnchorElement>('.row').forEach((row) => {
+      row.addEventListener('pointerenter', (e) => {
+        const cover = row.dataset.cover;
+        if (cover) {
+          img.src = cover;
+          preview.classList.remove('no-image');
+        } else {
+          fallback.textContent = `${row.dataset.title} cover`;
+          preview.classList.add('no-image');
+        }
+        if (!preview.classList.contains('is-visible')) {
+          setTarget(e);
+          x = targetX;
+          y = targetY;
+          preview.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        }
+        preview.classList.add('is-visible');
+      });
+    });
+
+    list.addEventListener('pointermove', setTarget);
+    list.addEventListener('pointerleave', () => preview.classList.remove('is-visible'));
+  }
+</script>

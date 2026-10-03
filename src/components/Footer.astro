@@ -1,0 +1,33 @@
+---
+const links = [
+  { label: 'LinkedIn', href: '[LINKEDIN URL]' },
+  { label: 'Email', href: 'mailto:[EMAIL]' },
+  { label: 'Resume', href: '/resume.pdf' },
+];
+---
+
+<footer>
+  <nav aria-label="Elsewhere">
+    {
+      links.map((link, i) => (
+        <>
+          {i > 0 && <span aria-hidden="true">/</span>}
+          <a href={link.href}>{link.label}</a>
+        </>
+      ))
+    }
+  </nav>
+</footer>
+
+<style>
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+  }
+  a:hover {
+    color: var(--color-text);
+  }
+</style>
