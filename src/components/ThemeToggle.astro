@@ -1,95 +1,148 @@
 ---
 /*
-  Light / dark toggle, fixed top right.
-  The page crossfades from one theme to the other (View Transitions API).
-  Browsers without it, or visitors who prefer reduced motion, get an instant switch.
+  Light / dark switch, fixed top right.
+  The knob slides; page colors ease to the new theme at the same time.
+  Visitors who prefer reduced motion get an instant switch (see global.css).
 */
 ---
 
-<button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
-  <!-- Moon: shown in light mode -->
-  <svg class="icon icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path
-      d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"
-      stroke="currentColor"
-      stroke-width="1.6"
-      stroke-linejoin="round"></path>
-  </svg>
-  <!-- Sun: shown in dark mode -->
-  <svg class="icon icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"></circle>
-    <path
-      d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"
-      stroke="currentColor"
-      stroke-width="1.6"
-      stroke-linecap="round"></path>
-  </svg>
+<button class="theme-switch" type="button" role="switch" aria-checked="false" aria-label="Dark mode" data-theme-toggle>
+  <span class="track" aria-hidden="true">
+    <span class="knob">
+      <svg class="icon icon-sun" width="12" height="12" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="2.4"></circle>
+        <path
+          d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"></path>
+      </svg>
+      <svg class="icon icon-moon" width="12" height="12" viewBox="0 0 24 24" fill="none">
+        <path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z" fill="currentColor"></path>
+      </svg>
+    </span>
+  </span>
 </button>
 
 <style>
-  .theme-toggle {
+  /* The button is a 60×44 hit area; the visible switch sits inside it */
+  .theme-switch {
     position: fixed;
-    top: 16px;
-    right: 16px;
+    top: 12px;
+    right: 12px;
     z-index: 50;
-    width: 44px;
+    width: 60px;
     height: 44px;
     display: grid;
     place-items: center;
     padding: 0;
-    border: 1px solid transparent;
-    border-radius: 999px;
+    border: 0;
     background: transparent;
-    color: var(--color-text-muted);
     cursor: pointer;
-    transition:
-      background-color var(--duration) var(--ease-out),
-      color var(--duration) var(--ease-out),
-      border-color var(--duration) var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
   }
-  .theme-toggle:hover {
+
+  .track {
+    --knob: 20px;
+    --pad: 3px;
+    --travel: 20px;
+    position: relative;
+    width: calc(var(--knob) + var(--travel) + var(--pad) * 2);
+    height: calc(var(--knob) + var(--pad) * 2);
+    border-radius: 999px;
     background: var(--color-surface);
-    border-color: var(--color-line);
-    color: var(--color-text);
+    box-shadow: inset 0 0 0 1px var(--color-line-strong);
+    transition:
+      background-color 400ms var(--ease-out),
+      box-shadow 400ms var(--ease-out);
   }
-  .theme-toggle:active .icon {
-    scale: 0.9;
+  .theme-switch:hover .track {
+    box-shadow: inset 0 0 0 1px var(--color-text-muted);
+  }
+  .theme-switch:focus-visible {
+    outline: none;
+  }
+  .theme-switch:focus-visible .track {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .knob {
+    position: absolute;
+    top: var(--pad);
+    left: var(--pad);
+    width: var(--knob);
+    height: var(--knob);
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #5e5e5b;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.18);
+    transition:
+      translate 380ms cubic-bezier(0.34, 1.45, 0.64, 1),
+      width 200ms var(--ease-out),
+      background-color 400ms var(--ease-out),
+      color 400ms var(--ease-out);
+  }
+  /* Press: knob stretches a little toward where it will go */
+  .theme-switch:active .knob {
+    width: calc(var(--knob) + 4px);
   }
 
   .icon {
     grid-area: 1 / 1;
     transition:
-      opacity 300ms var(--ease-out),
-      rotate 400ms var(--ease-out),
-      scale 150ms var(--ease-out);
+      opacity 250ms var(--ease-out),
+      rotate 400ms var(--ease-out);
   }
-  .icon-sun {
+  .icon-moon {
     opacity: 0;
-    rotate: -90deg;
+    rotate: -60deg;
   }
-  :global([data-theme='dark']) .icon-moon {
+
+  /* Dark */
+  :global([data-theme='dark']) .knob {
+    translate: var(--travel) 0;
+    background: #f2f2ef;
+    color: #141413;
+  }
+  :global([data-theme='dark']) .theme-switch:active .knob {
+    translate: calc(var(--travel) - 4px) 0;
+  }
+  :global([data-theme='dark']) .icon-sun {
     opacity: 0;
     rotate: 90deg;
   }
-  :global([data-theme='dark']) .icon-sun {
+  :global([data-theme='dark']) .icon-moon {
     opacity: 1;
     rotate: 0deg;
   }
 
   @media (min-width: 768px) {
-    .theme-toggle {
-      top: 24px;
-      right: 24px;
+    .theme-switch {
+      top: 18px;
+      right: 18px;
     }
   }
 </style>
 
 <style is:global>
-  /* Soft crossfade: the old theme dissolves into the new one */
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 450ms;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  /* While switching, page colors ease to the new theme. The switch animates on its own. */
+  @media (prefers-reduced-motion: no-preference) {
+    html.theme-changing *:not(.theme-switch, .theme-switch *),
+    html.theme-changing *:not(.theme-switch, .theme-switch *)::before,
+    html.theme-changing *:not(.theme-switch, .theme-switch *)::after {
+      transition:
+        background-color 400ms ease,
+        color 400ms ease,
+        border-color 400ms ease,
+        text-decoration-color 400ms ease !important;
+    }
+    html.theme-changing,
+    html.theme-changing body {
+      transition: background-color 400ms ease;
+    }
   }
 </style>
 
@@ -98,7 +151,6 @@
   const root = document.documentElement;
   const themeColor = document.querySelector('meta[name="theme-color"]');
   const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   type Theme = 'light' | 'dark';
 
@@ -107,7 +159,15 @@
   const apply = (theme: Theme) => {
     root.dataset.theme = theme;
     themeColor?.setAttribute('content', theme === 'dark' ? '#141413' : '#f7f7f5');
-    button?.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    button?.setAttribute('aria-checked', String(theme === 'dark'));
+  };
+
+  let timer = 0;
+  const applyAnimated = (theme: Theme) => {
+    root.classList.add('theme-changing');
+    apply(theme);
+    clearTimeout(timer);
+    timer = window.setTimeout(() => root.classList.remove('theme-changing'), 450);
   };
 
   const getStored = (): Theme | null => {
@@ -130,17 +190,11 @@
   button?.addEventListener('click', () => {
     const next: Theme = current() === 'dark' ? 'light' : 'dark';
     store(next);
-
-    if (!document.startViewTransition || reduceMotion.matches) {
-      apply(next);
-      return;
-    }
-
-    document.startViewTransition(() => apply(next));
+    applyAnimated(next);
   });
 
   // If the visitor never picked a theme, keep following the system setting
   systemDark.addEventListener('change', (e) => {
-    if (!getStored()) apply(e.matches ? 'dark' : 'light');
+    if (!getStored()) applyAnimated(e.matches ? 'dark' : 'light');
   });
 </script>
