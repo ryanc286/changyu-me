@@ -27,12 +27,6 @@ const width = Math.round((logoWidth / logoHeight) * height);
       <img src={`/images/logos/${logo}-light.png`} alt="" width={width} height={height} style={`height:${height}px`} />
     </picture>
     <span class="desc">{description}</span>
-    <span class="visit">
-      Visit site
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-        <path d="M3 1h6v6M9 1L1 9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
-    </span>
   </span>
 </span>
 
@@ -86,12 +80,5 @@ const width = Math.round((logoWidth / logoHeight) * height);
   .desc {
     font-size: var(--text-sm);
     color: var(--color-text-body);
-  }
-  .visit {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    color: var(--color-text-muted);
   }
 </style>
