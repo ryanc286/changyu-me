@@ -1,7 +1,7 @@
 ---
 /*
   Light / dark toggle, fixed top right.
-  The new theme grows out of the button as a circle (View Transitions API).
+  The page crossfades from one theme to the other (View Transitions API).
   Browsers without it, or visitors who prefer reduced motion, get an instant switch.
 */
 ---
@@ -85,11 +85,11 @@
 </style>
 
 <style is:global>
-  /* Circular reveal: the new page snapshot grows from the button */
+  /* Soft crossfade: the old theme dissolves into the new one */
   ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation: none;
-    mix-blend-mode: normal;
+    animation-duration: 450ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
 </style>
 
@@ -136,25 +136,7 @@
       return;
     }
 
-    // Circle starts at the button and grows to cover the farthest corner
-    const rect = button.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-
-    const transition = document.startViewTransition(() => apply(next));
-    transition.ready.then(() => {
-      root.animate(
-        {
-          clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`],
-        },
-        {
-          duration: 550,
-          easing: 'cubic-bezier(0.65, 0, 0.35, 1)',
-          pseudoElement: '::view-transition-new(root)',
-        },
-      );
-    });
+    document.startViewTransition(() => apply(next));
   });
 
   // If the visitor never picked a theme, keep following the system setting
