@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import WorkList from '../components/WorkList.astro';
 import ToolList from '../components/ToolList.astro';
 import Footer from '../components/Footer.astro';
+import OrgLink from '../components/OrgLink.astro';
 ---
 
 <Base>
@@ -11,16 +12,39 @@ import Footer from '../components/Footer.astro';
       <h1>Hi, I'm Yu, a designer who makes complex things clear.</h1>
       <p>
         I care about systems thinking, asking the right questions, and turning messy problems into
-        products people trust. At <a href="https://paypay.ne.jp/" rel="noopener">PayPay</a>, I make
-        paying and managing money simple for 65M+ users, even when the rules behind it are not.
+        products people trust. At{' '}
+        <OrgLink
+          name="PayPay"
+          href="https://paypay.ne.jp/"
+          logo="paypay"
+          logoWidth={120}
+          logoHeight={30}
+          description="Japan's largest mobile payment app"
+        />, I make paying and managing money simple for 65M+ users, even when the rules behind it are not.
       </p>
       <p>
         Previously, I worked on growth and engagement at{' '}
-        <a href="https://carousell.com/" rel="noopener">Carousell</a> across Taiwan and Singapore,
+        <OrgLink
+          name="Carousell"
+          href="https://carousell.com/"
+          logo="carousell"
+          logoWidth={405}
+          logoHeight={80}
+          description="Marketplace app across Southeast Asia and Taiwan"
+        /> across Taiwan and Singapore,
         where I rebuilt sign-up and the notification center.
       </p>
       <p>
-        Outside work, I mentor designers at <a href="[AAPD URL]" rel="noopener">AAPD</a> and build
+        Outside work, I mentor designers at{' '}
+        <OrgLink
+          name="AAPD"
+          href="https://aapd.com.tw/"
+          logo="aapd"
+          logoWidth={161}
+          logoHeight={31}
+          logoDisplayHeight={15}
+          description="Taiwan community for product builders"
+        /> and build
         small tools with code and AI.
       </p>
     </section>
