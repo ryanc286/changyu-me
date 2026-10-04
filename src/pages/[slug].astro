@@ -5,6 +5,7 @@ import Media from '../components/case/Media.astro';
 import Stats from '../components/case/Stats.astro';
 import Hypothesis from '../components/case/Hypothesis.astro';
 import { t } from '../i18n/ui';
+import { companies } from '../data/companies';
 
 export async function getStaticPaths() {
   const work = (await getCollection('work', ({ data }) => !data.draft)).sort(
@@ -18,16 +19,19 @@ export async function getStaticPaths() {
 }
 
 const { entry, next } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 const d = entry.data;
 const title = t('en', `work.${entry.id}.title`);
 const summary = t('en', `work.${entry.id}.summary`);
+const company = companies.find((c) => c.name === d.company);
 ---
 
 <CaseStudy
   title={title}
   subtitle={d.subtitle ?? summary}
   description={summary}
+  icon={company ? `/images/logos/${company.logo}-icon.png` : undefined}
+  headings={headings.filter((h) => h.depth === 2)}
   meta={[
     { label: 'Role', value: d.role },
     { label: 'Company', value: d.company },
@@ -35,7 +39,7 @@ const summary = t('en', `work.${entry.id}.summary`);
     { label: 'Type', value: d.type },
   ]}
   next={next.id !== entry.id
-    ? { href: `/${next.id}`, title: t('en', `work.${next.id}.title`), summary: t('en', `work.${next.id}.summary`) }
+    ? { href: `/${next.id}`, title: t('en', `work.${next.id}.title`) }
     : undefined}
 >
   <Content components={{ Media, Stats, Hypothesis }} />

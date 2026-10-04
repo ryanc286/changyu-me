@@ -1,195 +1,325 @@
 ---
 /*
-  Case study page. Text column is 600px like the homepage; images (Media)
-  break out to a wider column. Meta comes from the case frontmatter, which is
-  synced from Notion.
+  Case study page, modeled on claire.io/work/chronicle.
+  Desktop: the left column (back button, title, section nav, next case) stays
+  in place while the right column (images and text) scrolls.
+  Mobile: one column, no section nav.
 */
 import Base from './Base.astro';
-import Footer from '../components/Footer.astro';
 
 interface Props {
   title: string;
   subtitle?: string;
   description?: string;
+  icon?: string;
+  headings: { slug: string; text: string }[];
   meta: { label: string; value?: string }[];
-  next?: { href: string; title: string; summary: string };
+  next?: { href: string; title: string };
 }
-const { title, subtitle, description, meta, next } = Astro.props;
+const { title, subtitle, description, icon, headings, meta, next } = Astro.props;
 const shownMeta = meta.filter((m) => m.value);
+const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
 ---
 
-<Base title={`${title} · Chang Yu`} description={description ?? subtitle} alternates={{}}>
-  <main class="container">
-    <a href="/#work" class="back">← Work</a>
-    <header>
-      <h1>{title}</h1>
-      {subtitle && <p class="subtitle">{subtitle}</p>}
+<Base title={`${title} · Chang Yu`} description={description ?? subtitle}>
+  <div class="case-page">
+    <aside class="side">
+      <header class="head">
+        <a href="/#work" class="back" aria-label="Back to work">
+          {icon && <img class="face face-icon" src={icon} alt="" width="32" height="32" />}
+          <span class="face face-arrow" aria-hidden="true">
+            <svg viewBox="0 0 16 16" width="16" height="16"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </span>
+        </a>
+        <div class="title">
+          <h1>{title}</h1>
+          {subtitle && <p>{subtitle}</p>}
+        </div>
+      </header>
+
+      <nav class="toc" aria-label="Sections">
+        {nav.map((h, i) => <a href={`#${h.slug}`} data-slug={h.slug} aria-current={i === 0 ? 'true' : undefined}>{h.text}</a>)}
+      </nav>
+
       {
-        shownMeta.length > 0 && (
-          <dl class="meta">
-            {shownMeta.map((m) => (
-              <div>
-                <dt>{m.label}</dt>
-                <dd>{m.value}</dd>
-              </div>
-            ))}
-          </dl>
+        next && (
+          <a class="next" href={next.href}>
+            <span class="next-label">Next</span> {next.title} <span aria-hidden="true">→</span>
+          </a>
         )
       }
-    </header>
-  </main>
+    </aside>
 
-  <article class="case">
-    <slot />
-  </article>
+    <main class="body">
+      <div id="intro" class="prose">
+        <slot />
+      </div>
 
-  <div class="container end">
-    {
-      next && (
-        <a class="next" href={next.href}>
-          <span class="next-label">Next</span>
-          <span class="next-title">{next.title}</span>
-          <span class="next-summary">{next.summary}</span>
-        </a>
-      )
-    }
-    <Footer />
+      {
+        shownMeta.length > 0 && (
+          <footer class="meta">
+            {shownMeta.map((m) => (
+              <div class="meta-group">
+                <p class="meta-label">{m.label}</p>
+                <p class="meta-pills">
+                  {m.value!.split(',').map((v) => <span class="pill">{v.trim()}</span>)}
+                </p>
+              </div>
+            ))}
+          </footer>
+        )
+      }
+
+      {
+        next && (
+          <a class="next next-end" href={next.href}>
+            <span class="next-label">Next</span> {next.title} <span aria-hidden="true">→</span>
+          </a>
+        )
+      }
+    </main>
+
+    <div class="fade fade-top" aria-hidden="true"></div>
+    <div class="fade fade-bottom" aria-hidden="true"></div>
   </div>
 </Base>
 
+<script>
+  // Highlight the section in view in the left nav
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+  const targets = links
+    .map((a) => document.getElementById(a.dataset.slug!))
+    .filter((el): el is HTMLElement => !!el);
+  const setActive = () => {
+    const line = innerHeight * 0.35;
+    let current = targets[0];
+    for (const t of targets) if (t.getBoundingClientRect().top <= line) current = t;
+    // At the very bottom, the last section wins
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 2) current = targets[targets.length - 1];
+    for (const a of links) {
+      if (a.dataset.slug === current?.id) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    }
+  };
+  addEventListener('scroll', setActive, { passive: true });
+  addEventListener('resize', setActive);
+  setActive();
+</script>
+
 <style>
-  main {
-    padding-top: var(--space-6);
+  .case-page {
+    --side: 248px;
+    --prose: 580px;
+    padding: var(--space-6) var(--gutter) var(--space-6);
+  }
+
+  /* Left column */
+  .head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
   }
   .back {
-    display: inline-block;
+    position: relative;
+    display: block;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-line);
+    color: var(--color-text);
+  }
+  .face {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transition: opacity var(--duration) var(--ease-out), transform var(--duration) var(--ease-out);
+  }
+  .face-icon {
+    width: 100%;
+    height: 100%;
+  }
+  .face-arrow {
+    background: var(--color-surface);
+    opacity: 0;
+    transform: translateX(4px);
+  }
+  .back:hover .face-arrow,
+  .back:focus-visible .face-arrow {
+    opacity: 1;
+    transform: none;
+  }
+  .title h1,
+  .title p {
+    margin: 0;
+    font-size: 1.125rem;
+    line-height: 1.35;
+    font-weight: 500;
+    text-wrap: balance;
+  }
+  .title p {
+    font-weight: 400;
+    color: var(--color-text-muted);
+  }
+  .toc {
+    display: none;
+  }
+  .next {
     font-size: var(--text-sm);
     color: var(--color-text-muted);
     text-decoration: none;
+    transition: color var(--duration) var(--ease-out);
   }
-  .back:hover {
+  .next:hover {
     color: var(--color-text);
   }
-  header {
-    margin-top: var(--space-5);
-  }
-  h1 {
-    margin: 0;
-    font-size: 2rem;
-    line-height: 1.2;
-    font-weight: 600;
-    text-wrap: balance;
-  }
-  .subtitle {
-    margin: var(--space-1) 0 0;
-    font-size: var(--text-lg);
-    line-height: 1.4;
+  .next-label {
     color: var(--color-text-muted);
   }
-  .meta {
-    margin: var(--space-5) 0 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: var(--space-3);
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--color-line);
-  }
-  .meta dt {
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-  }
-  .meta dd {
-    margin: 0;
-    font-size: var(--text-sm);
-    color: var(--color-text);
+  .side > .next {
+    display: none;
   }
 
-  /* Body: content column, with a wider column for images */
-  .case {
-    --wide: 900px;
-    display: grid;
-    grid-template-columns:
-      [wide-start] minmax(var(--gutter), 1fr)
-      [content-start] min(var(--width-content), 100% - var(--gutter) * 2)
-      [content-end] minmax(var(--gutter), 1fr)
-      [wide-end];
+  /* Right column */
+  .body {
     margin-top: var(--space-5);
+    min-width: 0;
+  }
+  .prose {
     color: var(--color-text-body);
   }
-  @media (min-width: 940px) {
-    .case {
-      grid-template-columns:
-        1fr
-        [wide-start] minmax(0, calc((var(--wide) - var(--width-content)) / 2))
-        [content-start] var(--width-content)
-        [content-end] minmax(0, calc((var(--wide) - var(--width-content)) / 2))
-        [wide-end] 1fr;
-    }
+  .prose > :global(*) {
+    max-width: var(--prose);
   }
-  .case > :global(*) {
-    grid-column: content;
+  .prose > :global(figure.media) {
+    max-width: none;
   }
-  .case > :global(figure.media) {
-    grid-column: wide;
-  }
-  @media (max-width: 939px) {
-    .case > :global(figure.media) {
-      grid-column: content;
-    }
-  }
-  .case :global(h2) {
+  .prose :global(h2) {
     margin: var(--space-5) 0 var(--space-2);
-    font-size: 1.125rem;
+    font-size: var(--text-base);
     font-weight: 600;
     color: var(--color-text);
+    scroll-margin-top: var(--space-6);
   }
-  .case :global(p) {
+  .prose :global(p) {
     margin: 0 0 var(--space-3);
   }
-  .case :global(ul),
-  .case :global(ol) {
+  .prose :global(ul),
+  .prose :global(ol) {
     margin: 0 0 var(--space-3);
     padding-left: 1.25em;
   }
-  .case :global(li + li) {
+  .prose :global(li + li) {
     margin-top: var(--space-1);
   }
-  .case :global(strong) {
+  .prose :global(strong) {
     font-weight: 600;
     color: var(--color-text);
   }
-
-  .next {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    margin-top: var(--space-6);
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--color-line);
-    text-decoration: none;
+  .prose > :global(figure.media:first-child) {
+    margin-top: 0;
   }
-  .next-label {
+
+  .meta {
+    margin-top: var(--space-5);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+  }
+  .meta-label {
+    margin: 0 0 var(--space-1);
     font-size: var(--text-sm);
     color: var(--color-text-muted);
   }
-  .next-title {
-    font-weight: 600;
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
-    transition: text-decoration-color var(--duration) var(--ease-out);
+  .meta-pills {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
   }
-  .next:hover .next-title {
-    text-decoration-color: currentColor;
+  .pill {
+    padding: 3px 10px;
+    border-radius: 8px;
+    background: var(--color-surface);
+    font-size: var(--text-sm);
+    color: var(--color-text);
   }
-  .next-summary {
-    color: var(--color-text-body);
+  .next-end {
+    display: inline-block;
+    margin-top: var(--space-5);
   }
-  .end {
-    padding-bottom: var(--space-2);
+
+  .fade {
+    display: none;
   }
-  .end > :global(footer) {
-    margin-top: var(--space-6);
+
+  /* Desktop: fixed left column, scrolling right column */
+  @media (min-width: 1024px) {
+    .case-page {
+      display: grid;
+      grid-template-columns: var(--side) minmax(0, 1100px);
+      gap: 0 var(--space-5);
+      padding: 0 var(--space-5) 0 var(--space-5);
+    }
+    .side {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      height: 100dvh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: var(--space-5) 0;
+    }
+    .toc {
+      display: flex;
+      flex-direction: column;
+      align-self: center;
+      gap: 4px;
+    }
+    .toc a {
+      width: fit-content;
+      font-size: var(--text-sm);
+      line-height: 1.5;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      transition: color var(--duration) var(--ease-out);
+    }
+    .toc a:hover,
+    .toc a[aria-current] {
+      color: var(--color-text);
+    }
+    .side > .next {
+      display: block;
+      width: fit-content;
+    }
+    .next-end {
+      display: none;
+    }
+    .body {
+      margin-top: 0;
+      padding: 72px 0 var(--space-7);
+    }
+    /* Soft edges where text scrolls under the top and bottom of the window */
+    .fade {
+      display: block;
+      position: fixed;
+      left: calc(var(--side) + var(--space-5) * 2);
+      right: 0;
+      height: 56px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .fade-top {
+      top: 0;
+      background: linear-gradient(var(--color-bg), transparent);
+    }
+    .fade-bottom {
+      bottom: 0;
+      background: linear-gradient(transparent, var(--color-bg));
+    }
   }
 </style>
