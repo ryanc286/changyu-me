@@ -1,11 +1,19 @@
 ---
 /*
   Case study page, modeled on claire.io/work/chronicle.
-  Desktop: the left column (back button, title, section nav, next case) stays
-  in place while the right column (images and text) scrolls.
-  Mobile: one column, no section nav.
+
+  The case is a card that sits on top of the homepage. The homepage is drawn
+  behind it (same scroll position as when you left it), and the card slides in
+  from the right (see the case-card rules in global.css).
+
+  Desktop: a 40px strip on the left shows the homepage. Hover it and the card
+  steps back a little; click it (or press Esc) to close.
+  Inside the card the left column stays put while the right column scrolls.
+  Phones: the card is a sheet from the bottom. Tap the strip above it, or drag
+  the handle down, to close.
 */
 import Base from './Base.astro';
+import HomeContent from '../components/HomeContent.astro';
 
 interface Props {
   title: string;
@@ -21,70 +29,89 @@ const shownMeta = meta.filter((m) => m.value);
 const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
 ---
 
-<Base title={`${title} · Chang Yu`} description={description ?? subtitle}>
-  <div class="case-page">
-    <aside class="side">
-      <header class="head">
-        <a href="/#work" class="back" aria-label="Back to work">
-          {icon && <img class="face face-icon" src={icon} alt="" width="32" height="32" />}
-          <span class="face face-arrow" aria-hidden="true">
-            <svg viewBox="0 0 16 16" width="16" height="16"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-          </span>
-        </a>
-        <div class="title">
-          <h1>{title}</h1>
-          {subtitle && <p>{subtitle}</p>}
+<Base title={`${title} · Chang Yu`} description={description ?? subtitle} page="case">
+  <div class="backdrop" aria-hidden="true" inert>
+    <div class="backdrop-inner">
+      <HomeContent lang="en" />
+    </div>
+  </div>
+
+  <div class="layer">
+    <a class="dismiss" href="/" aria-label="Close and go back to home"></a>
+
+    <article class="card">
+      <div class="grab" aria-hidden="true"><span></span></div>
+
+      <div class="scroller">
+        <div class="case-grid">
+          <aside class="side">
+            <header class="head">
+              <a href="/" class="back" aria-label="Back to home">
+                {icon && <img class="face face-icon" src={icon} alt="" width="32" height="32" />}
+                <span class="face face-arrow" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" width="16" height="16"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </span>
+              </a>
+              <div class="title">
+                <h1>{title}</h1>
+                {subtitle && <p>{subtitle}</p>}
+              </div>
+            </header>
+
+            <nav class="toc" aria-label="Sections">
+              {nav.map((h, i) => <a href={`#${h.slug}`} data-slug={h.slug} aria-current={i === 0 ? 'true' : undefined}>{h.text}</a>)}
+            </nav>
+
+            {
+              next && (
+                <a class="next" href={next.href}>
+                  <span class="next-label">Next</span> {next.title} <span aria-hidden="true">→</span>
+                </a>
+              )
+            }
+          </aside>
+
+          <main class="body">
+            <div id="intro" class="prose">
+              <slot />
+            </div>
+
+            {
+              shownMeta.length > 0 && (
+                <footer class="meta">
+                  {shownMeta.map((m) => (
+                    <div class="meta-group">
+                      <p class="meta-label">{m.label}</p>
+                      <p class="meta-pills">
+                        {m.value!.split(',').map((v) => <span class="pill">{v.trim()}</span>)}
+                      </p>
+                    </div>
+                  ))}
+                </footer>
+              )
+            }
+
+            {
+              next && (
+                <a class="next next-end" href={next.href}>
+                  <span class="next-label">Next</span> {next.title} <span aria-hidden="true">→</span>
+                </a>
+              )
+            }
+          </main>
         </div>
-      </header>
-
-      <nav class="toc" aria-label="Sections">
-        {nav.map((h, i) => <a href={`#${h.slug}`} data-slug={h.slug} aria-current={i === 0 ? 'true' : undefined}>{h.text}</a>)}
-      </nav>
-
-      {
-        next && (
-          <a class="next" href={next.href}>
-            <span class="next-label">Next</span> {next.title} <span aria-hidden="true">→</span>
-          </a>
-        )
-      }
-    </aside>
-
-    <main class="body">
-      <div id="intro" class="prose">
-        <slot />
       </div>
 
-      {
-        shownMeta.length > 0 && (
-          <footer class="meta">
-            {shownMeta.map((m) => (
-              <div class="meta-group">
-                <p class="meta-label">{m.label}</p>
-                <p class="meta-pills">
-                  {m.value!.split(',').map((v) => <span class="pill">{v.trim()}</span>)}
-                </p>
-              </div>
-            ))}
-          </footer>
-        )
-      }
-
-      {
-        next && (
-          <a class="next next-end" href={next.href}>
-            <span class="next-label">Next</span> {next.title} <span aria-hidden="true">→</span>
-          </a>
-        )
-      }
-    </main>
-
-    <div class="fade fade-top" aria-hidden="true"></div>
-    <div class="fade fade-bottom" aria-hidden="true"></div>
+      <div class="fade fade-top" aria-hidden="true"></div>
+      <div class="fade fade-bottom" aria-hidden="true"></div>
+    </article>
   </div>
 </Base>
 
 <script>
+  const scroller = document.querySelector<HTMLElement>('.scroller')!;
+  const card = document.querySelector<HTMLElement>('.card')!;
+
   // Highlight the section in view in the left nav
   const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
   const targets = links
@@ -94,26 +121,151 @@ const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
     const line = innerHeight * 0.35;
     let current = targets[0];
     for (const t of targets) if (t.getBoundingClientRect().top <= line) current = t;
-    // At the very bottom, the last section wins
-    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 2) current = targets[targets.length - 1];
+    if (scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 2) current = targets[targets.length - 1];
     for (const a of links) {
       if (a.dataset.slug === current?.id) a.setAttribute('aria-current', 'true');
       else a.removeAttribute('aria-current');
     }
   };
-  addEventListener('scroll', setActive, { passive: true });
+  scroller.addEventListener('scroll', setActive, { passive: true });
   addEventListener('resize', setActive);
   setActive();
+
+  // Keyboard users land in the card, so arrow keys and space scroll it
+  scroller.tabIndex = -1;
+  scroller.focus({ preventScroll: true });
+
+  // Esc closes the case
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !e.defaultPrevented) location.href = '/';
+  });
+
+  // Phones: drag the handle down to close
+  const grab = document.querySelector<HTMLElement>('.grab')!;
+  let startY = 0;
+  let dy = 0;
+  let dragging = false;
+  grab.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    startY = e.clientY;
+    dy = 0;
+    grab.setPointerCapture(e.pointerId);
+    card.style.transition = 'none';
+  });
+  grab.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    dy = Math.max(0, e.clientY - startY);
+    card.style.transform = `translateY(${dy}px)`;
+  });
+  const end = () => {
+    if (!dragging) return;
+    dragging = false;
+    card.style.transition = '';
+    if (dy > 100) {
+      location.href = '/';
+    } else {
+      card.style.transform = '';
+    }
+  };
+  grab.addEventListener('pointerup', end);
+  grab.addEventListener('pointercancel', end);
 </script>
 
 <style>
-  .case-page {
-    --side: 248px;
-    --prose: 580px;
-    padding: var(--space-6) var(--gutter) var(--space-6);
+  :global(html[data-page='case']),
+  :global(html[data-page='case'] body) {
+    overflow: hidden;
   }
 
-  /* Left column */
+  /* Homepage behind the card, at the scroll position you left it */
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+  }
+  .backdrop-inner {
+    transform: translateY(calc(var(--home-y, 0) * -1px));
+  }
+
+  .layer {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+  }
+
+  /* Strip that shows the homepage; click to close */
+  .dismiss {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    z-index: 2;
+    width: 40px;
+    transition: width 200ms var(--ease-out);
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23ffffff' stroke='%23000000' stroke-opacity='.12'/%3E%3Cpath d='M18 10l-6 6 6 6' fill='none' stroke='%231a1a1a' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 16 16, pointer;
+  }
+  .dismiss:hover {
+    width: 48px;
+  }
+  .dismiss:focus-visible {
+    outline-offset: -6px;
+  }
+
+  .card {
+    --card-shadow: 0 8px 40px rgb(0 0 0 / 0.12);
+    --card-shadow-hover: 0 12px 52px rgb(0 0 0 / 0.18);
+    --card-highlight: rgb(255 255 255 / 0.9);
+    view-transition-name: case-card;
+    position: absolute;
+    inset: 0 0 0 40px;
+    border-radius: 32px 0 0 32px;
+    overflow: hidden;
+    /* Solid: a named view-transition element can't blur what's behind it */
+    --card-bg: var(--color-bg);
+    background: var(--card-bg);
+    box-shadow: var(--card-shadow), inset 1px 1px 0 0 var(--card-highlight);
+    transition:
+      left 200ms var(--ease-out),
+      box-shadow 200ms var(--ease-out),
+      transform 300ms var(--ease-out);
+  }
+  :global(:root[data-theme='dark']) .card {
+    --card-shadow: 0 8px 40px rgb(0 0 0 / 0.5);
+    --card-shadow-hover: 0 12px 52px rgb(0 0 0 / 0.65);
+    --card-highlight: rgb(255 255 255 / 0.06);
+    /* A shade lighter than the page so the card edge reads on dark */
+    --card-bg: #1a1a19;
+  }
+  .dismiss:hover ~ .card {
+    left: 48px;
+    box-shadow: var(--card-shadow-hover), inset 1px 1px 0 0 var(--card-highlight);
+  }
+
+  .scroller {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    outline: none;
+  }
+  .scroller::-webkit-scrollbar {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .scroller {
+      scroll-behavior: smooth;
+    }
+  }
+
+  .grab {
+    display: none;
+  }
+
+  /* Card content, single column (tablet and phone) */
+  .case-grid {
+    padding: var(--space-5) 32px var(--space-6);
+    max-width: calc(var(--width-content) + 64px);
+  }
   .head {
     display: flex;
     flex-direction: column;
@@ -130,12 +282,15 @@ const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
     box-shadow: 0 0 0 1px var(--color-line);
     color: var(--color-text);
   }
+  .back:active {
+    transform: scale(0.97);
+  }
   .face {
     position: absolute;
     inset: 0;
     display: grid;
     place-items: center;
-    transition: opacity var(--duration) var(--ease-out), transform var(--duration) var(--ease-out);
+    transition: opacity 160ms var(--ease-out);
   }
   .face-icon {
     width: 100%;
@@ -144,12 +299,10 @@ const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
   .face-arrow {
     background: var(--color-surface);
     opacity: 0;
-    transform: translateX(4px);
   }
   .back:hover .face-arrow,
   .back:focus-visible .face-arrow {
     opacity: 1;
-    transform: none;
   }
   .title h1,
   .title p {
@@ -175,14 +328,10 @@ const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
   .next:hover {
     color: var(--color-text);
   }
-  .next-label {
-    color: var(--color-text-muted);
-  }
   .side > .next {
     display: none;
   }
 
-  /* Right column */
   .body {
     margin-top: var(--space-5);
     min-width: 0;
@@ -191,17 +340,20 @@ const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
     color: var(--color-text-body);
   }
   .prose > :global(*) {
-    max-width: var(--prose);
+    max-width: 580px;
   }
   .prose > :global(figure.media) {
     max-width: none;
+  }
+  .prose > :global(figure.media:first-child) {
+    margin-top: 0;
   }
   .prose :global(h2) {
     margin: var(--space-5) 0 var(--space-2);
     font-size: var(--text-base);
     font-weight: 600;
     color: var(--color-text);
-    scroll-margin-top: var(--space-6);
+    scroll-margin-top: 72px;
   }
   .prose :global(p) {
     margin: 0 0 var(--space-3);
@@ -217,9 +369,6 @@ const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
   .prose :global(strong) {
     font-weight: 600;
     color: var(--color-text);
-  }
-  .prose > :global(figure.media:first-child) {
-    margin-top: 0;
   }
 
   .meta {
@@ -257,13 +406,14 @@ const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
     display: none;
   }
 
-  /* Desktop: fixed left column, scrolling right column */
+  /* Desktop: left column stays, right column scrolls */
   @media (min-width: 1024px) {
-    .case-page {
+    .case-grid {
       display: grid;
-      grid-template-columns: var(--side) minmax(0, 1100px);
-      gap: 0 var(--space-5);
-      padding: 0 var(--space-5) 0 var(--space-5);
+      grid-template-columns: 248px minmax(0, 1100px);
+      gap: 0 28px;
+      max-width: none;
+      padding: 0 20px 0 32px;
     }
     .side {
       position: sticky;
@@ -272,7 +422,7 @@ const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
       height: 100dvh;
       display: grid;
       grid-template-rows: auto 1fr auto;
-      padding: var(--space-5) 0;
+      padding: 32px 0 20px;
     }
     .toc {
       display: flex;
@@ -286,7 +436,7 @@ const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
       line-height: 1.5;
       color: var(--color-text-muted);
       text-decoration: none;
-      transition: color var(--duration) var(--ease-out);
+      transition: color 160ms var(--ease-out);
     }
     .toc a:hover,
     .toc a[aria-current] {
@@ -301,25 +451,63 @@ const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
     }
     .body {
       margin-top: 0;
-      padding: 72px 0 var(--space-7);
+      padding: 72px 0 140px;
     }
-    /* Soft edges where text scrolls under the top and bottom of the window */
+    /* Soft edges where the right column scrolls under the card edge */
     .fade {
       display: block;
-      position: fixed;
-      left: calc(var(--side) + var(--space-5) * 2);
+      position: absolute;
+      left: calc(32px + 248px + 28px);
       right: 0;
       height: 56px;
       pointer-events: none;
-      z-index: 10;
+      z-index: 1;
     }
     .fade-top {
       top: 0;
-      background: linear-gradient(var(--color-bg), transparent);
+      background: linear-gradient(var(--card-bg), transparent);
     }
     .fade-bottom {
       bottom: 0;
-      background: linear-gradient(transparent, var(--color-bg));
+      background: linear-gradient(transparent, var(--card-bg));
+    }
+  }
+
+  /* Phones: a sheet from the bottom */
+  @media (max-width: 767px) {
+    .dismiss {
+      inset: 0 0 auto 0;
+      width: auto;
+      height: 56px;
+    }
+    .dismiss:hover {
+      width: auto;
+    }
+    .card,
+    .dismiss:hover ~ .card {
+      inset: 56px 0 0 0;
+      border-radius: 24px 24px 0 0;
+    }
+    .grab {
+      display: flex;
+      justify-content: center;
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 28px;
+      padding-top: 8px;
+      z-index: 3;
+      background: linear-gradient(var(--card-bg) 70%, transparent);
+      touch-action: none;
+      cursor: grab;
+    }
+    .grab span {
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--color-line-strong);
+    }
+    .case-grid {
+      padding: var(--space-5) var(--gutter) var(--space-6);
     }
   }
 </style>

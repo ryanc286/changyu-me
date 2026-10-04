@@ -1,62 +1,38 @@
 ---
-/* Homepage content for both languages. Pages in src/pages pick the language. */
+/* Homepage for both languages. Pages in src/pages pick the language. */
 import Base from '../layouts/Base.astro';
-import WorkList from './WorkList.astro';
-import ToolList from './ToolList.astro';
-import Footer from './Footer.astro';
-import CopyWithLinks from './CopyWithLinks.astro';
-import { t, type Lang } from '../i18n/ui';
+import HomeContent from './HomeContent.astro';
+import type { Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-
 ---
 
-<Base lang={lang} alternates={{ en: '/', 'zh-tw': '/zh-tw' }}>
-  <main class="container stack">
-    <section class="intro">
-      <h1>{t(lang, 'home.title')}</h1>
-      <p><CopyWithLinks lang={lang} text={t(lang, 'home.intro')} /></p>
-      <p><CopyWithLinks lang={lang} text={t(lang, 'home.previously')} /></p>
-      <p><CopyWithLinks lang={lang} text={t(lang, 'home.outside')} /></p>
-    </section>
-
-    <WorkList lang={lang} />
-    <ToolList lang={lang} />
-    <Footer lang={lang} />
-  </main>
+<Base lang={lang} page={lang === 'en' ? 'home' : 'home-' + lang} alternates={{ en: '/', 'zh-tw': '/zh-tw' }}>
+  <HomeContent lang={lang} />
+  {
+    lang === 'en' && (
+      <script is:inline>
+        /* Case studies show this page behind them at the same scroll position.
+           Remember where we are, and come back to it after closing a case. */
+        (() => {
+          const save = () => {
+            try { sessionStorage.setItem('homeScroll', String(Math.round(scrollY))); } catch {}
+          };
+          addEventListener('scroll', save, { passive: true });
+          addEventListener('pagehide', save);
+          try {
+            const ref = document.referrer ? new URL(document.referrer) : null;
+            const nav = performance.getEntriesByType('navigation')[0];
+            const fromCase = ref && ref.origin === location.origin && window.__isCasePath?.(ref.pathname);
+            if (fromCase && nav?.type === 'navigate') {
+              scrollTo(0, Number(sessionStorage.getItem('homeScroll')) || 0);
+            }
+          } catch {}
+        })();
+      </script>
+    )
+  }
 </Base>
-
-<style>
-  .stack {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
-    padding-top: var(--space-7);
-    padding-bottom: var(--space-7);
-  }
-  .intro {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-  h1 {
-    margin: 0 0 var(--space-1);
-    font-size: var(--text-lg);
-    line-height: 1.4;
-    font-weight: 600;
-  }
-  p {
-    margin: 0;
-    color: var(--color-text-body);
-  }
-  @media (max-width: 520px) {
-    .stack {
-      gap: var(--space-5);
-      padding-top: var(--space-6);
-      padding-bottom: var(--space-6);
-    }
-  }
-</style>

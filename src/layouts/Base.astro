@@ -11,9 +11,11 @@ interface Props {
   /* Same page in each language, e.g. { en: '/', 'zh-tw': '/zh-tw' }.
      The language switch only shows when another language exists. */
   alternates?: Partial<Record<Lang, string>>;
+  /* Page kind, used to pick the page transition: 'home', 'home-zh-tw', 'case', 'tool' */
+  page?: string;
 }
 
-const { lang = defaultLang, alternates = {} } = Astro.props;
+const { lang = defaultLang, alternates = {}, page = 'other' } = Astro.props;
 const title = Astro.props.title ?? t(lang, 'meta.title');
 const description = Astro.props.description ?? t(lang, 'meta.description');
 // Clean URL (no .html, no /index) to match how Vercel serves pages
@@ -24,7 +26,7 @@ const hasOtherLang = altEntries.some(([l]) => l !== lang);
 ---
 
 <!doctype html>
-<html lang={languages[lang].htmlLang}>
+<html lang={languages[lang].htmlLang} data-page={page}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -46,6 +48,36 @@ const hasOtherLang = altEntries.some(([l]) => l !== lang);
         document
           .querySelector('meta[name="theme-color"]')
           ?.setAttribute('content', theme === 'dark' ? '#141413' : '#f7f7f5');
+      })();
+    </script>
+    <!-- Case studies slide over the homepage. Mark those transitions so the page behind stays still. -->
+    <script is:inline>
+      (() => {
+        const kind = (path) => {
+          path = path.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+          if (path === '/' || path === '/index') return 'home';
+          if (path === '/zh-tw' || path.startsWith('/zh-tw/')) return 'home-zh-tw';
+          if (path.startsWith('/tools/') || path.startsWith('/_')) return 'other';
+          return /^\/[a-z0-9-]+$/.test(path) ? 'case' : 'other';
+        };
+        window.__isCasePath = (path) => kind(path) === 'case';
+        const html = document.documentElement;
+        try {
+          if (html.dataset.page === 'case') html.style.setProperty('--home-y', sessionStorage.getItem('homeScroll') || '0');
+        } catch {}
+        addEventListener('pagereveal', (e) => {
+          if (!e.viewTransition) return;
+          let from = null;
+          try {
+            from = navigation?.activation?.from?.url || document.referrer || null;
+          } catch {}
+          if (!from) return;
+          const pair = [kind(new URL(from).pathname), html.dataset.page];
+          if (pair.includes('case') && pair.every((k) => k === 'case' || k === 'home')) {
+            html.classList.add('vt-case');
+            e.viewTransition.finished.finally(() => html.classList.remove('vt-case'));
+          }
+        });
       })();
     </script>
     <title>{title}</title>
@@ -81,7 +113,7 @@ const hasOtherLang = altEntries.some(([l]) => l !== lang);
     position: fixed;
     top: 12px;
     right: 12px;
-    z-index: 50;
+    z-index: 200;
     display: flex;
     align-items: center;
     gap: 2px;
