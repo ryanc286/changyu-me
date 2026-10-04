@@ -1,0 +1,33 @@
+---
+/*
+  Two or more images side by side in a case study (one row on desktop,
+  stacked on phones). From a 🖼️ callout in Notion with one "id: label" per line.
+*/
+import Media from './Media.astro';
+
+interface Props {
+  items: { id: string; label: string; src?: string }[];
+}
+const { items } = Astro.props;
+---
+
+<div class="media-row" style={`--cols: ${items.length}`}>
+  {items.map((m) => <Media id={m.id} label={m.label} src={m.src} />)}
+</div>
+
+<style>
+  .media-row {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: 16px;
+    margin: var(--space-5) 0;
+  }
+  .media-row > :global(figure.media) {
+    margin: 0;
+  }
+  @media (max-width: 600px) {
+    .media-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

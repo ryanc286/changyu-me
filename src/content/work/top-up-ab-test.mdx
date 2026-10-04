@@ -52,6 +52,15 @@ Both fill in the amount with one tap. The only difference is where the suggestio
 - **Right timing.** Users top up about every two weeks, so the suggestion shows at the start of the month, then hides for two weeks.
 - **Clean numbers.** One-time spikes like investment payments are left out, and the amount is rounded up to the nearest ¥1,000. ¥14,563 becomes ¥15,000.
 
+## Small fixes along the way
+
+The first two reasons were too big for this quarter, but I could still make them a little easier. These shipped separately from the A/B test:
+
+- **Quick clear.** A clear button in the amount field, so people who type the wrong amount can start over in one tap.
+- **A safety link.** A link to PayPay's safety page right under the top-up button, for people who worry about keeping a bigger balance. Several other payment apps do the same.
+
+<MediaRow items={[{"id":"quick-clear","label":"A clear button in the amount field","src":"/images/top-up-ab-test/quick-clear.webp"},{"id":"safety-link","label":"A link to PayPay's safety page under the top-up button","src":"/images/top-up-ab-test/safety-link.webp"}]} />
+
 ## Results
 
 Each variant went to 1% of users for one month, with everyone else as the control group. Variant B, the quick-amount button, was the clear winner. The banner made no significant difference.

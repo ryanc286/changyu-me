@@ -5,7 +5,9 @@
   page.txt: the Notion fetch output (needs the <properties> and <content> parts).
 
   Notion conventions (also explained on the Notion page):
-  - Callout with the 🖼️ icon, text "id: label"  -> <Media id label />  (uses public/images/<slug>/<id>.webp|jpg|png if present)
+  - Callout with the 🖼️ icon, text "id: label"  -> <Media id label />
+      Two or more "id: label" lines -> <MediaRow>, images side by side.
+      Uses public/images/<slug>/<id>.webp|jpg|png when the file exists.
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
   - Headings, paragraphs, lists, bold            -> plain Markdown
@@ -56,13 +58,21 @@ for (let i = 0; i < lines.length; i++) {
     while (++i < lines.length && !lines[i].startsWith('</callout>')) inner.push(lines[i].trim());
     const text = inner.join(' ').trim();
     if (line.includes('🖼')) {
-      const [id, ...rest] = text.split(':');
-      // Use the real image if it exists at public/images/<slug>/<id>.(webp|jpg|png)
-      const img = ['webp', 'jpg', 'png']
-        .map((ext) => `/images/${slug}/${id.trim()}.${ext}`)
-        .find((path) => existsSync(new URL(`../public${path}`, import.meta.url)));
-      const src = img ? ` src="${img}"` : '';
-      blocks.push({ type: 'block', md: `<Media id="${attr(id.trim())}" label="${attr(rest.join(':').trim())}"${src} />` });
+      // One "id: label" line per image. Two or more lines become a side-by-side row.
+      const images = inner.filter(Boolean).map((l) => {
+        const [id, ...rest] = l.split(':');
+        // Use the real image if it exists at public/images/<slug>/<id>.(webp|jpg|png)
+        const src = ['webp', 'jpg', 'png']
+          .map((ext) => `/images/${slug}/${id.trim()}.${ext}`)
+          .find((path) => existsSync(new URL(`../public${path}`, import.meta.url)));
+        return { id: unescape(id.trim()), label: unescape(rest.join(':').trim()), ...(src ? { src } : {}) };
+      });
+      if (images.length > 1) {
+        blocks.push({ type: 'block', md: `<MediaRow items={${JSON.stringify(images)}} />` });
+      } else {
+        const { id, label, src } = images[0];
+        blocks.push({ type: 'block', md: `<Media id="${attr(id)}" label="${attr(label)}"${src ? ` src="${src}"` : ''} />` });
+      }
     } else {
       blocks.push({ type: 'block', md: mdxText(text) });
     }

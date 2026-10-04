@@ -5,6 +5,7 @@ import CaseStudy from '../../layouts/CaseStudy.astro';
 import Media from '../../components/case/Media.astro';
 import Stats from '../../components/case/Stats.astro';
 import Hypothesis from '../../components/case/Hypothesis.astro';
+import MediaRow from '../../components/case/MediaRow.astro';
 import { t } from '../../i18n/ui';
 import { companies, aapd } from '../../data/companies';
 
@@ -38,5 +39,5 @@ const company = companies.find((c) => c.name === d.company);
     { label: 'Type', value: d.type ?? t('en', `tools.${entry.id}.type`) },
   ]}
 >
-  <Content components={{ Media, Stats, Hypothesis }} />
+  <Content components={{ Media, MediaRow, Stats, Hypothesis }} />
 </CaseStudy>
