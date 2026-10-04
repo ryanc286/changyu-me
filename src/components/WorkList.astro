@@ -38,31 +38,46 @@ const groups = [...companies]
             />
           </h3>
           <p class="company-summary">{company.summary[lang]}</p>
-          <ul class="list" data-hover-list>
-            {cases.map(({ id, data }) => (
-              <li>
-                <a href={`/${id}`} class="row" data-cover={data.cover} data-title={data.title}>
-                  <span class="main">
-                    <span class="title">{data.title}</span>
-                    <span class="meta">
-                      {(zh && data.zh?.summary) || data.summary}
-                      {data.result && <> · {(zh && data.zh?.result) || data.result}</>}
+          <ul class="projects" data-hover-list>
+            {cases.map(({ id, data }) => {
+              const summary = (zh && data.zh?.summary) || data.summary;
+              const result = data.result ? (zh && data.zh?.result) || data.result : '';
+              return (
+                <li>
+                  <a
+                    href={`/${id}`}
+                    class="project"
+                    data-cover={data.cover}
+                    data-title={data.title}
+                    data-summary={summary}
+                    data-result={result}>
+                    {/* Screen readers and keyboard users get the description too */}
+                    {data.title}<span class="sr-only">
+                      {zh ? '：' : ': '}
+                      {summary}
+                      {result && (zh ? `，${result}` : `, ${result}`)}
                     </span>
-                  </span>
-                  {data.tag && <span class="tag">{(zh && data.zh?.tag) || data.tag}</span>}
-                </a>
-              </li>
-            ))}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </article>
       ))
     }
   </div>
 
-  <!-- Floating cover preview. Desktop only, follows the cursor. -->
+  <!-- Floating preview: cover + title + description. Desktop only, follows the cursor. -->
   <div class="preview" data-preview data-cover-word={t(lang, 'preview.cover')} aria-hidden="true">
-    <img data-preview-img alt="" />
-    <span class="preview-fallback" data-preview-fallback></span>
+    <div class="preview-media">
+      <img data-preview-img alt="" />
+      <span class="preview-fallback" data-preview-fallback></span>
+    </div>
+    <div class="preview-text">
+      <span class="preview-title" data-preview-title></span>
+      <span class="preview-summary" data-preview-summary></span>
+      <span class="preview-result" data-preview-result></span>
+    </div>
   </div>
 </section>
 
@@ -86,59 +101,39 @@ const groups = [...companies]
     margin: 0 0 var(--space-3);
     color: var(--color-text-body);
   }
-  .list {
+
+  /* Projects sit in one row and wrap when there is no room */
+  .projects {
     list-style: none;
     margin: 0;
     padding: 0;
-    border-bottom: 1px solid var(--color-line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
   }
-  li {
-    border-top: 1px solid var(--color-line);
-  }
-  /* Title and tag share the first line; the summary runs full width below */
-  .row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: baseline;
-    column-gap: var(--space-4);
-    row-gap: 2px;
-    padding: 14px 12px;
-    margin: 0 -12px;
-    border-radius: var(--radius);
-    text-decoration: none;
-    transition: background-color var(--duration) var(--ease-out);
-  }
-  .row:hover {
-    background: var(--color-surface);
-  }
-  .main {
-    display: contents;
-  }
-  .title {
-    grid-column: 1;
-    grid-row: 1;
-  }
-  .tag {
-    grid-column: 2;
-    grid-row: 1;
-  }
-  .meta {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-  .title {
+  .project {
+    display: inline-block;
+    padding: 4px 0;
     font-weight: 500;
-  }
-  .row:hover .title {
     text-decoration: underline;
+    text-decoration-color: var(--color-line-strong);
+    transition: text-decoration-color var(--duration) var(--ease-out);
   }
-  .meta,
-  .tag {
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
+  .project:hover,
+  .project:focus-visible {
+    text-decoration-color: currentColor;
   }
-  .tag {
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
     white-space: nowrap;
+    border: 0;
   }
 
   .preview {
@@ -146,12 +141,12 @@ const groups = [...companies]
     top: 0;
     left: 0;
     z-index: 10;
-    width: 280px;
-    aspect-ratio: 3 / 2;
-    border-radius: 10px;
+    width: 300px;
+    border-radius: 12px;
     overflow: hidden;
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
+    background: var(--color-bg);
+    border: 1px solid var(--color-line-strong);
+    box-shadow: var(--shadow-float);
     pointer-events: none;
     opacity: 0;
     scale: 0.96;
@@ -163,7 +158,13 @@ const groups = [...companies]
     opacity: 1;
     scale: 1;
   }
-  .preview img {
+  .preview-media {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .preview-media img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -186,6 +187,29 @@ const groups = [...companies]
   .preview.no-image img {
     display: none;
   }
+  .preview-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 14px 14px;
+    line-height: 1.45;
+  }
+  .preview-title {
+    font-weight: 500;
+  }
+  .preview-summary {
+    font-size: var(--text-sm);
+    color: var(--color-text-body);
+  }
+  .preview-result {
+    margin-top: 4px;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text);
+  }
+  .preview-result:empty {
+    display: none;
+  }
 </style>
 
 <script>
@@ -195,10 +219,13 @@ const groups = [...companies]
   const preview = document.querySelector<HTMLElement>('[data-preview]');
   const img = document.querySelector<HTMLImageElement>('[data-preview-img]');
   const fallback = document.querySelector<HTMLElement>('[data-preview-fallback]');
+  const titleEl = document.querySelector<HTMLElement>('[data-preview-title]');
+  const summaryEl = document.querySelector<HTMLElement>('[data-preview-summary]');
+  const resultEl = document.querySelector<HTMLElement>('[data-preview-result]');
 
-  if (canHover && lists.length && preview && img && fallback) {
-    const OFFSET_X = 24;
-    const OFFSET_Y = -90;
+  if (canHover && lists.length && preview && img && fallback && titleEl && summaryEl && resultEl) {
+    const OFFSET = 20;
+    const EDGE = 16;
     let targetX = 0;
     let targetY = 0;
     let x = 0;
@@ -206,7 +233,7 @@ const groups = [...companies]
     let frame = 0;
 
     const place = () => {
-      // Ease toward the cursor for a soft follow. Snap if reduced motion is on.
+      // Ease toward the target for a soft follow. Snap if reduced motion is on.
       const k = reduceMotion ? 1 : 0.18;
       x += (targetX - x) * k;
       y += (targetY - y) * k;
@@ -218,37 +245,56 @@ const groups = [...companies]
       }
     };
 
-    const setTarget = (e: PointerEvent) => {
+    // Below-right of the point by default; flips left/up when it would leave the window
+    const aim = (px: number, py: number) => {
       const w = preview.offsetWidth;
-      const fitsRight = e.clientX + OFFSET_X + w < window.innerWidth - 16;
-      targetX = fitsRight ? e.clientX + OFFSET_X : e.clientX - OFFSET_X - w;
-      targetY = Math.max(16, e.clientY + OFFSET_Y);
+      const h = preview.offsetHeight;
+      targetX = px + OFFSET + w < innerWidth - EDGE ? px + OFFSET : px - OFFSET - w;
+      targetY = py + OFFSET + h < innerHeight - EDGE ? py + OFFSET : py - OFFSET - h;
+      targetX = Math.max(EDGE, targetX);
+      targetY = Math.max(EDGE, targetY);
       if (!frame) frame = requestAnimationFrame(place);
     };
 
-    document.querySelectorAll<HTMLAnchorElement>('[data-hover-list] .row').forEach((row) => {
-      row.addEventListener('pointerenter', (e) => {
-        const cover = row.dataset.cover;
-        if (cover) {
-          img.src = cover;
-          preview.classList.remove('no-image');
-        } else {
-          fallback.textContent = `${row.dataset.title} ${preview.dataset.coverWord ?? 'cover'}`;
-          preview.classList.add('no-image');
-        }
-        if (!preview.classList.contains('is-visible')) {
-          setTarget(e);
-          x = targetX;
-          y = targetY;
-          preview.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-        }
-        preview.classList.add('is-visible');
-      });
-    });
+    const fill = (link: HTMLAnchorElement) => {
+      const { cover, title = '', summary = '', result = '' } = link.dataset;
+      titleEl.textContent = title;
+      summaryEl.textContent = summary;
+      resultEl.textContent = result;
+      if (cover) {
+        img.src = cover;
+        preview.classList.remove('no-image');
+      } else {
+        fallback.textContent = `${title} ${preview.dataset.coverWord ?? 'cover'}`;
+        preview.classList.add('no-image');
+      }
+    };
 
-    lists.forEach((list) => {
-      list.addEventListener('pointermove', setTarget);
-      list.addEventListener('pointerleave', () => preview.classList.remove('is-visible'));
+    const show = (link: HTMLAnchorElement, px: number, py: number) => {
+      const wasHidden = !preview.classList.contains('is-visible');
+      fill(link);
+      aim(px, py);
+      if (wasHidden) {
+        x = targetX;
+        y = targetY;
+        preview.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      }
+      preview.classList.add('is-visible');
+    };
+    const hide = () => preview.classList.remove('is-visible');
+
+    document.querySelectorAll<HTMLAnchorElement>('[data-hover-list] .project').forEach((link) => {
+      link.addEventListener('pointerenter', (e) => show(link, e.clientX, e.clientY));
+      link.addEventListener('pointermove', (e) => aim(e.clientX, e.clientY));
+      link.addEventListener('pointerleave', hide);
+      // Keyboard: show the preview under the focused link
+      link.addEventListener('focus', () => {
+        if (!link.matches(':focus-visible')) return;
+        const r = link.getBoundingClientRect();
+        show(link, r.left, r.bottom);
+      });
+      link.addEventListener('blur', hide);
     });
+    window.addEventListener('scroll', hide, { passive: true });
   }
 </script>
