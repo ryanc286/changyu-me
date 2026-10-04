@@ -29,7 +29,6 @@ const company = companies.find((c) => c.name === d.company);
   title={title}
   subtitle={d.subtitle ?? summary}
   description={summary}
-  icon={company ? `/images/logos/${company.logo}-icon.png` : undefined}
   site={company?.href}
   headings={headings.filter((h) => h.depth === 2)}
   meta={[
