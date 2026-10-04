@@ -27,6 +27,13 @@ const tools = defineCollection({
     order: z.number(),
     link: z.string().optional(),  // external link, if the tool lives elsewhere
     cover: z.string().optional(), // preview image on the homepage, e.g. /images/tools/coach-match.jpg
+    // Page details, synced from the Notion 案例內容 database
+    company: z.string().optional(),
+    subtitle: z.string().optional(),
+    role: z.string().optional(),
+    timeline: z.string().optional(),
+    type: z.string().optional(),
+    notion: z.string().optional(),
   }),
 });
 

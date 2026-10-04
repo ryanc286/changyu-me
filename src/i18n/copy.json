@@ -59,8 +59,8 @@
     "key": "work.credit-card-sunset.result",
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的成果數字，留空就不顯示",
-    "en": "[KEY RESULT]",
-    "zh-tw": "[KEY RESULT]"
+    "en": "[X]% of card payments moved to vouchers",
+    "zh-tw": "[X]% 的信用卡付款轉為使用 voucher"
   },
   {
     "key": "work.top-up-ab-test.title",
@@ -94,15 +94,15 @@
     "key": "work.cardless-atm.summary",
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的一句話",
-    "en": "[ONE LINE]",
-    "zh-tw": "[ONE LINE]"
+    "en": "Cash in and out at the ATM with just the app",
+    "zh-tw": "只用 App 就能在 ATM 存款和提款"
   },
   {
     "key": "work.cardless-atm.result",
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的成果數字，留空就不顯示",
-    "en": "",
-    "zh-tw": ""
+    "en": "+12% adoption, +16% transaction success",
+    "zh-tw": "使用率 +12%、交易成功率 +16%"
   },
   {
     "key": "company.carousell.summary",

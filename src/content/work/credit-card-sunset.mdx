@@ -1,6 +1,68 @@
 ---
 company: PayPay
 order: 1
+subtitle: "[X]% of card payments moved to vouchers"
+role: "End-to-end design, user research, usability testing"
+timeline: "2024 Q4–2025 Q1"
+type: "Feature sunset"
+notion: "https://app.notion.com/p/3efeaff6ece381009349cab70a48f053"
 ---
 
-Case study content goes here.
+{/* Synced from Notion. Edit the case there, not here. */}
+
+<Media id="hero" label="Buying a Credit Card Voucher" />
+
+PayPay let people link an outside credit card and pay through the app. Every one of those payments came with a card network fee, and with 65M+ users that fee added up fast. Leadership set a date to turn it off. My job was to figure out how, without losing the people who used it.
+
+## Why people linked a card
+
+Before designing anything, I talked to users who paid with a linked card. Most of them were not loyal PayPay users. They used PayPay because it is accepted almost everywhere in Japan, and their card gave them airline miles and rewards. So we were not just removing a feature. We were removing the main reason these users opened the app.
+
+<Hypothesis>If users can keep earning their card rewards, they will move to a new way of paying instead of leaving.</Hypothesis>
+
+## When the obvious answer got blocked
+
+The obvious fix was a top-up: charge the card, load the balance, pay from that. Then legal flagged it. A new kind of stored balance would count as e-money under Japan's Payment Services Act. That meant a new license and anti-money-laundering work we could not finish in time.
+
+So I looked for a path inside the rules. PayPay already had vouchers, and vouchers can't be transferred, which keeps them outside those rules. I proposed a new type: Credit Card Vouchers. Users buy a voucher with their card, keep their rewards, and pay with PayPay as usual.
+
+I pitched it to each team around its own risk. Legal needed no new license. Business kept the users most likely to leave. Engineering built on a voucher system that already existed. It was approved without another round of debate.
+
+## A softer cutoff, backed by data
+
+Engineering wanted a hard cutoff: pick a date, turn it off, send a notice. It was simpler to build. Support data told another story. Unexpected errors at checkout made people retry again and again and lose trust in the app, and in Japan a failed payment at the register is embarrassing. I shared the data and proposed a transition instead: notice ahead of the date, then a guided first voucher purchase before card payments stop. Engineering agreed.
+
+## Design
+
+I used CTR data to place the notice where people actually look: the payment flow and the receipt screen. I also caught a gap. People adding a card for the first time would skip both, so the notice went there too.
+
+<Media id="concepts" label="Three directions for the purchase screen" />
+
+The hardest question was the purchase screen. Should it feel like buying a product with fixed amounts, or like a top-up where you type a number? I explored three directions: the existing gift voucher pattern, a top-up style input, and a scroll-based amount picker. Instead of deciding by opinion, I ran a bilingual survey and tested the three prototypes with 8 users. The top-up pattern won. People already knew how it worked, and that mattered more than being technically accurate.
+
+<Media id="flow" label="From the notice to buying a voucher to paying" />
+
+## Details that mattered
+
+- **Context first.** Japanese users want to know why before they act, so a short page explains what is changing before asking them to do anything.
+- **Fix, don't block.** Legal required amounts in ¥10,000 steps. Instead of an error, a floating button fixes the amount in one tap.
+- **Straight back to paying.** After buying, one button goes to payment with the voucher already applied. The whole recovery takes about 10 seconds.
+
+## When the CEO joined the review
+
+In a design review, our CEO asked to use the purchase page to promote PayPay's own credit card. I understood the goal, but an ad there would add friction right where drop-off risk was highest. I mapped the full journey and showed a better moment: the sunset notice, when users are already deciding what to do about their card. On the purchase page, the PayPay Card option became more visible in the payment method list instead. The CEO approved it.
+
+## Results
+
+The feature is now live for all card users.
+
+<Stats items={[{"value":"[X]%","label":"Card payments moved to vouchers"},{"value":"[X]%","label":"Voucher purchase success rate"},{"value":"−[X]%","label":"Card network fees"}]} />
+
+## Also in this project
+
+- **Partner bank cards.** Cards from partner banks, starting with SMBC, still work directly. I turned the first one-off card design into a simple rule set, so new partner banks need no new design work.
+- **Design QA.** I set up a design QA process and a handoff annotation tool. Other designers picked it up, and it became the team standard.
+
+## What I learned
+
+In a project full of legal rules, late surprises are expensive, and design absorbs most of the cost. Now I bring legal and business in much earlier. Quick research still pays off too: a survey and 8 tests moved a big decision from opinion to evidence, and gave me a clear reason to point to in every review after.

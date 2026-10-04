@@ -1,6 +1,55 @@
 ---
 company: PayPay
 order: 3
+subtitle: "+12% adoption, +16% transaction success"
+role: "End-to-end design, user testing"
+timeline: "2023 Q4–2024 Q2"
+type: "New feature"
+notion: "https://app.notion.com/p/3efeaff6ece381f2bd52e63c294de887"
 ---
 
-Case study content goes here.
+{/* Synced from Notion. Edit the case there, not here. */}
+
+<Media id="hero" label="Withdrawing cash with just the app" />
+
+Over half of payments in Japan are still made in cash. PayPay wanted the app to be the only thing you need, at the ATM too. I redesigned the ATM flow so people can withdraw and deposit cash with just their phone, across two screens with very different rules.
+
+## Where people got stuck
+
+I watched people use ATMs in person, sorted support tickets with our CS team, and went through the funnel with a data analyst. Three moments stood out:
+
+- **Getting started.** Setup asked for several checks with unclear steps. 40% of users failed before they even reached an ATM.
+- **Switching screens.** After scanning the QR code, the app showed a number to type on the ATM, but never told people to look at the ATM. 13% gave up here.
+- **Not knowing if it worked.** The app could not show the amount or the new balance. That uncertainty drove 7% of support tickets.
+
+## Principles
+
+- **As simple as a cash card.** The app takes on the complexity so users don't feel it.
+- **Add, don't disrupt.** New options fit into the existing app without making anyone relearn it.
+- **Be honest about limits.** Tech and legal limits are part of the design, not something to hide.
+
+## Design
+
+Most competitors used the same flow: scan, get a number, type it in. The real difference was guidance, telling people when to switch from the phone to the ATM. That became our focus.
+
+<Media id="concepts" label="Three versions of the service selection screen" />
+
+The first screen, where you choose withdraw or deposit, sets the tone for every step after it. I tested three versions with 8 people: icons on each button, a horizontal layout, and an illustration. Icons helped people tell the options apart without reading. The illustration added noise, and the vertical layout matched the rest of the app. Icons won.
+
+<Media id="flow" label="Set up, choose, scan, enter the number, done" />
+
+Setup got clear steps with visible progress. The ATM screen came with strict vendor rules: a few colors, fixed font sizes and fixed layout zones. With so little to work with, hierarchy did the work. Amount, balance, fees and limits are what people glance at mid-transaction, so those come first.
+
+## What the beta showed
+
+In beta with 10 to 20% of users, people did something we did not plan for. They started at the ATM and used the app's general scan button, so the app did not know which service they had picked. I added a check: if a user has no linked PayPay Bank account, the app sends them to e-money top-up, with no extra steps or errors. A short tutorial helps people find the new flow.
+
+## Results
+
+<Stats items={[{"value":"+12%","label":"Service adoption"},{"value":"+16%","label":"Transaction success rate"},{"value":"30s","label":"Average transaction, down from 45s with a card"}]} />
+
+## What I learned
+
+Ask "what if people don't follow the flow?" before launch, not after. Two devices means two contexts, each with its own mood and time pressure. And strict limits helped: every element on the ATM screen had to earn its place.
+
+Next, I want the app to show the amount and status once the ATM confirms the transaction, so every withdrawal has a clear end.

@@ -83,7 +83,7 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
                     <div class="meta-group">
                       <p class="meta-label">{m.label}</p>
                       <p class="meta-pills">
-                        {m.value!.split(',').map((v) => <span class="pill">{v.trim()}</span>)}
+                        {m.value!.split(',').map((v) => v.trim()).map((v) => <span class="pill">{v.charAt(0).toUpperCase() + v.slice(1)}</span>)}
                       </p>
                     </div>
                   ))}

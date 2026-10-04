@@ -9,7 +9,8 @@
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
   - Headings, paragraphs, lists, bold            -> plain Markdown
-  Keeps company, order and cover from the existing file. 狀態 = 草稿 is not synced.
+  Writes to src/content/work/<slug>.mdx, or src/content/tools/<slug>.mdx for tools.
+  Keeps company (cases), order, cover and link from the existing file. 狀態 = 草稿 is not synced.
 */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
@@ -23,13 +24,17 @@ if (props['狀態'] === '草稿') {
   console.log(`${slug}: 草稿, not synced.`);
   process.exit(0);
 }
-const file = new URL(`../src/content/work/${slug}.mdx`, import.meta.url);
-if (!existsSync(file)) throw new Error(`No case file for "${slug}". Add it to the site first.`);
+// Case studies live in work/, tools in tools/
+const workFile = new URL(`../src/content/work/${slug}.mdx`, import.meta.url);
+const toolFile = new URL(`../src/content/tools/${slug}.mdx`, import.meta.url);
+const isTool = !existsSync(workFile) && existsSync(toolFile);
+const file = isTool ? toolFile : workFile;
+if (!existsSync(file)) throw new Error(`No case or tool file for "${slug}". Add it to the site first.`);
 
 // Keep structural fields from the current file
 const current = readFileSync(file, 'utf8');
 const keep = {};
-for (const k of ['company', 'order', 'cover', 'draft']) {
+for (const k of ['company', 'order', 'cover', 'draft', 'link']) {
   const m = current.match(new RegExp(`^${k}: (.*)$`, 'm'));
   if (m) keep[k] = m[1];
 }
@@ -96,10 +101,12 @@ blocks.forEach((b, n) => {
 
 const front = [
   '---',
-  `company: ${keep.company}`,
+  // Cases keep their company from the site; tools take it from Notion
+  isTool ? (props.Company ? `company: ${yaml(props.Company)}` : null) : `company: ${keep.company}`,
   `order: ${keep.order}`,
   keep.cover ? `cover: ${keep.cover}` : null,
   keep.draft ? `draft: ${keep.draft}` : null,
+  keep.link ? `link: ${keep.link}` : null,
   `subtitle: ${yaml(props['副標題'])}`,
   `role: ${yaml(props.Role)}`,
   `timeline: ${yaml(props.Timeline)}`,

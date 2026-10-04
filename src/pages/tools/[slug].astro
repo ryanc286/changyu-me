@@ -6,6 +6,7 @@ import Media from '../../components/case/Media.astro';
 import Stats from '../../components/case/Stats.astro';
 import Hypothesis from '../../components/case/Hypothesis.astro';
 import { t } from '../../i18n/ui';
+import { companies } from '../../data/companies';
 
 export async function getStaticPaths() {
   const tools = (await getCollection('tools', ({ data }) => !data.link)).sort(
@@ -20,15 +21,23 @@ export async function getStaticPaths() {
 
 const { entry, next } = Astro.props;
 const { Content, headings } = await render(entry);
+const d = entry.data;
 const summary = t('en', `tools.${entry.id}.summary`);
+const company = companies.find((c) => c.name === d.company);
 ---
 
 <CaseStudy
   title={t('en', `tools.${entry.id}.title`)}
-  subtitle={summary}
+  subtitle={d.subtitle ?? summary}
   description={summary}
+  icon={company ? `/images/logos/${company.logo}-icon.png` : undefined}
   headings={headings.filter((h) => h.depth === 2)}
-  meta={[{ label: 'Type', value: t('en', `tools.${entry.id}.type`) }]}
+  meta={[
+    { label: 'Role', value: d.role },
+    { label: 'Company', value: d.company },
+    { label: 'Timeline', value: d.timeline },
+    { label: 'Type', value: d.type ?? t('en', `tools.${entry.id}.type`) },
+  ]}
   next={next.id !== entry.id
     ? { href: `/tools/${next.id}`, title: t('en', `tools.${next.id}.title`) }
     : undefined}
