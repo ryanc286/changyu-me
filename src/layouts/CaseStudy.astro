@@ -208,7 +208,9 @@ const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
     view-transition-name: case-card;
     position: absolute;
     z-index: 1;
-    inset: var(--top) var(--side-gap) var(--side-gap);
+    /* At most 1200px wide, centered; more of the homepage shows on wide screens */
+    --sheet-x: max(var(--side-gap), calc((100% - 1200px) / 2));
+    inset: var(--top) var(--sheet-x) var(--side-gap);
     border-radius: 24px;
     overflow: hidden;
     /* Solid: a named view-transition element can't blur what's behind it */
