@@ -31,13 +31,18 @@ The first two reasons needed big changes. Making people feel safe with a larger 
 
 ## Design
 
-I explored three ways to show last month's spending on the top-up screen: an info banner, an extra quick-amount button, and a floating button. The floating button could cover other content, so we tested the other two.
+The goal was simple: show people what they spent last month, and make it easy to top up that amount.
+
+I explored three ways to do it: an info banner, an extra quick-amount button and a floating button. Working through them, I realized the real question was not which layout looked best. It was whether the suggestion works better as a message on top of the flow, or as part of the flow itself. The floating button could cover content at the bottom of the screen, so I dropped it and tested the two ends:
 
 <Media id="concepts" label="Three ways to show last month's spending" />
 
-Variant A showed the spending in a banner. Variant B put it right inside the amount input as a suggested amount, using components that already existed.
+- **Variant A, on top of the flow.** An info banner above the amount buttons, with the recommended amount and a link to top up.
+- **Variant B, part of the flow.** The amount as the first quick-amount button, marked おすすめ (Recommended), built from components that already existed.
 
-<Media id="variants" label="Variant A (banner) and Variant B (suggestion in the input)" />
+Both filled in the amount with one tap, so the only real difference was where the suggestion lived.
+
+<Media id="variants" label="Variant A (banner) and Variant B (quick-amount button)" />
 
 ## Details that mattered
 
@@ -47,7 +52,7 @@ Variant A showed the spending in a banner. Variant B put it right inside the amo
 
 ## Results
 
-Each variant went to 1% of users for one month, with everyone else as the control group. Variant B, the suggestion in the input, was the clear winner. The banner made no significant difference.
+Each variant went to 1% of users for one month, with everyone else as the control group. Variant B, the quick-amount button, was the clear winner. The banner made no significant difference.
 
 <Stats items={[{"value":"+7%","label":"Top-up amount per user"},{"value":"−22%","label":"Top-ups per month, from 4.5 to 3.5"},{"value":"−13%","label":"Total top-up costs"}]} />
 
@@ -57,6 +62,6 @@ A bigger balance means more risk if an account is taken over. Before the full ro
 
 ## What I learned
 
-The same information, shown in a different way, gave completely different results. A banner interrupts people. A suggestion inside the input fits what they are already doing: typing an amount.
+The same information, shown in a different place, gave completely different results. A banner sits on top of what people are doing. A suggestion in the amount buttons is part of it, right where they are already choosing a number.
 
 Next, I want to test showing spending before users open the top-up screen, before they have a number in mind.
