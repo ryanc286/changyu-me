@@ -49,6 +49,11 @@ Notion blocks map to components in `src/components/case/`:
 | Quote | `<Hypothesis>` highlighted box |
 | Table with Number / Label columns | `<Stats>` big numbers row |
 
+Images: export from Figma (Portfolio-v2 file) and save as `public/images/<slug>/<id>.webp`
+(or .jpg/.png), where `<id>` is the name in the 🖼️ callout. The sync script uses the file
+automatically; otherwise a placeholder is shown. Set `cover:` in the case frontmatter to use an
+image in the homepage hover preview.
+
 Layout: `src/layouts/CaseStudy.astro`.
 
 ## Languages

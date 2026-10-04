@@ -5,7 +5,7 @@
   page.txt: the Notion fetch output (needs the <properties> and <content> parts).
 
   Notion conventions (also explained on the Notion page):
-  - Callout with the 🖼️ icon, text "id: label"  -> <Media id label />  (image placeholder)
+  - Callout with the 🖼️ icon, text "id: label"  -> <Media id label />  (uses public/images/<slug>/<id>.webp|jpg|png if present)
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
   - Headings, paragraphs, lists, bold            -> plain Markdown
@@ -57,7 +57,12 @@ for (let i = 0; i < lines.length; i++) {
     const text = inner.join(' ').trim();
     if (line.includes('🖼')) {
       const [id, ...rest] = text.split(':');
-      blocks.push({ type: 'block', md: `<Media id="${attr(id.trim())}" label="${attr(rest.join(':').trim())}" />` });
+      // Use the real image if it exists at public/images/<slug>/<id>.(webp|jpg|png)
+      const img = ['webp', 'jpg', 'png']
+        .map((ext) => `/images/${slug}/${id.trim()}.${ext}`)
+        .find((path) => existsSync(new URL(`../public${path}`, import.meta.url)));
+      const src = img ? ` src="${img}"` : '';
+      blocks.push({ type: 'block', md: `<Media id="${attr(id.trim())}" label="${attr(rest.join(':').trim())}"${src} />` });
     } else {
       blocks.push({ type: 'block', md: mdxText(text) });
     }

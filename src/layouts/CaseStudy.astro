@@ -129,6 +129,8 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
   };
   scroller.addEventListener('scroll', setActive, { passive: true });
   addEventListener('resize', setActive);
+  // Images change the page height as they load
+  scroller.addEventListener('load', setActive, true);
   setActive();
 
   // Keyboard users land in the card, so arrow keys and space scroll it

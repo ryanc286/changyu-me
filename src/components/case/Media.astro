@@ -41,6 +41,9 @@ const { id, label, src } = Astro.props;
   }
   img {
     width: 100%;
+    /* Covers are 16:10; reserve the space before the image loads */
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
     border-radius: var(--radius);
   }
 </style>
