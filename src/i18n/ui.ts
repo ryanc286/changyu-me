@@ -15,7 +15,7 @@ export const ui = {
     'meta.title': 'Chang Yu · Product Designer',
     'meta.description':
       'Senior Product Designer making complex things clear. Fintech at PayPay, growth at Carousell.',
-    'section.work': 'Selected work',
+    'section.work': 'Work',
     'section.tools': 'Tools I build',
     'footer.nav': 'Elsewhere',
     'footer.resume': 'Resume',
@@ -29,7 +29,7 @@ export const ui = {
   'zh-tw': {
     'meta.title': 'Chang Yu · 產品設計師',
     'meta.description': '資深產品設計師，擅長把複雜的事情變清楚。曾任職 PayPay 與 Carousell。',
-    'section.work': '精選作品',
+    'section.work': '作品',
     'section.tools': '我做的工具',
     'footer.nav': '其他連結',
     'footer.resume': '履歷',

@@ -38,14 +38,16 @@ const width = Math.round((logoWidth / logoHeight) * height);
   }
 
   @media (hover: hover) and (pointer: fine) {
+    /* Hidden cards use display: none so they never widen the page.
+       allow-discrete lets display animate together with opacity. */
     .card {
       position: absolute;
       bottom: calc(100% + 10px);
       left: 50%;
       z-index: 20;
       width: max-content;
-      max-width: 280px;
-      display: flex;
+      max-width: min(280px, calc(100vw - 24px));
+      display: none;
       flex-direction: column;
       gap: 8px;
       padding: 14px 16px;
@@ -54,22 +56,29 @@ const width = Math.round((logoWidth / logoHeight) * height);
       border-radius: 10px;
       box-shadow: var(--shadow-float);
       line-height: 1.45;
+      font-weight: 400;
       white-space: normal;
       pointer-events: none;
       opacity: 0;
-      visibility: hidden;
-      transform: translate(-50%, 4px);
+      transform: translate(calc(-50% + var(--dx, 0px)), 4px);
       transition:
         opacity var(--duration) var(--ease-out),
         transform var(--duration) var(--ease-out),
-        visibility 0s linear var(--duration);
+        display var(--duration) allow-discrete;
     }
     .org:hover .card,
     .org:focus-within .card {
+      display: flex;
       opacity: 1;
-      visibility: visible;
-      transform: translate(-50%, 0);
-      transition-delay: 80ms, 80ms, 0s;
+      transform: translate(calc(-50% + var(--dx, 0px)), 0);
+      transition-delay: 80ms;
+    }
+    @starting-style {
+      .org:hover .card,
+      .org:focus-within .card {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--dx, 0px)), 4px);
+      }
     }
   }
 
@@ -91,3 +100,25 @@ const width = Math.round((logoWidth / logoHeight) * height);
     color: var(--color-text-body);
   }
 </style>
+
+<script>
+  // Keep a shown card inside the window: nudge it in when it would cross an edge.
+  const MARGIN = 12;
+  document.querySelectorAll<HTMLElement>('.org').forEach((org) => {
+    const card = org.querySelector<HTMLElement>('.card');
+    if (!card) return;
+    const fit = () => {
+      card.style.setProperty('--dx', '0px');
+      requestAnimationFrame(() => {
+        const r = card.getBoundingClientRect();
+        if (!r.width) return;
+        let dx = 0;
+        if (r.right > innerWidth - MARGIN) dx = innerWidth - MARGIN - r.right;
+        if (r.left + dx < MARGIN) dx = MARGIN - r.left;
+        card.style.setProperty('--dx', `${Math.round(dx)}px`);
+      });
+    };
+    org.addEventListener('pointerenter', fit);
+    org.addEventListener('focusin', fit);
+  });
+</script>

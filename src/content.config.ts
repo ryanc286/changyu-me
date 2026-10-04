@@ -7,12 +7,13 @@ const work = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/work' }),
   schema: z.object({
     title: z.string(),
-    company: z.string(),
+    company: z.string(),          // must match a name in src/data/companies.ts
+    tag: z.string().optional(),   // the skill this case shows, e.g. "Systems"
     summary: z.string(),          // one line under the title on the homepage
     result: z.string().optional(), // key metric, shown after the summary
     // Chinese homepage text. Falls back to English when missing.
     zh: z
-      .object({ summary: z.string().optional(), result: z.string().optional() })
+      .object({ summary: z.string().optional(), result: z.string().optional(), tag: z.string().optional() })
       .optional(),
     order: z.number(),            // position on the homepage (1 = top)
     cover: z.string().optional(), // e.g. /images/credit-card-voucher/cover.jpg

@@ -1,5 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
+import OrgLink from './OrgLink.astro';
+import { companies } from '../data/companies';
 import { t, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -10,28 +12,52 @@ const zh = lang === 'zh-tw';
 const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
 );
+const orgKey = { PayPay: 'org.paypay', Carousell: 'org.carousell' } as const;
+const groups = [...companies]
+  .sort((a, b) => a.order - b.order)
+  .map((c) => ({ company: c, cases: items.filter((i) => i.data.company === c.name) }))
+  .filter((g) => g.cases.length > 0);
 ---
 
 <section aria-labelledby="work-title">
   <h2 id="work-title" class="section-title">{t(lang, 'section.work')}</h2>
-  <ul class="list" data-hover-list>
+
+  <div class="groups">
     {
-      items.map(({ id, data }) => (
-        <li>
-          <a href={`/${id}`} class="row" data-cover={data.cover} data-title={data.title}>
-            <span class="main">
-              <span class="title">{data.title}</span>
-              <span class="meta">
-                {(zh && data.zh?.summary) || data.summary}
-                {data.result && <> · {(zh && data.zh?.result) || data.result}</>}
-              </span>
-            </span>
-            <span class="company">{data.company}</span>
-          </a>
-        </li>
+      groups.map(({ company, cases }) => (
+        <article class="group" aria-label={company.name}>
+          <h3 class="company-name">
+            <OrgLink
+              name={company.name}
+              href={company.href}
+              logo={company.logo}
+              logoWidth={company.logoWidth}
+              logoHeight={company.logoHeight}
+              logoDisplayHeight={company.logoDisplayHeight}
+              description={t(lang, orgKey[company.name as keyof typeof orgKey])}
+            />
+          </h3>
+          <p class="company-summary">{company.summary[lang]}</p>
+          <ul class="list" data-hover-list>
+            {cases.map(({ id, data }) => (
+              <li>
+                <a href={`/${id}`} class="row" data-cover={data.cover} data-title={data.title}>
+                  <span class="main">
+                    <span class="title">{data.title}</span>
+                    <span class="meta">
+                      {(zh && data.zh?.summary) || data.summary}
+                      {data.result && <> · {(zh && data.zh?.result) || data.result}</>}
+                    </span>
+                  </span>
+                  {data.tag && <span class="tag">{(zh && data.zh?.tag) || data.tag}</span>}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </article>
       ))
     }
-  </ul>
+  </div>
 
   <!-- Floating cover preview. Desktop only, follows the cursor. -->
   <div class="preview" data-preview data-cover-word={t(lang, 'preview.cover')} aria-hidden="true">
@@ -41,6 +67,25 @@ const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
 </section>
 
 <style>
+  .groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    margin-top: var(--space-3);
+  }
+  .group {
+    display: flex;
+    flex-direction: column;
+  }
+  .company-name {
+    margin: 0 0 var(--space-1);
+    font-size: var(--text-base);
+    font-weight: 600;
+  }
+  .company-summary {
+    margin: 0 0 var(--space-3);
+    color: var(--color-text-body);
+  }
   .list {
     list-style: none;
     margin: 0;
@@ -50,11 +95,13 @@ const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
   li {
     border-top: 1px solid var(--color-line);
   }
+  /* Title and tag share the first line; the summary runs full width below */
   .row {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto;
     align-items: baseline;
-    gap: var(--space-4);
+    column-gap: var(--space-4);
+    row-gap: 2px;
     padding: 14px 12px;
     margin: 0 -12px;
     border-radius: var(--radius);
@@ -65,8 +112,19 @@ const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
     background: var(--color-surface);
   }
   .main {
-    display: flex;
-    flex-direction: column;
+    display: contents;
+  }
+  .title {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .tag {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .meta {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
   .title {
     font-weight: 500;
@@ -75,37 +133,12 @@ const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
     text-decoration: underline;
   }
   .meta,
-  .company {
+  .tag {
     font-size: var(--text-sm);
     color: var(--color-text-muted);
   }
-  .company {
+  .tag {
     white-space: nowrap;
-  }
-
-  /* Phone: company moves next to the title, meta below */
-  @media (max-width: 520px) {
-    .row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      column-gap: var(--space-3);
-      row-gap: 2px;
-    }
-    .main {
-      display: contents;
-    }
-    .title {
-      grid-column: 1;
-      grid-row: 1;
-    }
-    .company {
-      grid-column: 2;
-      grid-row: 1;
-    }
-    .meta {
-      grid-column: 1 / -1;
-      grid-row: 2;
-    }
   }
 
   .preview {
@@ -158,12 +191,12 @@ const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
 <script>
   const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const list = document.querySelector<HTMLElement>('[data-hover-list]');
+  const lists = document.querySelectorAll<HTMLElement>('[data-hover-list]');
   const preview = document.querySelector<HTMLElement>('[data-preview]');
   const img = document.querySelector<HTMLImageElement>('[data-preview-img]');
   const fallback = document.querySelector<HTMLElement>('[data-preview-fallback]');
 
-  if (canHover && list && preview && img && fallback) {
+  if (canHover && lists.length && preview && img && fallback) {
     const OFFSET_X = 24;
     const OFFSET_Y = -90;
     let targetX = 0;
@@ -193,7 +226,7 @@ const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
       if (!frame) frame = requestAnimationFrame(place);
     };
 
-    list.querySelectorAll<HTMLAnchorElement>('.row').forEach((row) => {
+    document.querySelectorAll<HTMLAnchorElement>('[data-hover-list] .row').forEach((row) => {
       row.addEventListener('pointerenter', (e) => {
         const cover = row.dataset.cover;
         if (cover) {
@@ -213,7 +246,9 @@ const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
       });
     });
 
-    list.addEventListener('pointermove', setTarget);
-    list.addEventListener('pointerleave', () => preview.classList.remove('is-visible'));
+    lists.forEach((list) => {
+      list.addEventListener('pointermove', setTarget);
+      list.addEventListener('pointerleave', () => preview.classList.remove('is-visible'));
+    });
   }
 </script>

@@ -6,17 +6,13 @@ import ToolList from './ToolList.astro';
 import Footer from './Footer.astro';
 import OrgLink from './OrgLink.astro';
 import { t, type Lang } from '../i18n/ui';
+import { aapd } from '../data/companies';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 
-const org = {
-  paypay: { name: 'PayPay', href: 'https://paypay.ne.jp/', logo: 'paypay', logoWidth: 120, logoHeight: 30 },
-  carousell: { name: 'Carousell', href: 'https://carousell.com/', logo: 'carousell', logoWidth: 405, logoHeight: 80 },
-  aapd: { name: 'AAPD', href: 'https://aapd.com.tw/', logo: 'aapd', logoWidth: 161, logoHeight: 31, logoDisplayHeight: 15 },
-};
 ---
 
 <Base lang={lang} alternates={{ en: '/', 'zh-tw': '/zh-tw' }}>
@@ -26,17 +22,11 @@ const org = {
         <section class="intro">
           <h1>嗨，我是 Yu，一位把複雜變清楚的產品設計師。</h1>
           <p>
-            我在意系統思考、問對問題，也擅長把棘手的問題變成值得信任的產品。在{' '}
-            <span class="nobr"><OrgLink {...org.paypay} description={t(lang, 'org.paypay')} />，</span>我讓超過 6,500 萬位使用者付款和管理金錢都很簡單，即使背後的規則一點也不簡單。
-          </p>
-          <p>
-            在這之前，我在{' '}
-            <OrgLink {...org.carousell} description={t(lang, 'org.carousell')} />{' '}
-            負責成長與互動相關的設計，橫跨台灣和新加坡市場，重新設計了註冊流程和通知中心。
+            我習慣先問清楚問題，而不是用猜的。我把複雜的規則整理成簡單的流程，也會盡早做出原型，讓團隊更快做決定。
           </p>
           <p>
             工作之外，我在{' '}
-            <OrgLink {...org.aapd} description={t(lang, 'org.aapd')} />{' '}
+            <OrgLink {...aapd} description={t(lang, 'org.aapd')} />{' '}
             擔任設計導師，也用程式和 AI 做一些小工具。
           </p>
         </section>
@@ -44,19 +34,12 @@ const org = {
         <section class="intro">
           <h1>Hi, I'm Yu, a designer who makes complex things clear.</h1>
           <p>
-            I care about systems thinking, asking the right questions, and turning messy problems into
-            products people trust. At{' '}
-            <OrgLink {...org.paypay} description={t(lang, 'org.paypay')} />, I make paying and managing
-            money simple for 65M+ users, even when the rules behind it are not.
-          </p>
-          <p>
-            Previously, I worked on growth and engagement at{' '}
-            <OrgLink {...org.carousell} description={t(lang, 'org.carousell')} /> across Taiwan and
-            Singapore, where I rebuilt sign-up and the notification center.
+            I start with clear questions, not guesses. I turn messy rules into simple flows, and I
+            build prototypes early so teams can decide fast.
           </p>
           <p>
             Outside work, I mentor designers at{' '}
-            <OrgLink {...org.aapd} description={t(lang, 'org.aapd')} /> and build small tools with code
+            <OrgLink {...aapd} description={t(lang, 'org.aapd')} /> and build small tools with code
             and AI.
           </p>
         </section>
@@ -91,10 +74,6 @@ const org = {
   p {
     margin: 0;
     color: var(--color-text-body);
-  }
-  /* Keeps Chinese punctuation on the same line as the link before it */
-  .nobr {
-    white-space: nowrap;
   }
   @media (max-width: 520px) {
     .stack {

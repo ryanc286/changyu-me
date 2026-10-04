@@ -49,10 +49,12 @@ img {
   padding: 0 var(--gutter);
 }
 
+/* Section labels sit quieter than the content under them */
 .section-title {
   margin: 0 0 var(--space-2);
-  font-size: var(--text-base);
-  font-weight: 600;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {
