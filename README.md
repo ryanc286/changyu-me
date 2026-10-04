@@ -53,3 +53,17 @@ English is the default (`/`), Traditional Chinese lives under `/zh-tw`.
 Chinese font: IBM Plex Sans TC, self-hosted in `public/fonts/plex-sans-tc/` and split by
 unicode-range (`src/styles/plex-sans-tc.css`), so a page only downloads the slices it uses.
 Generated from the `@ibm/plex-sans-tc` npm package.
+
+## Copy lives in Notion
+
+All homepage text is in `src/i18n/copy.json`, mirrored in the Notion page
+**changyu.me 網站 → 文案** (one row per key, English + 中文).
+
+To sync after editing in Notion:
+
+1. Export the database rows (`Key`, `English`, `中文`) to a JSON file
+2. `node scripts/apply-notion-copy.mjs rows.json`
+3. Build, check, commit, push
+
+The script refuses unknown or missing keys and a missing `{AAPD}` marker, so a
+bad edit never reaches the live site. Section and note fields stay in copy.json.
