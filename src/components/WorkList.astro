@@ -2,17 +2,15 @@
 import { getCollection } from 'astro:content';
 import OrgLink from './OrgLink.astro';
 import { companies } from '../data/companies';
-import { t, type Lang } from '../i18n/ui';
+import { t, tOpt, type Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const zh = lang === 'zh-tw';
 const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
 );
-const orgKey = { PayPay: 'org.paypay', Carousell: 'org.carousell' } as const;
 const groups = [...companies]
   .sort((a, b) => a.order - b.order)
   .map((c) => ({ company: c, cases: items.filter((i) => i.data.company === c.name) }))
@@ -34,25 +32,27 @@ const groups = [...companies]
               logoWidth={company.logoWidth}
               logoHeight={company.logoHeight}
               logoDisplayHeight={company.logoDisplayHeight}
-              description={t(lang, orgKey[company.name as keyof typeof orgKey])}
+              description={t(lang, `org.${company.key}`)}
             />
           </h3>
-          <p class="company-summary">{company.summary[lang]}</p>
+          <p class="company-summary">{t(lang, `company.${company.key}.summary`)}</p>
           <ul class="projects" data-hover-list>
             {cases.map(({ id, data }) => {
-              const summary = (zh && data.zh?.summary) || data.summary;
-              const result = data.result ? (zh && data.zh?.result) || data.result : '';
+              const zh = lang === 'zh-tw';
+              const title = t(lang, `work.${id}.title`);
+              const summary = t(lang, `work.${id}.summary`);
+              const result = tOpt(lang, `work.${id}.result`);
               return (
                 <li>
                   <a
                     href={`/${id}`}
                     class="project"
                     data-cover={data.cover}
-                    data-title={data.title}
+                    data-title={title}
                     data-summary={summary}
                     data-result={result}>
                     {/* Screen readers and keyboard users get the description too */}
-                    {data.title}<span class="sr-only">
+                    {title}<span class="sr-only">
                       {zh ? '：' : ': '}
                       {summary}
                       {result && (zh ? `，${result}` : `, ${result}`)}

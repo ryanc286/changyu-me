@@ -6,7 +6,6 @@ interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const zh = lang === 'zh-tw';
 
 const items = (await getCollection('tools')).sort((a, b) => a.data.order - b.data.order);
 ---
@@ -18,8 +17,8 @@ const items = (await getCollection('tools')).sort((a, b) => a.data.order - b.dat
       items.map(({ id, data }) => (
         <li>
           <a href={data.link ?? `/tools/${id}`} class="row">
-            <span class="title">{data.title}</span>
-            <span class="type">{(zh && data.zh?.type) || data.type}</span>
+            <span class="title">{t(lang, `tools.${id}.title`)}</span>
+            <span class="type">{t(lang, `tools.${id}.type`)}</span>
           </a>
         </li>
       ))

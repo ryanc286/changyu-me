@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Case from '../layouts/Case.astro';
+import { t, tOpt } from '../i18n/ui';
 
 export async function getStaticPaths() {
   const work = await getCollection('work', ({ data }) => !data.draft);
@@ -9,7 +10,10 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, company, summary, result } = entry.data;
+const { company } = entry.data;
+const title = t('en', `work.${entry.id}.title`);
+const summary = t('en', `work.${entry.id}.summary`);
+const result = tOpt('en', `work.${entry.id}.result`);
 ---
 
 <Case title={title} eyebrow={company} summary={result ? `${summary} · ${result}` : summary}>

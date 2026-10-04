@@ -1,0 +1,48 @@
+[
+  { "key": "home.title", "section": "首頁 · 開頭", "note": "首頁最上方的大標", "en": "Hi, I'm Yu, a designer who makes complex things clear.", "zh-tw": "嗨，我是 Yu，一位把複雜變清楚的產品設計師。" },
+  { "key": "home.intro", "section": "首頁 · 開頭", "note": "標題下第一段", "en": "I start with clear questions, not guesses. I turn messy rules into simple flows, and I build prototypes early so teams can decide fast.", "zh-tw": "我習慣先問清楚問題，而不是用猜的。我把複雜的規則整理成簡單的流程，也會盡早做出原型，讓團隊更快做決定。" },
+  { "key": "home.outside", "section": "首頁 · 開頭", "note": "標題下第二段。{AAPD} 會變成有 hover 卡片的連結，請保留這個記號", "en": "Outside work, I mentor designers at {AAPD} and build small tools with code and AI.", "zh-tw": "工作之外，我在 {AAPD} 擔任設計導師，也用程式和 AI 做一些小工具。" },
+
+  { "key": "section.work", "section": "首頁 · 作品", "note": "作品區塊的小標", "en": "Work", "zh-tw": "作品" },
+  { "key": "company.paypay.summary", "section": "首頁 · 作品", "note": "PayPay 名稱下的一段話", "en": "I design how money moves in and out of the wallet for 65M+ users, from top-ups to ATMs to card payments.", "zh-tw": "我負責設計錢怎麼進出 PayPay 錢包，從加值、ATM 到信用卡付款，服務超過 6,500 萬位使用者。" },
+  { "key": "work.credit-card-voucher.title", "section": "首頁 · 作品", "note": "專案名稱（PayPay）", "en": "Credit Card Voucher", "zh-tw": "Credit Card Voucher" },
+  { "key": "work.credit-card-voucher.summary", "section": "首頁 · 作品", "note": "hover 預覽裡的一句話", "en": "Keeping card users paying after outside cards were cut off", "zh-tw": "外部信用卡停用後，讓使用者還能順利付款" },
+  { "key": "work.credit-card-voucher.result", "section": "首頁 · 作品", "note": "hover 預覽裡的成果數字，留空就不顯示", "en": "[KEY RESULT]", "zh-tw": "[KEY RESULT]" },
+  { "key": "work.top-up-ab-test.title", "section": "首頁 · 作品", "note": "專案名稱（PayPay）", "en": "Top-Up A/B Test", "zh-tw": "Top-Up A/B Test" },
+  { "key": "work.top-up-ab-test.summary", "section": "首頁 · 作品", "note": "hover 預覽裡的一句話", "en": "Getting users to top up more at once, so fees drop", "zh-tw": "讓使用者一次加值多一點，降低手續費" },
+  { "key": "work.top-up-ab-test.result", "section": "首頁 · 作品", "note": "hover 預覽裡的成果數字，留空就不顯示", "en": "[KEY RESULT]", "zh-tw": "[KEY RESULT]" },
+  { "key": "work.cardless-atm.title", "section": "首頁 · 作品", "note": "專案名稱（PayPay）", "en": "Cardless ATM", "zh-tw": "Cardless ATM" },
+  { "key": "work.cardless-atm.summary", "section": "首頁 · 作品", "note": "hover 預覽裡的一句話", "en": "[ONE LINE]", "zh-tw": "[ONE LINE]" },
+  { "key": "work.cardless-atm.result", "section": "首頁 · 作品", "note": "hover 預覽裡的成果數字，留空就不顯示", "en": "", "zh-tw": "" },
+  { "key": "company.carousell.summary", "section": "首頁 · 作品", "note": "Carousell 名稱下的一段話", "en": "I worked on growth and engagement across Taiwan and Singapore, from the first sign-up to the notifications that bring people back.", "zh-tw": "我在台灣和新加坡市場負責成長與互動，從第一次註冊，到讓使用者回來的通知。" },
+  { "key": "work.sign-up-flow.title", "section": "首頁 · 作品", "note": "專案名稱（Carousell）", "en": "Sign-up Flow", "zh-tw": "Sign-up Flow" },
+  { "key": "work.sign-up-flow.summary", "section": "首頁 · 作品", "note": "hover 預覽裡的一句話", "en": "Research with buyers, sellers, and merchants", "zh-tw": "訪談買家、賣家和商家" },
+  { "key": "work.sign-up-flow.result", "section": "首頁 · 作品", "note": "hover 預覽裡的成果數字，留空就不顯示", "en": "+22% sign-up completion", "zh-tw": "註冊完成率 +22%" },
+  { "key": "work.notification-center.title", "section": "首頁 · 作品", "note": "專案名稱（Carousell）", "en": "Notification Center", "zh-tw": "Notification Center" },
+  { "key": "work.notification-center.summary", "section": "首頁 · 作品", "note": "hover 預覽裡的一句話", "en": "Card sorting and concept tests", "zh-tw": "卡片分類與概念測試" },
+  { "key": "work.notification-center.result", "section": "首頁 · 作品", "note": "hover 預覽裡的成果數字，留空就不顯示", "en": "+20% CTR, +11% order completion", "zh-tw": "CTR +20%、訂單完成率 +11%" },
+
+  { "key": "section.tools", "section": "首頁 · 工具", "note": "工具區塊的小標", "en": "Tools I build", "zh-tw": "我做的工具" },
+  { "key": "tools.illustration-inspector.title", "section": "首頁 · 工具", "note": "工具名稱", "en": "Illustration Inspector", "zh-tw": "Illustration Inspector" },
+  { "key": "tools.illustration-inspector.type", "section": "首頁 · 工具", "note": "名稱右邊的類型", "en": "Figma plugin", "zh-tw": "Figma 外掛" },
+  { "key": "tools.illustration-inspector.summary", "section": "首頁 · 工具", "note": "工具頁上的一句話說明", "en": "[ONE LINE]", "zh-tw": "[ONE LINE]" },
+  { "key": "tools.coach-match.title", "section": "首頁 · 工具", "note": "工具名稱", "en": "Coach Match", "zh-tw": "Coach Match" },
+  { "key": "tools.coach-match.type", "section": "首頁 · 工具", "note": "名稱右邊的類型", "en": "AI-built web tool", "zh-tw": "用 AI 打造的網頁工具" },
+  { "key": "tools.coach-match.summary", "section": "首頁 · 工具", "note": "工具頁上的一句話說明", "en": "A quiz that matches designers with the right coach. Built with AI-generated code, Google Sheets, and Apps Script.", "zh-tw": "一個幫設計師找到合適教練的測驗，用 AI 生成的程式碼、Google Sheets 和 Apps Script 打造。" },
+  { "key": "tools.vocab-translator.title", "section": "首頁 · 工具", "note": "工具名稱", "en": "Vocab Translator", "zh-tw": "Vocab Translator" },
+  { "key": "tools.vocab-translator.type", "section": "首頁 · 工具", "note": "名稱右邊的類型", "en": "Chrome extension", "zh-tw": "Chrome 擴充功能" },
+  { "key": "tools.vocab-translator.summary", "section": "首頁 · 工具", "note": "工具頁上的一句話說明", "en": "Saves words I select on any page straight into Notion, so I can study them later.", "zh-tw": "把我在任何網頁上選取的單字直接存進 Notion，方便之後複習。" },
+
+  { "key": "org.paypay", "section": "hover 卡片", "note": "滑到 PayPay 名稱時卡片裡的說明", "en": "Japan's largest mobile payment app", "zh-tw": "日本最大的行動支付 App" },
+  { "key": "org.carousell", "section": "hover 卡片", "note": "滑到 Carousell 名稱時卡片裡的說明", "en": "Marketplace app across Southeast Asia and Taiwan", "zh-tw": "橫跨東南亞與台灣的交易平台" },
+  { "key": "org.aapd", "section": "hover 卡片", "note": "滑到 AAPD 時卡片裡的說明", "en": "Taiwan community for product builders", "zh-tw": "台灣的產品人社群" },
+  { "key": "preview.cover", "section": "hover 卡片", "note": "還沒有封面圖時，佔位框裡接在專案名稱後的字", "en": "cover", "zh-tw": "封面" },
+
+  { "key": "footer.resume", "section": "介面文字", "note": "底部連結", "en": "Resume", "zh-tw": "履歷" },
+  { "key": "footer.nav", "section": "介面文字", "note": "底部連結區的名稱（給螢幕閱讀器）", "en": "Elsewhere", "zh-tw": "其他連結" },
+  { "key": "theme.label", "section": "介面文字", "note": "深淺色開關的名稱（給螢幕閱讀器）", "en": "Dark mode", "zh-tw": "深色模式" },
+  { "key": "lang.switch", "section": "介面文字", "note": "語言切換的名稱（給螢幕閱讀器）", "en": "Language", "zh-tw": "語言" },
+
+  { "key": "meta.title", "section": "搜尋引擎與分享", "note": "瀏覽器分頁標題、Google 搜尋結果標題", "en": "Chang Yu · Product Designer", "zh-tw": "Chang Yu · 產品設計師" },
+  { "key": "meta.description", "section": "搜尋引擎與分享", "note": "Google 搜尋結果和分享預覽的描述，約 150 字元內", "en": "Senior Product Designer making complex things clear. Fintech at PayPay, growth at Carousell.", "zh-tw": "資深產品設計師，擅長把複雜的事情變清楚。曾任職 PayPay 與 Carousell。" }
+]

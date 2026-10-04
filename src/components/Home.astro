@@ -12,39 +12,22 @@ interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
+// {AAPD} in the copy marks where the AAPD link with its hover card goes
+const [outsideBefore, outsideAfter = ''] = t(lang, 'home.outside').split('{AAPD}');
 
 ---
 
 <Base lang={lang} alternates={{ en: '/', 'zh-tw': '/zh-tw' }}>
   <main class="container stack">
-    {
-      lang === 'zh-tw' ? (
-        <section class="intro">
-          <h1>嗨，我是 Yu，一位把複雜變清楚的產品設計師。</h1>
-          <p>
-            我習慣先問清楚問題，而不是用猜的。我把複雜的規則整理成簡單的流程，也會盡早做出原型，讓團隊更快做決定。
-          </p>
-          <p>
-            工作之外，我在{' '}
-            <OrgLink {...aapd} description={t(lang, 'org.aapd')} />{' '}
-            擔任設計導師，也用程式和 AI 做一些小工具。
-          </p>
-        </section>
-      ) : (
-        <section class="intro">
-          <h1>Hi, I'm Yu, a designer who makes complex things clear.</h1>
-          <p>
-            I start with clear questions, not guesses. I turn messy rules into simple flows, and I
-            build prototypes early so teams can decide fast.
-          </p>
-          <p>
-            Outside work, I mentor designers at{' '}
-            <OrgLink {...aapd} description={t(lang, 'org.aapd')} /> and build small tools with code
-            and AI.
-          </p>
-        </section>
-      )
-    }
+    <section class="intro">
+      <h1>{t(lang, 'home.title')}</h1>
+      <p>{t(lang, 'home.intro')}</p>
+      <p>
+        {outsideBefore}
+        <OrgLink {...aapd} description={t(lang, 'org.aapd')} />
+        {outsideAfter}
+      </p>
+    </section>
 
     <WorkList lang={lang} />
     <ToolList lang={lang} />

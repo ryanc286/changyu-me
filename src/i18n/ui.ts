@@ -1,3 +1,4 @@
+import copy from './copy.json';
 /*
   All interface text in both languages.
   English is the default; Traditional Chinese (Taiwan) lives under /zh-tw.
@@ -10,41 +11,22 @@ export const languages = {
 export type Lang = keyof typeof languages;
 export const defaultLang: Lang = 'en';
 
-export const ui = {
-  en: {
-    'meta.title': 'Chang Yu · Product Designer',
-    'meta.description':
-      'Senior Product Designer making complex things clear. Fintech at PayPay, growth at Carousell.',
-    'section.work': 'Work',
-    'section.tools': 'Tools I build',
-    'footer.nav': 'Elsewhere',
-    'footer.resume': 'Resume',
-    'theme.label': 'Dark mode',
-    'lang.switch': 'Language',
-    'org.paypay': "Japan's largest mobile payment app",
-    'org.carousell': 'Marketplace app across Southeast Asia and Taiwan',
-    'org.aapd': 'Taiwan community for product builders',
-    'preview.cover': 'cover',
-  },
-  'zh-tw': {
-    'meta.title': 'Chang Yu · 產品設計師',
-    'meta.description': '資深產品設計師，擅長把複雜的事情變清楚。曾任職 PayPay 與 Carousell。',
-    'section.work': '作品',
-    'section.tools': '我做的工具',
-    'footer.nav': '其他連結',
-    'footer.resume': '履歷',
-    'theme.label': '深色模式',
-    'lang.switch': '語言',
-    'org.paypay': '日本最大的行動支付 App',
-    'org.carousell': '橫跨東南亞與台灣的交易平台',
-    'org.aapd': '台灣的產品人社群',
-    'preview.cover': '封面',
-  },
-} as const;
+/* All copy lives in copy.json (synced with Notion). One entry per key, both languages. */
 
-export type UIKey = keyof (typeof ui)['en'];
+type Entry = { key: string; en: string; 'zh-tw': string };
+const table = new Map((copy as Entry[]).map((e) => [e.key, e]));
 
-export const t = (lang: Lang, key: UIKey): string => ui[lang][key] ?? ui[defaultLang][key];
+export type UIKey = string;
+
+export const t = (lang: Lang, key: UIKey): string => {
+  const e = table.get(key);
+  if (!e) throw new Error(`Missing copy key: ${key}`);
+  // Empty Chinese falls back to English; an empty English stays empty (e.g. no result yet)
+  return (lang === 'zh-tw' && e['zh-tw']) || e.en;
+};
+
+/* Optional text: returns '' instead of failing when the key is missing */
+export const tOpt = (lang: Lang, key: UIKey): string => (table.has(key) ? t(lang, key) : '');
 
 /* Path helpers: English has no prefix, Chinese is under /zh-tw */
 export const localizePath = (lang: Lang, path: string): string => {
