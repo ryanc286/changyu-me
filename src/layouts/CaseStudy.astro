@@ -6,8 +6,8 @@
   behind it (same scroll position as when you left it), and the card slides up
   from the bottom (see the case-card rules in global.css).
 
-  A 48px strip above the card (and a thin edge around it on desktop) shows the
-  homepage. Point at it and the card steps down a little; click it, press Esc,
+  A 48px strip above the card (and the sides on desktop) shows the homepage;
+  the card runs down to the bottom edge. Point at it and the card steps down a little; click it, press Esc,
   or drag the handle down to close.
   Inside the card the left column stays put while the right column scrolls.
 */
@@ -211,8 +211,8 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
     z-index: 1;
     /* At most 1200px wide, centered; more of the homepage shows on wide screens */
     --sheet-x: max(var(--side-gap), calc((100% - 1200px) / 2));
-    inset: var(--top) var(--sheet-x) var(--side-gap);
-    border-radius: 24px;
+    inset: var(--top) var(--sheet-x) 0;
+    border-radius: 24px 24px 0 0;
     overflow: hidden;
     /* Solid: a named view-transition element can't blur what's behind it */
     --card-bg: var(--color-bg);
@@ -433,9 +433,9 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
     .side {
       position: sticky;
       top: 0;
-      /* Card height: window minus the gaps above and below */
-      height: calc(100vh - 72px);
-      height: calc(100dvh - 72px);
+      /* Card height: window minus the gap above */
+      height: calc(100vh - 48px);
+      height: calc(100dvh - 48px);
       display: grid;
       grid-template-rows: auto 1fr auto;
       padding: 32px 0 20px;
