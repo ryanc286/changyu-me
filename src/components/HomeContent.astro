@@ -31,9 +31,10 @@ const { lang } = Astro.props;
   .stack {
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
+    /* 48px between sections: clearly separate, still one page */
+    gap: 48px;
     padding-top: var(--space-7);
-    padding-bottom: var(--space-7);
+    padding-bottom: 80px;
   }
   .intro {
     display: flex;
@@ -52,9 +53,9 @@ const { lang } = Astro.props;
   }
   @media (max-width: 520px) {
     .stack {
-      gap: var(--space-5);
+      gap: 32px;
       padding-top: var(--space-6);
-      padding-bottom: var(--space-6);
+      padding-bottom: 48px;
     }
   }
 </style>
