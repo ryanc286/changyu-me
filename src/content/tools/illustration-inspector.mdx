@@ -1,5 +1,49 @@
 ---
+company: "PayPay"
 order: 1
+subtitle: "One shared check for every illustration, used by the whole design team"
+role: "Design and build (with AI)"
+timeline: "One quarter"
+type: "Figma plugin"
+notion: "https://app.notion.com/p/3efeaff6ece3814f98cefdf964b46d6a"
 ---
 
-Tool write-up goes here.
+{/* Synced from Notion. Edit the case there, not here. */}
+
+<Media id="hero" label="Checking an illustration in Figma" />
+
+PayPay's illustration library comes with a lot of rules: approved colors, bound variables, flat shapes only, no strokes or gradients, no stretching, and the right way to use logos. Checking all of that by hand was slow and depended on who was looking. I designed and built a Figma plugin that checks an illustration in one click and points to the exact layer to fix.
+
+## The problem
+
+The guidelines were long, and reviews were uneven. A survey also showed that 83% of designers had ordered custom illustrations because nothing in the library fit what they needed. The library and its rules were not working for the people using them.
+
+## How it works
+
+Select a frame and run the check. The plugin looks at six things: colors, strokes, gradients, stretching, flat shapes and logo use.
+
+<Media id="checks" label="Six checks, each linked to the layer" />
+
+- **Straight to the layer.** Each problem links to the layer that caused it, so you can fix it without opening the guidelines.
+- **Closest color.** For colors outside the palette, it suggests the nearest approved one, and Apply All fixes them in one go.
+- **Fits the team.** Dark and light mode, in Japanese and English.
+
+## How I built it
+
+I locked the full feature list before designing any UI, so the scope would not keep growing. I explored five UI directions and combined the best parts. Then I used AI to turn the guideline rules into code, tested the checks on real frames, and tightened them again and again.
+
+Early versions had eight checks. Two were not reliable, so I cut them. **Six reliable checks beat ten noisy ones.** If a tool flags things that are fine, people stop trusting it.
+
+AI wrote the code. I made the product calls: what counts as a failure, how it shows up on screen, and when a check needed to change.
+
+<Media id="modes" label="Dark mode and the Japanese version" />
+
+## Results
+
+The whole design team uses it now. It replaced uneven manual reviews with one shared standard. The illustration team spends its time on design intent instead of checking palettes, and designers get feedback on exact layers instead of vague comments.
+
+## What's next
+
+- A time study to measure how much prep time it saves
+- Confidence labels on the less certain checks: flat shapes and stretching
+- An export so design ops can see trends across the team

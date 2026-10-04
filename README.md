@@ -39,6 +39,8 @@ node scripts/notion-case-to-mdx.mjs page.txt
 ```
 
 This rewrites the body and the `subtitle`, `role`, `timeline`, `type` fields of the case file.
+Tools live in the same Notion database: if the Slug matches a file in `src/content/tools/`, the
+script writes there instead (and also takes `company` from Notion).
 Notion blocks map to components in `src/components/case/`:
 
 | Notion | Site |

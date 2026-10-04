@@ -1,5 +1,41 @@
 ---
+company: "AAPD"
 order: 2
+subtitle: "A coach matching quiz, built with AI in 18 hours"
+role: "Project lead, product designer"
+timeline: "18 hours, one hour a day"
+type: "Web app"
+notion: "https://app.notion.com/p/3efeaff6ece38110818eddb375367460"
 ---
 
-Tool write-up goes here.
+{/* Synced from Notion. Edit the case there, not here. */}
+
+<Media id="hero" label="The Coach Match quiz" />
+
+AAPD is a Taiwan community for product builders, with 24 coaches. Visitors had a hard time picking one, so we needed a guided way to match them. Third-party quiz tools came with ads, usage limits and no brand control. As project lead, I decided to build our own, with AI writing all the code. It went from first prompt to live product in 18 hours, working one hour a day.
+
+## A workflow that worked
+
+I gave Claude Code the old tool and the context. The first version worked, but it did not look like AAPD. Fixing that through prompts alone took too much back and forth, so I changed the workflow:
+
+- AI read the AAPD website as a style reference.
+- AI generated the screens in Figma, where I adjusted them by hand.
+- Small changes went through prompts. Bigger layout or visual changes were designed in Figma first, then turned into code.
+
+<Media id="figma" label="Screens designed in Figma, then built with AI" />
+
+## Picking a simple stack
+
+We looked at Firebase, but nobody on the team could maintain it. I chose Google Sheets with Apps Script instead. Everyone already knows it, and anyone can update coach info without touching code. The site runs on GitHub Pages: free, light and easy for any team member to manage.
+
+## Testing and launch
+
+Five AAPD team members tested it before launch. The flow felt smooth, but two gaps came up: it was Chinese only, and nobody had checked it on mobile. I fixed both before shipping and added tracking to measure bookings.
+
+<Media id="final" label="English and Chinese, light and dark" />
+
+It now supports English and Chinese, works on any screen size, has light and dark mode, and comes with a token library and a markdown guide for the next project.
+
+## What I learned
+
+The real decisions were not about prompting. They were about knowing when to step in: choosing Figma, judging the matching logic, picking Google Sheets over Firebase. AI handled the execution. I handled the judgment. It also pushed me to learn some basic coding, so I can fix the obvious things faster myself.
