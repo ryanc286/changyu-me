@@ -1,0 +1,195 @@
+---
+/*
+  Case study page. Text column is 600px like the homepage; images (Media)
+  break out to a wider column. Meta comes from the case frontmatter, which is
+  synced from Notion.
+*/
+import Base from './Base.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  description?: string;
+  meta: { label: string; value?: string }[];
+  next?: { href: string; title: string; summary: string };
+}
+const { title, subtitle, description, meta, next } = Astro.props;
+const shownMeta = meta.filter((m) => m.value);
+---
+
+<Base title={`${title} · Chang Yu`} description={description ?? subtitle} alternates={{}}>
+  <main class="container">
+    <a href="/#work" class="back">← Work</a>
+    <header>
+      <h1>{title}</h1>
+      {subtitle && <p class="subtitle">{subtitle}</p>}
+      {
+        shownMeta.length > 0 && (
+          <dl class="meta">
+            {shownMeta.map((m) => (
+              <div>
+                <dt>{m.label}</dt>
+                <dd>{m.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
+    </header>
+  </main>
+
+  <article class="case">
+    <slot />
+  </article>
+
+  <div class="container end">
+    {
+      next && (
+        <a class="next" href={next.href}>
+          <span class="next-label">Next</span>
+          <span class="next-title">{next.title}</span>
+          <span class="next-summary">{next.summary}</span>
+        </a>
+      )
+    }
+    <Footer />
+  </div>
+</Base>
+
+<style>
+  main {
+    padding-top: var(--space-6);
+  }
+  .back {
+    display: inline-block;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+  .back:hover {
+    color: var(--color-text);
+  }
+  header {
+    margin-top: var(--space-5);
+  }
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+    line-height: 1.2;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+  .subtitle {
+    margin: var(--space-1) 0 0;
+    font-size: var(--text-lg);
+    line-height: 1.4;
+    color: var(--color-text-muted);
+  }
+  .meta {
+    margin: var(--space-5) 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-line);
+  }
+  .meta dt {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+  .meta dd {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text);
+  }
+
+  /* Body: content column, with a wider column for images */
+  .case {
+    --wide: 900px;
+    display: grid;
+    grid-template-columns:
+      [wide-start] minmax(var(--gutter), 1fr)
+      [content-start] min(var(--width-content), 100% - var(--gutter) * 2)
+      [content-end] minmax(var(--gutter), 1fr)
+      [wide-end];
+    margin-top: var(--space-5);
+    color: var(--color-text-body);
+  }
+  @media (min-width: 940px) {
+    .case {
+      grid-template-columns:
+        1fr
+        [wide-start] minmax(0, calc((var(--wide) - var(--width-content)) / 2))
+        [content-start] var(--width-content)
+        [content-end] minmax(0, calc((var(--wide) - var(--width-content)) / 2))
+        [wide-end] 1fr;
+    }
+  }
+  .case > :global(*) {
+    grid-column: content;
+  }
+  .case > :global(figure.media) {
+    grid-column: wide;
+  }
+  @media (max-width: 939px) {
+    .case > :global(figure.media) {
+      grid-column: content;
+    }
+  }
+  .case :global(h2) {
+    margin: var(--space-5) 0 var(--space-2);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .case :global(p) {
+    margin: 0 0 var(--space-3);
+  }
+  .case :global(ul),
+  .case :global(ol) {
+    margin: 0 0 var(--space-3);
+    padding-left: 1.25em;
+  }
+  .case :global(li + li) {
+    margin-top: var(--space-1);
+  }
+  .case :global(strong) {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .next {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: var(--space-6);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-line);
+    text-decoration: none;
+  }
+  .next-label {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+  .next-title {
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: text-decoration-color var(--duration) var(--ease-out);
+  }
+  .next:hover .next-title {
+    text-decoration-color: currentColor;
+  }
+  .next-summary {
+    color: var(--color-text-body);
+  }
+  .end {
+    padding-bottom: var(--space-2);
+  }
+  .end > :global(footer) {
+    margin-top: var(--space-6);
+  }
+</style>

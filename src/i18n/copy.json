@@ -80,8 +80,8 @@
     "key": "work.top-up-ab-test.result",
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的成果數字，留空就不顯示",
-    "en": "[KEY RESULT]",
-    "zh-tw": "[KEY RESULT]"
+    "en": "+7% top-up amount, −13% top-up costs",
+    "zh-tw": "加值金額 +7%、加值成本 −13%"
   },
   {
     "key": "work.cardless-atm.title",

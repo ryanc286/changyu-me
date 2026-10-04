@@ -1,21 +1,42 @@
 ---
 import { getCollection, render } from 'astro:content';
-import Case from '../layouts/Case.astro';
-import { t, tOpt } from '../i18n/ui';
+import CaseStudy from '../layouts/CaseStudy.astro';
+import Media from '../components/case/Media.astro';
+import Stats from '../components/case/Stats.astro';
+import Hypothesis from '../components/case/Hypothesis.astro';
+import { t } from '../i18n/ui';
 
 export async function getStaticPaths() {
-  const work = await getCollection('work', ({ data }) => !data.draft);
-  return work.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+  const work = (await getCollection('work', ({ data }) => !data.draft)).sort(
+    (a, b) => a.data.order - b.data.order,
+  );
+  // Next case follows the homepage order and wraps around to the first
+  return work.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, next: work[(i + 1) % work.length] },
+  }));
 }
 
-const { entry } = Astro.props;
+const { entry, next } = Astro.props;
 const { Content } = await render(entry);
-const { company } = entry.data;
+const d = entry.data;
 const title = t('en', `work.${entry.id}.title`);
 const summary = t('en', `work.${entry.id}.summary`);
-const result = tOpt('en', `work.${entry.id}.result`);
 ---
 
-<Case title={title} eyebrow={company} summary={result ? `${summary} · ${result}` : summary}>
-  <Content />
-</Case>
+<CaseStudy
+  title={title}
+  subtitle={d.subtitle ?? summary}
+  description={summary}
+  meta={[
+    { label: 'Role', value: d.role },
+    { label: 'Company', value: d.company },
+    { label: 'Timeline', value: d.timeline },
+    { label: 'Type', value: d.type },
+  ]}
+  next={next.id !== entry.id
+    ? { href: `/${next.id}`, title: t('en', `work.${next.id}.title`), summary: t('en', `work.${next.id}.summary`) }
+    : undefined}
+>
+  <Content components={{ Media, Stats, Hypothesis }} />
+</CaseStudy>

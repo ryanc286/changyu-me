@@ -11,6 +11,12 @@ const work = defineCollection({
     order: z.number(),            // position on the homepage (1 = top)
     cover: z.string().optional(), // e.g. /images/credit-card-voucher/cover.jpg
     draft: z.boolean().default(false),
+    // Case page details. Synced from the Notion 案例內容 database (scripts/notion-case-to-mdx.mjs)
+    subtitle: z.string().optional(),
+    role: z.string().optional(),
+    timeline: z.string().optional(),
+    type: z.string().optional(),
+    notion: z.string().optional(),
   }),
 });
 

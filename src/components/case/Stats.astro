@@ -1,0 +1,49 @@
+---
+// Row of big numbers in a case study (from a Number | Label table in Notion)
+interface Props {
+  items: { value: string; label: string }[];
+}
+const { items } = Astro.props;
+---
+
+<dl class="stats">
+  {
+    items.map((s) => (
+      <div>
+        <dt>{s.label}</dt>
+        <dd>{s.value}</dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .stats {
+    margin: var(--space-4) 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-3);
+  }
+  .stats div {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2px;
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-line-strong);
+  }
+  dd {
+    order: -1;
+    margin: 0;
+    font-size: 2rem;
+    line-height: 1.2;
+    font-weight: 500;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+  }
+  dt {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.45;
+  }
+</style>

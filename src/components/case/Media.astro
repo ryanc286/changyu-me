@@ -1,0 +1,53 @@
+---
+/*
+  Wide image slot in a case study. Until real images are added it shows a
+  placeholder with the label. To add an image, put it at
+  public/images/<case slug>/<id>.(jpg|png|webp) and pass src.
+*/
+interface Props {
+  id: string;
+  label: string;
+  src?: string;
+}
+const { id, label, src } = Astro.props;
+---
+
+<figure class="media" data-id={id}>
+  {
+    src ? (
+      <img src={src} alt={label} loading="lazy" />
+    ) : (
+      <div class="placeholder" role="img" aria-label={`Image placeholder: ${label}`}>
+        <span>{id}</span>
+      </div>
+    )
+  }
+  <figcaption>{label}</figcaption>
+</figure>
+
+<style>
+  .media {
+    margin: var(--space-4) 0;
+  }
+  .placeholder {
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    display: grid;
+    place-items: center;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+  img {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+  figcaption {
+    margin-top: var(--space-1);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+</style>

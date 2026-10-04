@@ -1,6 +1,65 @@
 ---
 company: PayPay
 order: 2
+subtitle: "+7% top-up amount, −13% top-up costs"
+role: "End-to-end design, prototyping"
+timeline: "Feb–Jun 2025"
+type: "A/B test"
+notion: "https://app.notion.com/p/3efeaff6ece38195b1dfc171f21c2081"
 ---
 
-Case study content goes here.
+{/* Synced from Notion. Edit the case there, not here. */}
+
+Many PayPay users top up small amounts, around ¥5,000, several times a month. Every top-up has a processing fee, so these small and frequent top-ups add up to a real cost. I set out to help people top up more at once, without pushing them.
+
+<Media id="hero" label="The new top-up screen" />
+
+## The problem
+
+Each top-up costs PayPay a processing fee. Across millions of top-ups a month, the habit of topping up small amounts made this cost grow fast. Fewer, larger top-ups would save money for the business and save users from doing the same task again and again.
+
+## What I found
+
+I looked at interviews and usage data and found three reasons people top up small amounts:
+
+- **They don't feel safe keeping a big balance.** Users told us they worry about holding too much money in the app.
+- **Typing the amount is a hassle.** Usage data showed people dropping off at the amount input step.
+- **They don't know how much they spend.** Most users have no idea what they spend on PayPay in a month, so they top up just enough for now.
+
+## Where to start
+
+Safety needed policy changes, and a new input design would take months to build. Spending visibility was something we could ship fast and measure with a clean A/B test.
+
+<Hypothesis>If users see how much they spent last month while topping up, they will have a clear reference and top up a larger amount.</Hypothesis>
+
+## Design
+
+I explored three ways to show last month's spending on the top-up screen: an info banner, an extra quick-amount button, and a floating button. The floating button could cover other content, so we tested the other two.
+
+<Media id="concepts" label="Three ways to show last month's spending" />
+
+Variant A showed the spending in a banner. Variant B put it right inside the amount input as a suggested amount, using components that already existed.
+
+<Media id="variants" label="Variant A (banner) and Variant B (suggestion in the input)" />
+
+## Details that mattered
+
+- **No auto-fill.** My first version filled in the amount for users. It felt too pushy, so the suggestion became something users choose to tap.
+- **Right timing.** Users top up about every two weeks, so the suggestion shows at the start of the month, then hides for two weeks.
+- **Clean numbers.** One-time spikes like investment payments are left out, and the amount is rounded up to the nearest ¥1,000. ¥14,563 becomes ¥15,000.
+
+## Results
+
+Each variant went to 1% of users for one month, with everyone else as the control group. Variant B, the suggestion in the input, was the clear winner. The banner made no significant difference.
+
+<Stats items={[{"value":"+7%","label":"Top-up amount per user"},{"value":"−22%","label":"Top-ups per month, from 4.5 to 3.5"},{"value":"−13%","label":"Total top-up costs"}]} />
+
+## Before rollout
+
+A bigger balance means more risk if an account is taken over. Before the full rollout, I worked with the risk and compliance teams to check balance limits and fraud monitoring. Security tickets did not go up after launch. For the full rollout, the spending amount is calculated once a day instead of live, so it works for millions of users.
+
+## What I learned
+
+The same information, shown in a different way, gave completely different results. A banner interrupts people. A suggestion inside the input fits what they are already doing: typing an amount.
+
+Next, I want to test showing spending before users open the top-up screen, before they have a number in mind.

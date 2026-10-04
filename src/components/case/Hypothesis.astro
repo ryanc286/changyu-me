@@ -1,0 +1,38 @@
+---
+// Highlighted statement in a case study (from a quote block in Notion)
+interface Props {
+  label?: string;
+}
+const { label = 'Hypothesis' } = Astro.props;
+---
+
+<aside class="hypothesis">
+  <p class="label">{label}</p>
+  <div class="text"><slot /></div>
+</aside>
+
+<style>
+  .hypothesis {
+    margin: var(--space-4) 0;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-radius: var(--radius);
+  }
+  .label {
+    margin: 0 0 var(--space-1);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+  .text {
+    margin: 0;
+    font-size: 1.125rem;
+    line-height: 1.5;
+    color: var(--color-text);
+  }
+</style>
+<style>
+  .text :global(p) {
+    margin: 0;
+  }
+</style>
