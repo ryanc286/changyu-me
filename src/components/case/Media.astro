@@ -1,7 +1,7 @@
 ---
 /*
-  Wide image slot in a case study. Until real images are added it shows a
-  placeholder with the label. To add an image, put it at
+  Wide image slot in a case study. No caption is shown; the label becomes the
+  image's alt text. Until real images are added it shows a placeholder. To add an image, put it at
   public/images/<case slug>/<id>.(jpg|png|webp) and pass src.
 */
 interface Props {
@@ -22,7 +22,6 @@ const { id, label, src } = Astro.props;
       </div>
     )
   }
-  <figcaption>{label}</figcaption>
 </figure>
 
 <style>
@@ -43,10 +42,5 @@ const { id, label, src } = Astro.props;
   img {
     width: 100%;
     border-radius: var(--radius);
-  }
-  figcaption {
-    margin-top: var(--space-1);
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
   }
 </style>
