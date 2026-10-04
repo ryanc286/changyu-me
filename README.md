@@ -23,22 +23,31 @@ npm run build    # outputs static site to dist/
 
 ## Add a case study
 
-Create `src/content/work/my-case.mdx`:
-
-```mdx
----
-title: My Case
-company: PayPay
-summary: One line shown on the homepage
-result: +10% something
-order: 6
-cover: /images/my-case/cover.jpg
----
-
-Write the case study here.
-```
+1. Create `src/content/work/my-case.mdx` with `company` and `order` in the frontmatter.
+2. Add `work.my-case.title`, `.summary` and `.result` to `src/i18n/copy.json` (and the Notion 文案 database).
+3. Add a page for it in the Notion 案例內容 database, with `Slug` set to `my-case`.
 
 The homepage list updates on its own. Set `draft: true` to hide a case.
+
+### Case content lives in Notion
+
+Each case page is written in the Notion 案例內容 database. To sync one, save the page with the
+Notion fetch output and run:
+
+```sh
+node scripts/notion-case-to-mdx.mjs page.txt
+```
+
+This rewrites the body and the `subtitle`, `role`, `timeline`, `type` fields of the case file.
+Notion blocks map to components in `src/components/case/`:
+
+| Notion | Site |
+| --- | --- |
+| 🖼️ callout `id: label` | `<Media>` wide image (placeholder until `src` is set) |
+| Quote | `<Hypothesis>` highlighted box |
+| Table with Number / Label columns | `<Stats>` big numbers row |
+
+Layout: `src/layouts/CaseStudy.astro`.
 
 ## Languages
 
