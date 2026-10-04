@@ -11,14 +11,13 @@ export async function getStaticPaths() {
   const work = (await getCollection('work', ({ data }) => !data.draft)).sort(
     (a, b) => a.data.order - b.data.order,
   );
-  // Next case follows the homepage order and wraps around to the first
-  return work.map((entry, i) => ({
+  return work.map((entry) => ({
     params: { slug: entry.id },
-    props: { entry, next: work[(i + 1) % work.length] },
+    props: { entry },
   }));
 }
 
-const { entry, next } = Astro.props;
+const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
 const d = entry.data;
 const title = t('en', `work.${entry.id}.title`);
@@ -31,6 +30,7 @@ const company = companies.find((c) => c.name === d.company);
   subtitle={d.subtitle ?? summary}
   description={summary}
   icon={company ? `/images/logos/${company.logo}-icon.png` : undefined}
+  site={company?.href}
   headings={headings.filter((h) => h.depth === 2)}
   meta={[
     { label: 'Role', value: d.role },
@@ -38,9 +38,6 @@ const company = companies.find((c) => c.name === d.company);
     { label: 'Timeline', value: d.timeline },
     { label: 'Type', value: d.type },
   ]}
-  next={next.id !== entry.id
-    ? { href: `/${next.id}`, title: t('en', `work.${next.id}.title`) }
-    : undefined}
 >
   <Content components={{ Media, Stats, Hypothesis }} />
 </CaseStudy>

@@ -21,9 +21,11 @@ interface Props {
   icon?: string;
   headings: { slug: string; text: string }[];
   meta: { label: string; value?: string }[];
-  next?: { href: string; title: string };
+  /* Company or product site, shown at the bottom of the left column */
+  site?: string;
 }
-const { title, subtitle, description, icon, headings, meta, next } = Astro.props;
+const { title, subtitle, description, icon, headings, meta, site } = Astro.props;
+const siteLabel = site ? new URL(site).host.replace(/^www\./, '') : '';
 const shownMeta = meta.filter((m) => m.value);
 // Section nav only when the page has sections
 const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : [];
@@ -62,13 +64,7 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
               {nav.map((h, i) => <a href={`#${h.slug}`} data-slug={h.slug} aria-current={i === 0 ? 'true' : undefined}>{h.text}</a>)}
             </nav>
 
-            {
-              next && (
-                <a class="next" href={next.href}>
-                  <span class="next-label">Next</span> {next.title} <span aria-hidden="true">→</span>
-                </a>
-              )
-            }
+            {site && <a class="site" href={site} target="_blank" rel="noopener">{siteLabel}</a>}
           </aside>
 
           <main class="body">
@@ -91,13 +87,6 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
               )
             }
 
-            {
-              next && (
-                <a class="next next-end" href={next.href}>
-                  <span class="next-label">Next</span> {next.title} <span aria-hidden="true">→</span>
-                </a>
-              )
-            }
           </main>
         </div>
       </div>
@@ -285,7 +274,7 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
   .head {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: 12px;
   }
   .back {
     position: relative;
@@ -295,8 +284,12 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
     border-radius: 8px;
     overflow: hidden;
     background: var(--color-surface);
-    box-shadow: 0 0 0 1px var(--color-line);
+    /* Hairline edge plus a soft lift, like an app icon */
+    box-shadow:
+      0 0 0 0.5px rgb(0 0 0 / 0.18),
+      0 1px 3px rgb(0 0 0 / 0.06);
     color: var(--color-text);
+    transition: transform 160ms var(--ease-out);
   }
   .back:active {
     transform: scale(0.97);
@@ -325,27 +318,21 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
   .title p {
     margin: 0;
     font-size: 1.125rem;
-    line-height: 1.35;
-    font-weight: 500;
-    text-wrap: balance;
+    line-height: 1.25;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    text-wrap: pretty;
+  }
+  .title h1 {
+    color: var(--color-text);
   }
   .title p {
-    font-weight: 400;
     color: var(--color-text-muted);
   }
   .toc {
     display: none;
   }
-  .next {
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    text-decoration: none;
-    transition: color var(--duration) var(--ease-out);
-  }
-  .next:hover {
-    color: var(--color-text);
-  }
-  .side > .next {
+  .site {
     display: none;
   }
 
@@ -414,10 +401,6 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
     font-size: var(--text-sm);
     color: var(--color-text);
   }
-  .next-end {
-    display: inline-block;
-    margin-top: var(--space-5);
-  }
 
   .fade {
     display: none;
@@ -446,12 +429,12 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
       display: flex;
       flex-direction: column;
       align-self: center;
-      gap: 4px;
+      gap: 6px;
     }
     .toc a {
       width: fit-content;
       font-size: var(--text-sm);
-      line-height: 1.5;
+      line-height: 1.2;
       color: var(--color-text-muted);
       text-decoration: none;
       transition: color 160ms var(--ease-out);
@@ -460,12 +443,17 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
     .toc a[aria-current] {
       color: var(--color-text);
     }
-    .side > .next {
+    .site {
       display: block;
       width: fit-content;
+      padding-left: 2px;
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      transition: color 160ms var(--ease-out);
     }
-    .next-end {
-      display: none;
+    .site:hover {
+      color: var(--color-text);
     }
     .body {
       margin-top: 0;
