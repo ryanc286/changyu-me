@@ -1,6 +1,53 @@
 ---
 company: Carousell
 order: 7
+subtitle: "+32% component coverage, 11% faster handoff"
+role: "Design system"
+timeline: "Apr–Sep 2023"
+type: "Design system"
+notion: "https://app.notion.com/p/3efeaff6ece38169a810c5216dfe1ec5"
 ---
 
-Case study content goes here.
+{/* Synced from Notion. Edit the case there, not here. */}
+
+<Media id="hero" label="The rebuilt component library in Figma" />
+
+Carousell's design system had drifted. Components were hard to reuse, docs were out of date, and designers and engineers used different names for the same things. I helped revamp it with a clear update process, a reorganized Figma library and docs that link design to code.
+
+## What was broken
+
+- **No consistency.** No clear guidelines, components built on old Figma features, and no process for keeping the system up to date.
+- **Hard to find things.** No links between design and code, components that were hard to search by name, and no easy way to see what had changed.
+- **Poor communication.** Different names for the same thing, scattered channels and no structured feedback.
+
+## Starting with one button
+
+Before changing everything, I ran a trial audit on the Button component. It showed the whole problem in one place: no auto layout or properties, docs that were old and incomplete, and designers making their own versions, which widened the gap with what engineers built.
+
+<Media id="audit" label="The Button audit, before and after" />
+
+That gave us three changes to repeat for every component:
+
+- Rebuild it with Figma's latest features: auto layout, properties and variants.
+- Put the docs inside Figma, next to the component, instead of on a separate Notion page.
+- Link each component to its code.
+
+## Rolling it out as a team
+
+A revamp like this can't be done by one person. I made a spreadsheet that gave each component an owner, based on which team used it most. A handbook explained the update process step by step, and a weekly Slack update kept designers and engineers in the loop.
+
+<Media id="library" label="Docs and code links next to each component" />
+
+## Results
+
+<Stats items={[{"value":"+32%","label":"Component coverage in design files"},{"value":"−11%","label":"Design-to-development handoff time"}]} />
+
+Engineers also told us the library was easier to navigate and more consistent.
+
+## What's next
+
+Semantic color tokens come next, then font styles, spacing and shadows, all stored as Figma variables with modes.
+
+## What I learned
+
+A design system is a team effort. Trusting people and giving them clear ownership mattered more than any single component. And there is no one-size-fits-all system. The best one fits your team's situation and builds on what already exists.

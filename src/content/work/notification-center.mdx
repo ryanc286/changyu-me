@@ -1,6 +1,54 @@
 ---
 company: Carousell
 order: 5
+subtitle: "+20% CTR, +11% order completion"
+role: "End-to-end design, user research"
+timeline: "Dec 2022–Jul 2023"
+type: "Redesign"
+notion: "https://app.notion.com/p/3efeaff6ece3815594f5e84b8aca9b02"
 ---
 
-Case study content goes here.
+{/* Synced from Notion. Edit the case there, not here. */}
+
+<Media id="hero" label="The new Activity tab" />
+
+The Activity tab was one of the most used screens at Carousell. 80% of daily active users opened it to check on their account and orders. But important order updates were buried under marketing banners and promotions, and people did not know what to do next. I redesigned it to help people act on what matters and finish more orders.
+
+## What the data showed
+
+I looked at six months of CTR for each section. Marketing banners, company news and promotions got few clicks but took up much of the screen, pushing down the account and listing updates people actually used. A review of the information architecture said the same thing: there was no clear hierarchy, so important updates were easy to miss.
+
+## Asking users first
+
+I had started making concepts from competitor patterns, but I wanted evidence before going further. I proposed interviews with 5 people: buyers, sellers, people who do both, and professional sellers. They sorted example notifications into groups while thinking out loud, then tried three concepts.
+
+<Media id="research" label="Card sorting with five users" />
+
+People group notifications in two ways: by topic (buying, selling, promotions) and by urgency. Concept B matched that best and felt the smoothest to use.
+
+<Hypothesis>If notifications follow how people already group them, by topic and urgency, people will spot and act on the important ones faster.</Hypothesis>
+
+## Design
+
+<Media id="design" label="Urgent items first, grouped by order" />
+
+- **Urgent items on top.** Notifications are grouped by topic and urgency. Urgent ones get a countdown and a clear button.
+- **One timeline per order.** Updates from the same order stack into one item that opens up, so nothing gets lost and the list stays short.
+- **Small things bundled.** Low-stakes updates of the same type, like item likes, are combined into one.
+- **Marketing as notifications.** Banners became notification-style items. They are easier to scan, and campaigns still get seen.
+
+I also designed a responsive web version, since the web had no Activity tab before.
+
+## Bringing marketing along
+
+Changing marketing placements on a high-traffic page was the riskiest part. Instead of trading opinions, I showed six months of CTR data on the old banners. The new format still let campaigns stand out within the page. A joint workshop with marketing settled how campaign notifications would work.
+
+## Results
+
+<Stats items={[{"value":"+20%","label":"CTR on order updates"},{"value":"+11%","label":"Order completion"}]} />
+
+## What I learned
+
+Evidence before exploration. I spent too long on concepts from competitor research before understanding our own users. Competitors give ideas, not proof. Five interviews settled weeks of debate in a few days.
+
+One screen also serves many people. A layout that helps a casual buyer can slow down a seller with dozens of orders. Naming those tensions early, and checking past research, kept us from rebuilding ideas that had already been tried.

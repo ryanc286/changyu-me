@@ -1,6 +1,55 @@
 ---
 company: Carousell
 order: 4
+subtitle: "+22% sign-up completion, +13% new users"
+role: "End-to-end design, user research"
+timeline: "Jul–Oct 2022"
+type: "Growth"
+notion: "https://app.notion.com/p/3efeaff6ece381dcb46ef26c164d0280"
 ---
 
-Case study content goes here.
+{/* Synced from Notion. Edit the case there, not here. */}
+
+<Media id="hero" label="The new three-step sign-up" />
+
+Carousell is a marketplace for buying and selling across Southeast Asia, Taiwan and Hong Kong. By 2022, only 60% of new users finished signing up. Four in ten left before they even started. I led the redesign of the sign-up flow to remove friction and give people a reason to stay.
+
+## Where people dropped off
+
+Six months of funnel data showed that the biggest drop was not account creation. It was the personalization steps after it: picking interests, following sellers and setting up a feed. We were asking people to make choices about a product they had not used yet.
+
+I interviewed 8 users across three groups: newcomers, casual users and active sellers. The same thing came up again and again. The app pushed a seller identity before people had decided how to use it. One person said, "I'm getting a feeling I need to sell something."
+
+- **Too much, too soon.** People had to make choices before seeing what Carousell offered. The steps were not wrong, they were in the wrong place.
+- **The wrong first impression.** Seller-focused choices made buyers feel left out. One flow tried to serve buyers, casual sellers and merchants, and fit none of them.
+- **Unclear screens.** Old UI patterns and vague instructions made people hesitate.
+
+The best marketplace apps I looked at did the opposite: get people to their first useful moment fast, and ask about preferences later.
+
+<Hypothesis>If we ask less before people see the product, more of them will finish signing up.</Hypothesis>
+
+## Phasing the work
+
+My strongest concept was a personalized start: people pick buyer, casual seller or merchant, and each gets its own flow. It fixed the first impression problem directly. But it needed a lot of backend work and would not ship on time. I worked with the PM to split the project, and phase 1 took the changes with the most impact for the least effort.
+
+<Media id="concepts" label="The personalized start, saved for phase 2" />
+
+## Design
+
+<Media id="flow" label="From six steps to three" />
+
+- **Six steps down to three.** Picking interests, following sellers and setting up a feed moved to after sign-up. What stayed: create an account, fill in a short profile, then go straight into the app.
+- **Lighter personalization.** Only gender and age. Recommendations adjust on their own instead of asking people to set them up.
+- **The new design system.** Old components replaced, instructions rewritten, and a clearer hierarchy on every screen.
+
+For web, I rebuilt native parts like date pickers and permission prompts with web patterns, so both versions feel the same.
+
+## Results
+
+Phase 1 shipped on schedule.
+
+<Stats items={[{"value":"+22%","label":"Sign-up completion"},{"value":"+13%","label":"New users"}]} />
+
+## What I learned
+
+The deadline that forced us to split the work also showed what mattered most. The personalized start was the right answer on paper, but phase 1 proved we could get most of the impact without it. I also learned that a phase 2 with no scope and no date is just a good intention. Next time, I would plan phase 2 before phase 1 ships.
