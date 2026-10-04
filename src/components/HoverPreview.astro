@@ -186,5 +186,20 @@ const { lang } = Astro.props;
       link.addEventListener('blur', hide);
     });
     window.addEventListener('scroll', hide, { passive: true });
+
+    // Load cover images ahead of time so the first hover shows the image right away
+    const preload = () => {
+      const seen = new Set<string>();
+      document.querySelectorAll<HTMLAnchorElement>('[data-preview-link][data-cover]').forEach((l) => {
+        const src = l.dataset.cover!;
+        if (seen.has(src)) return;
+        seen.add(src);
+        const im = new Image();
+        im.decoding = 'async';
+        im.src = src;
+      });
+    };
+    if ('requestIdleCallback' in window) requestIdleCallback(preload);
+    else setTimeout(preload, 500);
   }
 </script>
