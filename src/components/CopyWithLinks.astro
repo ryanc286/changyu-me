@@ -1,0 +1,60 @@
+---
+/*
+  Renders a copy string where {PAYPAY}, {CAROUSELL} and {AAPD} become company
+  links with hover cards. A Chinese punctuation mark right after a link is kept
+  on the same line as the link.
+*/
+import OrgLink from './OrgLink.astro';
+import { companies, aapd } from '../data/companies';
+import { t, type Lang } from '../i18n/ui';
+
+interface Props {
+  text: string;
+  lang: Lang;
+}
+const { text, lang } = Astro.props;
+
+const orgs: Record<string, any> = { AAPD: { ...aapd, key: 'aapd' } };
+for (const c of companies) orgs[c.key.toUpperCase()] = c;
+
+type Part = { type: 'text'; value: string } | { type: 'org'; id: string; punct: string };
+const parts: Part[] = [];
+const re = /\{([A-Z]+)\}([，。、；：！？）]?)/g;
+let last = 0;
+for (const m of text.matchAll(re)) {
+  if (!orgs[m[1]]) continue;
+  if (m.index! > last) parts.push({ type: 'text', value: text.slice(last, m.index) });
+  parts.push({ type: 'org', id: m[1], punct: m[2] });
+  last = m.index! + m[0].length;
+}
+if (last < text.length) parts.push({ type: 'text', value: text.slice(last) });
+---
+
+{
+  parts.map((p) => {
+    if (p.type === 'text') return p.value;
+    const o = orgs[p.id];
+    const link = (
+      <OrgLink
+        name={o.name}
+        href={o.href}
+        logo={o.logo}
+        logoWidth={o.logoWidth}
+        logoHeight={o.logoHeight}
+        logoDisplayHeight={o.logoDisplayHeight}
+        description={t(lang, `org.${o.key}`)}
+      />
+    );
+    return p.punct ? (
+      <span class="nobr">{link}{p.punct}</span>
+    ) : (
+      link
+    );
+  })
+}
+
+<style>
+  .nobr {
+    white-space: nowrap;
+  }
+</style>

@@ -4,16 +4,13 @@ import Base from '../layouts/Base.astro';
 import WorkList from './WorkList.astro';
 import ToolList from './ToolList.astro';
 import Footer from './Footer.astro';
-import OrgLink from './OrgLink.astro';
+import CopyWithLinks from './CopyWithLinks.astro';
 import { t, type Lang } from '../i18n/ui';
-import { aapd } from '../data/companies';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-// {AAPD} in the copy marks where the AAPD link with its hover card goes
-const [outsideBefore, outsideAfter = ''] = t(lang, 'home.outside').split('{AAPD}');
 
 ---
 
@@ -21,12 +18,9 @@ const [outsideBefore, outsideAfter = ''] = t(lang, 'home.outside').split('{AAPD}
   <main class="container stack">
     <section class="intro">
       <h1>{t(lang, 'home.title')}</h1>
-      <p>{t(lang, 'home.intro')}</p>
-      <p>
-        {outsideBefore}
-        <OrgLink {...aapd} description={t(lang, 'org.aapd')} />
-        {outsideAfter}
-      </p>
+      <p><CopyWithLinks lang={lang} text={t(lang, 'home.intro')} /></p>
+      <p><CopyWithLinks lang={lang} text={t(lang, 'home.previously')} /></p>
+      <p><CopyWithLinks lang={lang} text={t(lang, 'home.outside')} /></p>
     </section>
 
     <WorkList lang={lang} />

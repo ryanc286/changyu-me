@@ -9,14 +9,21 @@
   {
     "key": "home.intro",
     "section": "首頁 · 開頭",
-    "note": "標題下第一段",
-    "en": "I start with clear questions, not guesses. I turn messy rules into simple flows, and I build prototypes early so teams can decide fast.",
-    "zh-tw": "我習慣先問清楚問題，而不是用猜的。我把複雜的規則整理成簡單的流程，也會盡早做出原型，讓團隊更快做決定。"
+    "note": "標題下第一段。{PAYPAY} 會變成有 hover 卡片的連結，請保留這個記號",
+    "en": "I care about systems thinking, asking the right questions, and turning messy problems into products people trust. At {PAYPAY}, I make paying and managing money simple for 65M+ users, even when the rules behind it are not.",
+    "zh-tw": "我在意系統思考、問對問題，也擅長把棘手的問題變成值得信任的產品。在 {PAYPAY}，我讓超過 6,500 萬位使用者付款和管理金錢都很簡單，即使背後的規則一點也不簡單。"
+  },
+  {
+    "key": "home.previously",
+    "section": "首頁 · 開頭",
+    "note": "標題下第二段。{CAROUSELL} 會變成有 hover 卡片的連結，請保留這個記號",
+    "en": "Previously, I worked on growth and engagement at {CAROUSELL} across Taiwan and Singapore, where I rebuilt sign-up and the notification center.",
+    "zh-tw": "在這之前，我在 {CAROUSELL} 負責成長與互動相關的設計，橫跨台灣和新加坡市場，重新設計了註冊流程和通知中心。"
   },
   {
     "key": "home.outside",
     "section": "首頁 · 開頭",
-    "note": "標題下第二段。{AAPD} 會變成有 hover 卡片的連結，請保留這個記號",
+    "note": "標題下第三段。{AAPD} 會變成有 hover 卡片的連結，請保留這個記號",
     "en": "Outside work, I mentor designers at {AAPD} and build small tools with code and AI.",
     "zh-tw": "工作之外，我在 {AAPD} 擔任設計導師，也用程式和 AI 做一些小工具。"
   },

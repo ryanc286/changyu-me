@@ -1,6 +1,5 @@
 ---
 import { getCollection } from 'astro:content';
-import OrgLink from './OrgLink.astro';
 import { companies } from '../data/companies';
 import { t, tOpt, type Lang } from '../i18n/ui';
 
@@ -24,17 +23,7 @@ const groups = [...companies]
     {
       groups.map(({ company, cases }) => (
         <article class="group" aria-label={company.name}>
-          <h3 class="company-name">
-            <OrgLink
-              name={company.name}
-              href={company.href}
-              logo={company.logo}
-              logoWidth={company.logoWidth}
-              logoHeight={company.logoHeight}
-              logoDisplayHeight={company.logoDisplayHeight}
-              description={t(lang, `org.${company.key}`)}
-            />
-          </h3>
+          <h3 class="company-name">{company.name}</h3>
           <p class="company-summary">{t(lang, `company.${company.key}.summary`)}</p>
           <ul class="projects" data-hover-list>
             {cases.map(({ id, data }) => {
@@ -82,23 +71,25 @@ const groups = [...companies]
 </section>
 
 <style>
+  /* One cell per company, divided by lines like the Tools list */
   .groups {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
-    margin-top: var(--space-3);
+    border-bottom: 1px solid var(--color-line);
   }
   .group {
     display: flex;
     flex-direction: column;
+    padding: var(--space-3) 0 18px;
+    border-top: 1px solid var(--color-line);
   }
   .company-name {
-    margin: 0 0 var(--space-1);
+    margin: 0 0 2px;
     font-size: var(--text-base);
     font-weight: 600;
   }
   .company-summary {
-    margin: 0 0 var(--space-3);
+    margin: 0 0 var(--space-1);
     color: var(--color-text-body);
   }
 
@@ -109,7 +100,7 @@ const groups = [...companies]
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-1) var(--space-4);
+    gap: 2px var(--space-4);
   }
   .project {
     display: inline-block;
