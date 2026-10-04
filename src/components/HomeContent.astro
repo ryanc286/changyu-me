@@ -48,15 +48,6 @@ const { lang } = Astro.props;
     margin: 0;
     color: var(--color-text-body);
   }
-  /* Desktop: left-aligned, starting exactly where a case study card's edge sits
-     (40px). Hover the strip beside an open case and the first letters peek out. */
-  @media (min-width: 768px) {
-    .stack {
-      margin-left: 0;
-      padding-left: 40px;
-      max-width: calc(var(--width-content) + 40px + var(--gutter));
-    }
-  }
   @media (max-width: 520px) {
     .stack {
       gap: var(--space-5);
