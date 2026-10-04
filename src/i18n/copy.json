@@ -42,21 +42,21 @@
     "zh-tw": "我負責設計錢怎麼進出 PayPay 錢包，從加值、ATM 到信用卡付款，服務超過 6,500 萬位使用者。"
   },
   {
-    "key": "work.credit-card-voucher.title",
+    "key": "work.credit-card-sunset.title",
     "section": "首頁 · 作品",
     "note": "專案名稱（PayPay）",
-    "en": "Credit Card Voucher",
-    "zh-tw": "Credit Card Voucher"
+    "en": "Credit Card Sunset",
+    "zh-tw": "Credit Card Sunset"
   },
   {
-    "key": "work.credit-card-voucher.summary",
+    "key": "work.credit-card-sunset.summary",
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的一句話",
-    "en": "Keeping card users paying after outside cards were cut off",
-    "zh-tw": "外部信用卡停用後，讓使用者還能順利付款"
+    "en": "Moving card users to a new way to pay, with vouchers as the bridge",
+    "zh-tw": "外部信用卡停用後，用 voucher 帶使用者順利換到新的付款方式"
   },
   {
-    "key": "work.credit-card-voucher.result",
+    "key": "work.credit-card-sunset.result",
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的成果數字，留空就不顯示",
     "en": "[KEY RESULT]",
@@ -108,8 +108,8 @@
     "key": "company.carousell.summary",
     "section": "首頁 · 作品",
     "note": "Carousell 名稱下的一段話",
-    "en": "I worked on growth and engagement across Taiwan and Singapore, from the first sign-up to the notifications that bring people back.",
-    "zh-tw": "我在台灣和新加坡市場負責成長與互動，從第一次註冊，到讓使用者回來的通知。"
+    "en": "I worked on growth and engagement across Taiwan and Singapore, and on the systems behind them, from sign-up and notifications to the design system and internal tools.",
+    "zh-tw": "我在台灣和新加坡市場負責成長與互動，也打造背後的系統，從註冊、通知，到設計系統和內部工具。"
   },
   {
     "key": "work.sign-up-flow.title",
@@ -152,6 +152,48 @@
     "note": "hover 預覽裡的成果數字，留空就不顯示",
     "en": "+20% CTR, +11% order completion",
     "zh-tw": "CTR +20%、訂單完成率 +11%"
+  },
+  {
+    "key": "work.design-system-revamp.title",
+    "section": "首頁 · 作品",
+    "note": "專案名稱（Carousell）",
+    "en": "Design System Revamp",
+    "zh-tw": "Design System Revamp"
+  },
+  {
+    "key": "work.design-system-revamp.summary",
+    "section": "首頁 · 作品",
+    "note": "hover 預覽裡的一句話",
+    "en": "Rebuilding components and docs so designers and engineers speak the same language",
+    "zh-tw": "重建元件和文件，讓設計師和工程師說同一種語言"
+  },
+  {
+    "key": "work.design-system-revamp.result",
+    "section": "首頁 · 作品",
+    "note": "hover 預覽裡的成果數字，留空就不顯示",
+    "en": "+32% component coverage, 11% faster handoff",
+    "zh-tw": "元件覆蓋率 +32%、交付時間縮短 11%"
+  },
+  {
+    "key": "work.internal-tool.title",
+    "section": "首頁 · 作品",
+    "note": "專案名稱（Carousell）",
+    "en": "Marketing Tools",
+    "zh-tw": "Marketing Tools"
+  },
+  {
+    "key": "work.internal-tool.summary",
+    "section": "首頁 · 作品",
+    "note": "hover 預覽裡的一句話",
+    "en": "Self-serve tools so the marketing team can launch campaigns without engineers",
+    "zh-tw": "讓行銷團隊不用找工程師，就能自己上架活動"
+  },
+  {
+    "key": "work.internal-tool.result",
+    "section": "首頁 · 作品",
+    "note": "hover 預覽裡的成果數字，留空就不顯示",
+    "en": "",
+    "zh-tw": ""
   },
   {
     "key": "section.tools",
