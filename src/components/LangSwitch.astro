@@ -17,12 +17,14 @@ const options = (Object.keys(languages) as Lang[]).filter((l) => alternates[l]);
   {
     options.map((l) =>
       l === lang ? (
-        <span class="opt is-active" aria-current="true" lang={languages[l].htmlLang}>
+        <span class="opt is-active" aria-current="true" lang={languages[l].htmlLang} style={`view-transition-name: lang-${l}`}>
+          <span class="pill" aria-hidden="true" />
           {languages[l].label}
         </span>
       ) : (
         <a
           class="opt"
+          style={`view-transition-name: lang-${l}`}
           href={alternates[l]}
           hreflang={languages[l].htmlLang}
           lang={languages[l].htmlLang}
@@ -72,12 +74,25 @@ const options = (Object.keys(languages) as Lang[]).filter((l) => alternates[l]);
     color: var(--color-text);
   }
   .is-active {
-    background: #ffffff;
+    position: relative;
+    isolation: isolate;
     color: #1a1a1a;
-    box-shadow: 0 1px 3px rgb(0 0 0 / 0.18);
   }
   :global([data-theme='dark']) .is-active {
-    background: #f2f2ef;
     color: #141413;
+  }
+  /* The white pill is its own element so it can slide between pages
+     (view transition) while the labels stay put. */
+  .pill {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.18);
+    view-transition-name: lang-pill;
+  }
+  :global([data-theme='dark']) .pill {
+    background: #f2f2ef;
   }
 </style>
