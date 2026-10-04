@@ -16,7 +16,9 @@ interface Props {
 const { lang = defaultLang, alternates = {} } = Astro.props;
 const title = Astro.props.title ?? t(lang, 'meta.title');
 const description = Astro.props.description ?? t(lang, 'meta.description');
-const canonical = new URL(Astro.url.pathname, Astro.site);
+// Clean URL (no .html, no /index) to match how Vercel serves pages
+const cleanPath = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/';
+const canonical = new URL(cleanPath, Astro.site);
 const altEntries = Object.entries(alternates) as [Lang, string][];
 const hasOtherLang = altEntries.some(([l]) => l !== lang);
 ---
