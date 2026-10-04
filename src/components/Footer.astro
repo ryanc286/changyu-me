@@ -1,13 +1,19 @@
 ---
+import { t, defaultLang, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang?: Lang;
+}
+const { lang = defaultLang } = Astro.props;
 const links = [
   { label: 'LinkedIn', href: '[LINKEDIN URL]' },
   { label: 'Email', href: 'mailto:[EMAIL]' },
-  { label: 'Resume', href: '/resume.pdf' },
+  { label: t(lang, 'footer.resume'), href: '/resume.pdf' },
 ];
 ---
 
 <footer>
-  <nav aria-label="Elsewhere">
+  <nav aria-label={t(lang, 'footer.nav')}>
     {
       links.map((link, i) => (
         <>

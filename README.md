@@ -39,3 +39,17 @@ Write the case study here.
 ```
 
 The homepage list updates on its own. Set `draft: true` to hide a case.
+
+## Languages
+
+English is the default (`/`), Traditional Chinese lives under `/zh-tw`.
+
+| What | File |
+|---|---|
+| Interface text in both languages | `src/i18n/ui.ts` |
+| Homepage intro (both languages) | `src/components/Home.astro` |
+| Chinese summary / result for a case | `zh:` block in each `src/content/work/*.mdx` (falls back to English) |
+
+Chinese font: IBM Plex Sans TC, self-hosted in `public/fonts/plex-sans-tc/` and split by
+unicode-range (`src/styles/plex-sans-tc.css`), so a page only downloads the slices it uses.
+Generated from the `@ibm/plex-sans-tc` npm package.

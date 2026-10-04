@@ -1,21 +1,28 @@
 ---
 import '../styles/global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import LangSwitch from '../components/LangSwitch.astro';
+import { languages, t, defaultLang, type Lang } from '../i18n/ui';
 
 interface Props {
+  lang?: Lang;
   title?: string;
   description?: string;
+  /* Same page in each language, e.g. { en: '/', 'zh-tw': '/zh-tw' }.
+     The language switch only shows when another language exists. */
+  alternates?: Partial<Record<Lang, string>>;
 }
 
-const {
-  title = 'Chang Yu · Product Designer',
-  description = 'Senior Product Designer making complex things clear. Fintech at PayPay, growth at Carousell.',
-} = Astro.props;
+const { lang = defaultLang, alternates = {} } = Astro.props;
+const title = Astro.props.title ?? t(lang, 'meta.title');
+const description = Astro.props.description ?? t(lang, 'meta.description');
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const altEntries = Object.entries(alternates) as [Lang, string][];
+const hasOtherLang = altEntries.some(([l]) => l !== lang);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={languages[lang].htmlLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -42,15 +49,44 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {
+      hasOtherLang &&
+        altEntries.map(([l, path]) => (
+          <link rel="alternate" hreflang={languages[l].htmlLang} href={new URL(path, Astro.site)} />
+        ))
+    }
+    {hasOtherLang && alternates.en && <link rel="alternate" hreflang="x-default" href={new URL(alternates.en, Astro.site)} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content={languages[lang].ogLocale} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
-    <ThemeToggle />
+    <div class="top-controls">
+      {hasOtherLang && <LangSwitch lang={lang} alternates={alternates} />}
+      <ThemeToggle lang={lang} />
+    </div>
     <slot />
   </body>
 </html>
+
+<style>
+  .top-controls {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  @media (min-width: 768px) {
+    .top-controls {
+      top: 18px;
+      right: 18px;
+    }
+  }
+</style>

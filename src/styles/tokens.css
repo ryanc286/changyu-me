@@ -20,7 +20,7 @@
   --shadow-float: 0 8px 24px rgb(0 0 0 / 0.08);
 
   /* Type */
-  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-sans: 'IBM Plex Sans', 'IBM Plex Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
   --text-sm: 0.875rem;   /* 14px */
   --text-base: 1rem;     /* 16px */

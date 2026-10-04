@@ -1,13 +1,19 @@
 ---
 import { getCollection } from 'astro:content';
+import { t, type Lang } from '../i18n/ui';
 
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const zh = lang === 'zh-tw';
 const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
 );
 ---
 
 <section aria-labelledby="work-title">
-  <h2 id="work-title" class="section-title">Selected work</h2>
+  <h2 id="work-title" class="section-title">{t(lang, 'section.work')}</h2>
   <ul class="list" data-hover-list>
     {
       items.map(({ id, data }) => (
@@ -16,8 +22,8 @@ const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
             <span class="main">
               <span class="title">{data.title}</span>
               <span class="meta">
-                {data.summary}
-                {data.result && <> · {data.result}</>}
+                {(zh && data.zh?.summary) || data.summary}
+                {data.result && <> · {(zh && data.zh?.result) || data.result}</>}
               </span>
             </span>
             <span class="company">{data.company}</span>
@@ -28,7 +34,7 @@ const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
   </ul>
 
   <!-- Floating cover preview. Desktop only, follows the cursor. -->
-  <div class="preview" data-preview aria-hidden="true">
+  <div class="preview" data-preview data-cover-word={t(lang, 'preview.cover')} aria-hidden="true">
     <img data-preview-img alt="" />
     <span class="preview-fallback" data-preview-fallback></span>
   </div>
@@ -194,7 +200,7 @@ const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
           img.src = cover;
           preview.classList.remove('no-image');
         } else {
-          fallback.textContent = `${row.dataset.title} cover`;
+          fallback.textContent = `${row.dataset.title} ${preview.dataset.coverWord ?? 'cover'}`;
           preview.classList.add('no-image');
         }
         if (!preview.classList.contains('is-visible')) {

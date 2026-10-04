@@ -2,6 +2,7 @@
 @import '@fontsource/ibm-plex-sans/500.css';
 @import '@fontsource/ibm-plex-sans/600.css';
 @import '@fontsource/ibm-plex-mono/400.css';
+@import './plex-sans-tc.css';
 @import './tokens.css';
 
 *,
@@ -61,4 +62,17 @@ img {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }
+}
+
+/* Traditional Chinese: a bit more line height and air between characters */
+:lang(zh-Hant-TW) body,
+html:lang(zh-Hant-TW) {
+  --leading: 1.85;
+}
+html:lang(zh-Hant-TW) body {
+  letter-spacing: 0.02em;
+}
+html:lang(zh-Hant-TW) h1 {
+  line-height: 1.55;
+  letter-spacing: 0.03em;
 }

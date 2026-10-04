@@ -1,12 +1,18 @@
 ---
+import { t, defaultLang, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang?: Lang;
+}
+const { lang = defaultLang } = Astro.props;
 /*
-  Light / dark switch, fixed top right.
+  Light / dark switch, top right (positioned by Base.astro).
   The knob slides; page colors ease to the new theme at the same time.
   Visitors who prefer reduced motion get an instant switch (see global.css).
 */
 ---
 
-<button class="theme-switch" type="button" role="switch" aria-checked="false" aria-label="Dark mode" data-theme-toggle>
+<button class="theme-switch" type="button" role="switch" aria-checked="false" aria-label={t(lang, 'theme.label')} data-theme-toggle>
   <span class="track" aria-hidden="true">
     <span class="knob">
       <svg class="icon icon-sun" width="12" height="12" viewBox="0 0 24 24" fill="none">
@@ -27,10 +33,6 @@
 <style>
   /* The button is a 60×44 hit area; the visible switch sits inside it */
   .theme-switch {
-    position: fixed;
-    top: 12px;
-    right: 12px;
-    z-index: 50;
     width: 60px;
     height: 44px;
     display: grid;
@@ -119,12 +121,6 @@
     rotate: 0deg;
   }
 
-  @media (min-width: 768px) {
-    .theme-switch {
-      top: 18px;
-      right: 18px;
-    }
-  }
 </style>
 
 <style is:global>
