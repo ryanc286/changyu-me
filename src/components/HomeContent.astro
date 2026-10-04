@@ -4,6 +4,7 @@ import WorkList from './WorkList.astro';
 import ToolList from './ToolList.astro';
 import Footer from './Footer.astro';
 import CopyWithLinks from './CopyWithLinks.astro';
+import HoverPreview from './HoverPreview.astro';
 import { t, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -23,6 +24,7 @@ const { lang } = Astro.props;
     <WorkList lang={lang} />
     <ToolList lang={lang} />
     <Footer lang={lang} />
+    <HoverPreview lang={lang} />
   </main>
 
 <style>

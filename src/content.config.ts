@@ -26,6 +26,7 @@ const tools = defineCollection({
     // Text (title, type, summary) lives in src/i18n/copy.json under tools.<file name>.*
     order: z.number(),
     link: z.string().optional(),  // external link, if the tool lives elsewhere
+    cover: z.string().optional(), // preview image on the homepage, e.g. /images/tools/coach-match.jpg
   }),
 });
 

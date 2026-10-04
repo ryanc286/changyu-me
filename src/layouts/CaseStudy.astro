@@ -25,7 +25,8 @@ interface Props {
 }
 const { title, subtitle, description, icon, headings, meta, next } = Astro.props;
 const shownMeta = meta.filter((m) => m.value);
-const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
+// Section nav only when the page has sections
+const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : [];
 ---
 
 <Base title={`${title} · Chang Yu`} description={description ?? subtitle} page="case">
@@ -45,7 +46,7 @@ const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
         <div class="case-grid">
           <aside class="side">
             <header class="head">
-              <a href="/" class="back" aria-label="Back to home">
+              <a href="/" class:list={['back', { 'no-icon': !icon }]} aria-label="Back to home">
                 {icon && <img class="face face-icon" src={icon} alt="" width="32" height="32" />}
                 <span class="face face-arrow" aria-hidden="true">
                   <svg viewBox="0 0 16 16" width="16" height="16"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -314,7 +315,8 @@ const nav = [{ slug: 'intro', text: 'Intro' }, ...headings];
     opacity: 0;
   }
   .back:hover .face-arrow,
-  .back:focus-visible .face-arrow {
+  .back:focus-visible .face-arrow,
+  .no-icon .face-arrow {
     opacity: 1;
   }
   .title h1,

@@ -16,9 +16,17 @@ const items = (await getCollection('tools')).sort((a, b) => a.data.order - b.dat
     {
       items.map(({ id, data }) => (
         <li>
-          <a href={data.link ?? `/tools/${id}`} class="row">
+          <a
+            href={data.link ?? `/tools/${id}`}
+            class="row"
+            data-preview-link
+            data-cover={data.cover}
+            data-title={t(lang, `tools.${id}.title`)}
+            data-summary={t(lang, `tools.${id}.summary`)}>
             <span class="title">{t(lang, `tools.${id}.title`)}</span>
             <span class="type">{t(lang, `tools.${id}.type`)}</span>
+            {/* Screen readers and keyboard users get the description too */}
+            <span class="sr-only">{t(lang, `tools.${id}.summary`)}</span>
           </a>
         </li>
       ))

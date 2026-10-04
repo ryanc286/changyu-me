@@ -220,8 +220,8 @@
     "key": "tools.illustration-inspector.summary",
     "section": "首頁 · 工具",
     "note": "工具頁上的一句話說明",
-    "en": "[ONE LINE]",
-    "zh-tw": "[ONE LINE]"
+    "en": "A Figma plugin that checks illustrations against PayPay's library rules and points to the exact layer to fix.",
+    "zh-tw": "一個 Figma 外掛，依照 PayPay 插畫庫的規範檢查插畫，並直接指出要修正的圖層。"
   },
   {
     "key": "tools.coach-match.title",
