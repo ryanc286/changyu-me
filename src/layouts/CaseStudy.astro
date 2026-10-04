@@ -21,11 +21,8 @@ interface Props {
   icon?: string;
   headings: { slug: string; text: string }[];
   meta: { label: string; value?: string }[];
-  /* Company or product site, shown at the bottom of the left column */
-  site?: string;
 }
-const { title, subtitle, description, icon, headings, meta, site } = Astro.props;
-const siteLabel = site ? new URL(site).host.replace(/^www\./, '') : '';
+const { title, subtitle, description, icon, headings, meta } = Astro.props;
 const shownMeta = meta.filter((m) => m.value);
 // Section nav only when the page has sections
 const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : [];
@@ -56,7 +53,7 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
               </a>
               <div class="title">
                 <h1>{title}</h1>
-                {subtitle && <p>{subtitle}</p>}
+                {subtitle && <p>{subtitle.replace(/-/g, '\u2011')}</p>}
               </div>
             </header>
 
@@ -64,7 +61,6 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
               {nav.map((h, i) => <a href={`#${h.slug}`} data-slug={h.slug} aria-current={i === 0 ? 'true' : undefined}>{h.text}</a>)}
             </nav>
 
-            {site && <a class="site" href={site} target="_blank" rel="noopener">{siteLabel}</a>}
           </aside>
 
           <main class="body">
@@ -314,22 +310,23 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
   .no-icon .face-arrow {
     opacity: 1;
   }
-  .title h1,
-  .title p {
+  .title h1 {
     margin: 0;
-    font-size: 1.125rem;
-    line-height: 1.35;
-    font-weight: 500;
+    font-size: 1.375rem;
+    line-height: 1.25;
+    font-weight: 600;
+    color: var(--color-text);
     text-wrap: balance;
   }
   .title p {
-    font-weight: 400;
+    margin: 6px 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.45;
     color: var(--color-text-muted);
+    /* Hyphens in the subtitle are non-breaking (see markup), so lines split between phrases */
+    text-wrap: balance;
   }
   .toc {
-    display: none;
-  }
-  .site {
     display: none;
   }
 
@@ -433,25 +430,17 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
       width: fit-content;
       font-size: var(--text-sm);
       line-height: 1.2;
-      color: var(--color-text-muted);
+      /* Quieter than body text, so the current section stands out */
+      color: color-mix(in srgb, var(--color-text-muted) 72%, var(--card-bg));
       text-decoration: none;
       transition: color 160ms var(--ease-out);
     }
-    .toc a:hover,
+    .toc a:hover {
+      color: var(--color-text-muted);
+    }
     .toc a[aria-current] {
       color: var(--color-text);
-    }
-    .site {
-      display: block;
-      width: fit-content;
-      padding-left: 2px;
-      font-size: var(--text-sm);
-      color: var(--color-text-muted);
-      text-decoration: none;
-      transition: color 160ms var(--ease-out);
-    }
-    .site:hover {
-      color: var(--color-text);
+      font-weight: 500;
     }
     .body {
       margin-top: 0;

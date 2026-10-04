@@ -6,7 +6,6 @@ import Stats from '../components/case/Stats.astro';
 import Hypothesis from '../components/case/Hypothesis.astro';
 import MediaRow from '../components/case/MediaRow.astro';
 import { t } from '../i18n/ui';
-import { companies } from '../data/companies';
 
 export async function getStaticPaths() {
   const work = (await getCollection('work', ({ data }) => !data.draft)).sort(
@@ -23,14 +22,12 @@ const { Content, headings } = await render(entry);
 const d = entry.data;
 const title = t('en', `work.${entry.id}.title`);
 const summary = t('en', `work.${entry.id}.summary`);
-const company = companies.find((c) => c.name === d.company);
 ---
 
 <CaseStudy
   title={title}
   subtitle={d.subtitle ?? summary}
   description={summary}
-  site={company?.href}
   headings={headings.filter((h) => h.depth === 2)}
   meta={[
     { label: 'Role', value: d.role },
