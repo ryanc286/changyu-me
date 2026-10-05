@@ -13,7 +13,6 @@
 */
 import Base from './Base.astro';
 import HomeContent from '../components/HomeContent.astro';
-import Lightbox from '../components/case/Lightbox.astro';
 
 interface Props {
   title: string;
@@ -92,7 +91,6 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
       <div class="fade fade-bottom" aria-hidden="true"></div>
     </article>
   </div>
-  <Lightbox />
 </Base>
 
 <script>
@@ -346,13 +344,6 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
   .prose > :global(.media-row),
   .prose > :global(figure.annotated) {
     max-width: none;
-  }
-  /* An image row followed by the annotated screen reads as one group */
-  .prose > :global(.media-row:has(+ figure.annotated)) {
-    margin-bottom: 16px;
-  }
-  .prose > :global(.media-row + figure.annotated) {
-    margin-top: 16px;
   }
   .prose > :global(figure.media:first-child) {
     margin-top: 0;
