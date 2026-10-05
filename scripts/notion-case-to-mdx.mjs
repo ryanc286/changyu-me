@@ -7,6 +7,8 @@
   Notion conventions (also explained on the Notion page):
   - Callout with the 🖼️ icon, text "id: label"  -> <Media id label />
       Two or more "id: label" lines -> <MediaRow>, images side by side.
+      If a bullet list with one bullet per image comes right before it, each
+      bullet becomes the text under its image.
       Uses public/images/<slug>/<id>.webp|jpg|png when the file exists.
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
@@ -68,6 +70,16 @@ for (let i = 0; i < lines.length; i++) {
         return { id: unescape(id.trim()), label: unescape(rest.join(':').trim()), ...(src ? { src } : {}) };
       });
       if (images.length > 1) {
+        // A bullet list right before the row, one bullet per image, becomes the text
+        // under each image ("- **Title.** Description").
+        const prev = blocks.slice(-images.length);
+        if (prev.length === images.length && prev.every((b) => b.type === 'list' && b.raw?.startsWith('- '))) {
+          blocks.splice(-images.length);
+          prev.forEach((b, k) => {
+            const m = unescape(b.raw.slice(2)).match(/^\*\*(.+?)\*\*\s*(.*)$/);
+            images[k] = { ...images[k], ...(m ? { title: m[1], text: m[2] } : { text: unescape(b.raw.slice(2)) }) };
+          });
+        }
         blocks.push({ type: 'block', md: `<MediaRow items={${JSON.stringify(images)}} />` });
       } else {
         const { id, label, src } = images[0];
@@ -103,7 +115,7 @@ for (let i = 0; i < lines.length; i++) {
   }
 
   const isList = /^(\s*)(- |\d+\. )/.test(line);
-  blocks.push({ type: isList ? 'list' : 'block', md: mdxText(line) });
+  blocks.push({ type: isList ? 'list' : 'block', md: mdxText(line), raw: line });
 }
 
 // Blank line between blocks; list items in the same list stay together

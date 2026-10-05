@@ -2,17 +2,30 @@
 /*
   Two or more images side by side in a case study (one row on desktop,
   stacked on phones). From a 🖼️ callout in Notion with one "id: label" per line.
+  Items can carry a title and text, shown under the image.
 */
 import Media from './Media.astro';
 
 interface Props {
-  items: { id: string; label: string; src?: string }[];
+  items: { id: string; label: string; src?: string; title?: string; text?: string }[];
 }
 const { items } = Astro.props;
+const hasText = items.some((m) => m.title || m.text);
 ---
 
-<div class="media-row" style={`--cols: ${items.length}`}>
-  {items.map((m) => <Media id={m.id} label={m.label} src={m.src} />)}
+<div class:list={['media-row', { 'has-text': hasText }]} style={`--cols: ${items.length}`}>
+  {
+    items.map((m) => (
+      <div class="item">
+        <Media id={m.id} label={m.label} src={m.src} />
+        {(m.title || m.text) && (
+          <p>
+            {m.title && <strong>{m.title}</strong>} {m.text}
+          </p>
+        )}
+      </div>
+    ))
+  }
 </div>
 
 <style>
@@ -22,8 +35,15 @@ const { items } = Astro.props;
     gap: 16px;
     margin: var(--space-5) 0;
   }
-  .media-row > :global(figure.media) {
+  .media-row.has-text {
+    column-gap: 24px;
+    row-gap: 40px;
+  }
+  .item :global(figure.media) {
     margin: 0;
+  }
+  .item p {
+    margin: 16px 0 0;
   }
   @media (max-width: 600px) {
     .media-row {
