@@ -48,9 +48,11 @@ Both fill in the amount with one tap. The only difference is where the suggestio
 
 ## Details that mattered
 
-- **No auto-fill.** My first version filled in the amount for users. It felt too pushy, so the suggestion became something users choose to tap.
-- **Right timing.** Users top up about every two weeks, so the suggestion shows at the start of the month, then hides for two weeks.
-- **Clean numbers.** One-time spikes like investment payments are left out, and the amount is rounded up to the nearest ¥1,000. ¥14,563 becomes ¥15,000.
+A few small choices decided whether the design felt helpful or just got in the way.
+
+- **Show it when people top up more.** People top up larger amounts at the start of the month, and most top up about every two weeks. So it shows for the first two weeks, then hides until next month.
+- **Count only regular spending.** Payments that don't happen every month, like investments, are left out, so one unusual payment doesn't push the amount too high.
+- **Round up to a clean number.** ¥14,563 becomes ¥15,000. It's easier to act on, and nudges people to top up a little more.
 
 ## Small fixes along the way
 
