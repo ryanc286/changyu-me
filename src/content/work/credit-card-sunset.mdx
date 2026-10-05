@@ -21,15 +21,17 @@ Before designing anything, I talked to users who paid with a linked card. Most o
 
 ## When the obvious answer got blocked
 
-The obvious fix was a top-up: charge the card, load the balance, pay from that. Then legal flagged it. A new kind of stored balance would count as e-money under Japan's Payment Services Act. That meant a new license and anti-money-laundering work we could not finish in time.
+The obvious fix was a top-up: charge the card, load the balance, pay from that. But legal flagged it. A new stored balance counts as e-money in Japan, and that meant a new license we could not get in time.
 
-So I looked for a path inside the rules. PayPay already had vouchers, and vouchers can't be transferred, which keeps them outside those rules. I proposed a new type: Credit Card Vouchers. Users buy a voucher with their card, keep their rewards, and pay with PayPay as usual.
+PayPay already had vouchers, and vouchers stay outside those rules because they can't be transferred. So I proposed Credit Card Vouchers: buy a voucher with your card, keep your rewards, and pay with PayPay as usual. Legal needed no new license, business kept its users, and engineering reused the voucher system. It was approved quickly.
 
-I pitched it to each team around its own risk. Legal needed no new license. Business kept the users most likely to leave. Engineering built on a voucher system that already existed. It was approved without another round of debate.
+<Media id="options" label="A top-up needs a new license, a voucher does not" src="/images/credit-card-sunset/options.webp" />
 
-## A softer cutoff, backed by data
+## A softer cutoff
 
-Engineering wanted a hard cutoff: pick a date, turn it off, send a notice. It was simpler to build. Support data told another story. Unexpected errors at checkout made people retry again and again and lose trust in the app, and in Japan a failed payment at the register is embarrassing. I shared the data and proposed a transition instead: notice ahead of the date, then a guided first voucher purchase before card payments stop. Engineering agreed.
+Engineering wanted a hard cutoff on a set date. But support data showed that surprise errors at checkout make people retry, lose trust, and feel embarrassed at the register. So I proposed a transition instead: a notice before the date, then a guided first voucher purchase. Engineering agreed.
+
+<Media id="cutoff" label="A hard cutoff compared with the transition that shipped" src="/images/credit-card-sunset/cutoff.webp" />
 
 ## Design
 
