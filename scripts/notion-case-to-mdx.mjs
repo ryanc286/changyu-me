@@ -9,6 +9,8 @@
       Two or more "id: label" lines -> <MediaRow>, images side by side.
       If a bullet list with one bullet per image comes right before it, each
       bullet becomes the text under its image.
+  - Callout with the 📍 icon -> <Annotated>, a phone screen with callouts:
+      first line "id: label", then one "Title | Explanation" line per callout.
       Uses public/images/<slug>/<id>.webp|jpg|png when the file exists.
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
@@ -59,6 +61,23 @@ for (let i = 0; i < lines.length; i++) {
     const inner = [];
     while (++i < lines.length && !lines[i].startsWith('</callout>')) inner.push(lines[i].trim());
     const text = inner.join(' ').trim();
+    if (line.includes('📍')) {
+      // Annotated screen: "id: label", then one "Title | Explanation" line per callout
+      const [head, ...rest] = inner.filter(Boolean);
+      const [id, ...label] = head.split(':');
+      const src = ['webp', 'png', 'jpg']
+        .map((ext) => `/images/${slug}/${id.trim()}.${ext}`)
+        .find((path) => existsSync(new URL(`../public${path}`, import.meta.url)));
+      const items = rest.map((l) => {
+        const [title, ...text] = unescape(l).split('|');
+        return { title: title.trim(), text: text.join('|').trim() };
+      });
+      blocks.push({
+        type: 'block',
+        md: `<Annotated id="${attr(id.trim())}" label="${attr(label.join(':').trim())}" src="${src ?? ''}" items={${JSON.stringify(items)}} />`,
+      });
+      continue;
+    }
     if (line.includes('🖼')) {
       // One "id: label" line per image. Two or more lines become a side-by-side row.
       const images = inner.filter(Boolean).map((l) => {

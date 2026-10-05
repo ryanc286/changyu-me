@@ -341,7 +341,8 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
     max-width: 580px;
   }
   .prose > :global(figure.media),
-  .prose > :global(.media-row) {
+  .prose > :global(.media-row),
+  .prose > :global(figure.annotated) {
     max-width: none;
   }
   .prose > :global(figure.media:first-child) {

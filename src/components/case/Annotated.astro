@@ -1,0 +1,339 @@
+---
+/*
+  A phone screen with callouts that grow out of it as you scroll to it.
+  From a 📍 callout in Notion:
+    first line   "id: label"            (image at public/images/<slug>/<id>.webp)
+    other lines  "Title | Explanation"  (one per callout, top to bottom)
+  Where each dot sits on the image is set in POINTS below, by image id,
+  as [x%, y%] of the image.
+*/
+interface Item {
+  title: string;
+  text: string;
+}
+interface Props {
+  id: string;
+  label: string;
+  src: string;
+  items: Item[];
+}
+const { id, label, src, items } = Astro.props;
+
+const POINTS: Record<string, [number, number][]> = {
+  'purchase-screen': [
+    [59.5, 25.3], // amount input
+    [72.5, 30.1], // ¥10,000 steps hint
+    [90.4, 36.2], // quick amount buttons
+    [86.8, 53.0], // card and limit
+  ],
+};
+const points = POINTS[id] ?? [];
+---
+
+<figure class="annotated" data-annotated>
+  <div class="stage">
+    <div class="phone">
+      <img src={src} alt={label} loading="lazy" />
+      {
+        items.map((_, i) =>
+          points[i] ? (
+            <span
+              class="dot"
+              style={`left:${points[i][0]}%;top:${points[i][1]}%;--i:${i}`}
+              data-dot={i}
+              aria-hidden="true"
+            >
+              <span class="num">{i + 1}</span>
+            </span>
+          ) : null,
+        )
+      }
+    </div>
+    <svg class="lines" aria-hidden="true">
+      {items.map((_, i) => <path data-line={i} style={`--i:${i}`} pathLength="1" />)}
+    </svg>
+    <ol class="notes">
+      {
+        items.map((it, i) => (
+          <li class="note" data-note={i} style={`--i:${i}`}>
+            <span class="num" aria-hidden="true">{i + 1}</span>
+            <span class="body">
+              <strong>{it.title}</strong>
+              <span>{it.text}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</figure>
+
+<style>
+  .annotated {
+    margin: var(--space-5) 0;
+  }
+  .stage {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    overflow: hidden;
+    /* Same blue-gray as the other images in this case */
+    background:
+      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
+      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
+    container-type: inline-size;
+  }
+
+  /* Phone: left of center, nearly full height */
+  .phone {
+    position: absolute;
+    top: 7%;
+    bottom: 7%;
+    left: 15%;
+    aspect-ratio: 1447 / 2922;
+  }
+  .phone img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.28));
+  }
+
+  .dot {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    box-shadow:
+      0 0 0 3px #fff,
+      0 2px 8px rgb(0 0 0 / 0.3);
+  }
+  .dot .num {
+    display: none;
+  }
+
+  .lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+    /* Keeps the white line visible where it crosses the white screen */
+    filter: drop-shadow(0 0 1px rgb(0 0 0 / 0.5));
+  }
+  .lines path {
+    fill: none;
+    stroke: rgb(255 255 255 / 0.85);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+
+  .notes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .note {
+    position: absolute;
+    left: 58%;
+    right: 5%;
+    max-width: 280px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgb(255 255 255 / 0.96);
+    color: #1a1a1a;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.16);
+    font-size: 0.78125rem;
+    line-height: 1.4;
+  }
+  .note .num {
+    display: none;
+  }
+  .note .body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .note strong {
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  .note .body span {
+    color: #5e5e5b;
+  }
+
+  /* Animation: plays once when the block comes into view (class set by the script) */
+  .annotated.ready .phone {
+    opacity: 0;
+    translate: 0 16px;
+    transition:
+      opacity 600ms var(--ease-out),
+      translate 600ms var(--ease-out);
+  }
+  .annotated.ready .dot {
+    opacity: 0;
+    scale: 0.4;
+    transition:
+      opacity 300ms var(--ease-out),
+      scale 300ms var(--ease-out);
+    transition-delay: calc(450ms + var(--i) * 150ms);
+  }
+  .annotated.ready .lines path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 500ms var(--ease-out);
+    transition-delay: calc(600ms + var(--i) * 150ms);
+  }
+  .annotated.ready .note {
+    opacity: 0;
+    translate: -8px 0;
+    transition:
+      opacity 400ms var(--ease-out),
+      translate 400ms var(--ease-out);
+    transition-delay: calc(950ms + var(--i) * 150ms);
+  }
+  .annotated.ready.in .phone,
+  .annotated.ready.in .note {
+    opacity: 1;
+    translate: 0 0;
+  }
+  .annotated.ready.in .dot {
+    opacity: 1;
+    scale: 1;
+  }
+  .annotated.ready.in .lines path {
+    stroke-dashoffset: 0;
+  }
+
+  /* Phones: no room on the side, so dots get numbers and notes become a list below */
+  @media (max-width: 600px) {
+    .stage {
+      aspect-ratio: auto;
+      padding: 28px 20px 24px;
+    }
+    .phone {
+      position: relative;
+      inset: auto;
+      width: 62%;
+      margin: 0 auto;
+    }
+    .phone img {
+      height: auto;
+    }
+    .dot {
+      width: 22px;
+      height: 22px;
+      margin: -11px 0 0 -11px;
+      display: grid;
+      place-items: center;
+      background: #1a1a1a;
+      box-shadow: 0 0 0 3px #fff;
+    }
+    .dot .num {
+      display: block;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+    }
+    .lines {
+      display: none;
+    }
+    .notes {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 24px;
+    }
+    .note {
+      position: static;
+      max-width: none;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .note .num {
+      display: grid;
+      place-items: center;
+      flex: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .annotated.ready .phone,
+    .annotated.ready .dot,
+    .annotated.ready .note,
+    .annotated.ready .lines path {
+      transition: none;
+      opacity: 1;
+      translate: 0 0;
+      scale: 1;
+      stroke-dashoffset: 0;
+    }
+  }
+</style>
+
+<script>
+  // Place each note next to its dot (spread out so they never overlap), draw an elbow
+  // line from dot to note, then play the animation once the block scrolls into view.
+  function layout(fig: HTMLElement) {
+    const stage = fig.querySelector<HTMLElement>('.stage')!;
+    if (getComputedStyle(fig.querySelector('.lines')!).display === 'none') {
+      fig.querySelectorAll<HTMLElement>('.note').forEach((n) => (n.style.top = ''));
+      return;
+    }
+    // Use layout offsets, not screen rects, so the entrance animation doesn't skew them
+    const H = stage.clientHeight;
+    const phone = fig.querySelector<HTMLElement>('.phone')!;
+    const notes = [...fig.querySelectorAll<HTMLElement>('.note')];
+    const gap = 10;
+    let prevBottom = 12;
+    notes.forEach((note, i) => {
+      const dot = fig.querySelector<HTMLElement>(`[data-dot="${i}"]`);
+      const path = fig.querySelector<SVGPathElement>(`[data-line="${i}"]`);
+      if (!dot || !path) return;
+      const dx = phone.offsetLeft + dot.offsetLeft + dot.offsetWidth / 2;
+      const dy = phone.offsetTop + dot.offsetTop + dot.offsetHeight / 2;
+      const h = note.offsetHeight;
+      // Center the note on the dot's height, pushed down if it would hit the one above
+      const top = Math.min(Math.max(dy - h / 2, prevBottom), H - h - 12);
+      note.style.top = `${top}px`;
+      prevBottom = top + h + gap;
+      const ny = top + h / 2;
+      const nx = note.offsetLeft;
+      const bend = phone.offsetLeft + phone.offsetWidth + 20;
+      path.setAttribute('d', `M${dx} ${dy} H${bend} L${Math.max(bend, nx - 28)} ${ny} H${nx}`);
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-annotated]').forEach((fig) => {
+    const img = fig.querySelector('img')!;
+    const run = () => layout(fig);
+    if (img.complete) run();
+    else img.addEventListener('load', run, { once: true });
+    new ResizeObserver(run).observe(fig);
+
+    fig.classList.add('ready');
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          run();
+          fig.classList.add('in');
+          io.disconnect();
+        }
+      },
+      { root: fig.closest('.scroller'), threshold: 0.45 },
+    );
+    io.observe(fig);
+  });
+</script>

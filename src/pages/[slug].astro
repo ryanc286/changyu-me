@@ -5,6 +5,7 @@ import Media from '../components/case/Media.astro';
 import Stats from '../components/case/Stats.astro';
 import Hypothesis from '../components/case/Hypothesis.astro';
 import MediaRow from '../components/case/MediaRow.astro';
+import Annotated from '../components/case/Annotated.astro';
 import { t } from '../i18n/ui';
 
 export async function getStaticPaths() {
@@ -36,5 +37,5 @@ const summary = t('en', `work.${entry.id}.summary`);
     { label: 'Type', value: d.type },
   ]}
 >
-  <Content components={{ Media, MediaRow, Stats, Hypothesis }} />
+  <Content components={{ Media, MediaRow, Annotated, Stats, Hypothesis }} />
 </CaseStudy>
