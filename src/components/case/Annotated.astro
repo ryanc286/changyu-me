@@ -120,8 +120,6 @@ const points = POINTS[id] ?? [];
     height: 100%;
     pointer-events: none;
     overflow: visible;
-    /* Keeps the hairline visible where it crosses the white screen */
-    filter: drop-shadow(0 0 0.5px rgb(0 0 0 / 0.6));
   }
   .lines path {
     fill: none;
@@ -293,7 +291,6 @@ const points = POINTS[id] ?? [];
       const dot = fig.querySelector<HTMLElement>(`[data-dot="${i}"]`);
       const path = fig.querySelector<SVGPathElement>(`[data-line="${i}"]`);
       if (!dot || !path) return;
-      const dx = phone.offsetLeft + dot.offsetLeft + dot.offsetWidth / 2;
       const dy = phone.offsetTop + dot.offsetTop + dot.offsetHeight / 2;
       const h = note.offsetHeight;
       // Line the title up with the dot, pushed down if it would hit the note above
@@ -302,8 +299,10 @@ const points = POINTS[id] ?? [];
       prevBottom = top + h + gap;
       const ny = top + 10;
       const nx = note.offsetLeft;
-      const bend = phone.offsetLeft + phone.offsetWidth + 20;
-      path.setAttribute('d', `M${dx} ${dy} H${bend} L${Math.max(bend, nx - 36)} ${ny} H${nx - 10}`);
+      // Lines start just outside the phone's edge, level with the dot
+      const edge = phone.offsetLeft + phone.offsetWidth + 8;
+      const bend = edge + 24;
+      path.setAttribute('d', `M${edge} ${dy} H${bend} L${Math.max(bend, nx - 36)} ${ny} H${nx - 10}`);
     });
   }
 
