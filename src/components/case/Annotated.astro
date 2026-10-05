@@ -112,6 +112,12 @@ const points = POINTS[id] ?? [];
   .dot .num {
     display: none;
   }
+  /* Desktop: the dots only mark where each line points; they are not drawn */
+  @media (min-width: 601px) {
+    .dot {
+      visibility: hidden;
+    }
+  }
 
   .lines {
     position: absolute;
@@ -132,6 +138,10 @@ const points = POINTS[id] ?? [];
     list-style: none;
     margin: 0;
     padding: 0;
+  }
+  /* The article's list spacing (li + li) would shift notes off their lines */
+  .annotated .note {
+    margin: 0;
   }
   .note {
     position: absolute;
@@ -297,7 +307,9 @@ const points = POINTS[id] ?? [];
       const top = Math.min(Math.max(dy - 10, prevBottom), H - h - 12);
       note.style.top = `${top}px`;
       prevBottom = top + h + gap;
-      const ny = top + 10;
+      // End the line at the middle of the title's first line
+      const title = note.querySelector<HTMLElement>('strong')!;
+      const ny = top + title.offsetTop + parseFloat(getComputedStyle(title).lineHeight) / 2;
       const nx = note.offsetLeft;
       // Lines start just outside the phone's edge, level with the dot
       const edge = phone.offsetLeft + phone.offsetWidth + 8;
@@ -311,7 +323,10 @@ const points = POINTS[id] ?? [];
     const run = () => layout(fig);
     if (img.complete) run();
     else img.addEventListener('load', run, { once: true });
-    new ResizeObserver(run).observe(fig);
+    const ro = new ResizeObserver(run);
+    ro.observe(fig);
+    fig.querySelectorAll('.note').forEach((n) => ro.observe(n));
+    document.fonts?.ready.then(run);
 
     fig.classList.add('ready');
     const io = new IntersectionObserver(
