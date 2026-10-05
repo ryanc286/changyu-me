@@ -73,6 +73,7 @@ const points = POINTS[id] ?? [];
     margin: var(--space-5) 0;
   }
   .stage {
+    --ann-blue: #2f7ff0;
     position: relative;
     aspect-ratio: 16 / 10;
     border-radius: var(--radius);
@@ -105,10 +106,10 @@ const points = POINTS[id] ?? [];
     height: 12px;
     margin: -6px 0 0 -6px;
     border-radius: 50%;
-    background: #1a1a1a;
+    background: var(--ann-blue);
     box-shadow:
       0 0 0 3px #fff,
-      0 2px 8px rgb(0 0 0 / 0.3);
+      0 2px 8px rgb(47 127 240 / 0.45);
   }
   .dot .num {
     display: none;
@@ -121,13 +122,11 @@ const points = POINTS[id] ?? [];
     height: 100%;
     pointer-events: none;
     overflow: visible;
-    /* Keeps the white line visible where it crosses the white screen */
-    filter: drop-shadow(0 0 1px rgb(0 0 0 / 0.5));
   }
   .lines path {
     fill: none;
-    stroke: rgb(255 255 255 / 0.85);
-    stroke-width: 1.5;
+    stroke: var(--ann-blue);
+    stroke-width: 2;
     stroke-linejoin: round;
   }
 
@@ -143,9 +142,10 @@ const points = POINTS[id] ?? [];
     max-width: 280px;
     padding: 10px 14px;
     border-radius: 10px;
-    background: rgb(255 255 255 / 0.96);
+    background: #fff;
+    border: 2px solid var(--ann-blue);
     color: #1a1a1a;
-    box-shadow: 0 8px 24px rgb(0 0 0 / 0.16);
+    box-shadow: 0 6px 18px rgb(47 127 240 / 0.45);
     font-size: 0.78125rem;
     line-height: 1.4;
   }
@@ -157,11 +157,13 @@ const points = POINTS[id] ?? [];
     flex-direction: column;
     gap: 2px;
   }
-  .note strong {
-    font-size: 0.8125rem;
-    font-weight: 600;
+  /* Fixed colors: the card is always white, whatever the site theme */
+  .annotated .note strong {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--ann-blue);
   }
-  .note .body span {
+  .annotated .note .body span {
     color: #5e5e5b;
   }
 
@@ -224,18 +226,18 @@ const points = POINTS[id] ?? [];
       height: auto;
     }
     .dot {
-      width: 22px;
-      height: 22px;
-      margin: -11px 0 0 -11px;
+      width: 16px;
+      height: 16px;
+      margin: -8px 0 0 -8px;
       display: grid;
       place-items: center;
-      background: #1a1a1a;
-      box-shadow: 0 0 0 3px #fff;
+      background: var(--ann-blue);
+      box-shadow: 0 0 0 2px #fff;
     }
     .dot .num {
       display: block;
       color: #fff;
-      font-size: 12px;
+      font-size: 10px;
       font-weight: 600;
       line-height: 1;
     }
@@ -245,8 +247,8 @@ const points = POINTS[id] ?? [];
     .notes {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-top: 24px;
+      gap: 10px;
+      margin-top: 28px;
     }
     .note {
       position: static;
@@ -259,12 +261,13 @@ const points = POINTS[id] ?? [];
       display: grid;
       place-items: center;
       flex: none;
-      width: 22px;
-      height: 22px;
+      width: 16px;
+      height: 16px;
+      margin-top: 2px;
       border-radius: 50%;
-      background: #1a1a1a;
+      background: var(--ann-blue);
       color: #fff;
-      font-size: 12px;
+      font-size: 10px;
       font-weight: 600;
     }
   }
