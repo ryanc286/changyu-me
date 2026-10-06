@@ -2,7 +2,7 @@
 company: PayPay
 order: 1
 cover: /images/credit-card-sunset/cover.webp
-subtitle: "[X]% of card payments moved to vouchers"
+subtitle: "Turning off card payments without losing the people who used them"
 role: "End-to-end design, user research, usability testing"
 timeline: "2024 Q4–2025 Q1"
 type: "Feature sunset"
@@ -17,7 +17,7 @@ PayPay let people link an outside credit card and pay through the app. Every one
 
 ## Why people linked a card
 
-Before designing anything, I talked to users who paid with a linked card. Most of them were not loyal PayPay users. They used PayPay because it is accepted almost everywhere in Japan, and their card gave them airline miles and rewards. So we were not just removing a feature. We were removing the main reason these users opened the app.
+Before designing anything, I talked to users who paid with a linked card. Most of them were not loyal PayPay users. They used PayPay because it is accepted almost everywhere in Japan, and their card gave them airline miles and rewards. So we were not just removing a feature. We were removing the main reason these users opened the app. So the question changed from "how do we remove card payments?" to "how do people keep their rewards without the card network?"
 
 ## When the obvious answer got blocked
 
@@ -31,11 +31,13 @@ Engineering wanted a hard cutoff on a set date. But support data showed that sur
 
 ## Design
 
+These users had paid by card for months, some for years. The design had to teach a new habit without pushing them to another payment app.
+
 I used CTR data to place the notice where people actually look: the payment flow and the receipt screen. I also caught a gap. People adding a card for the first time would skip both, so the notice went there too.
 
 <MediaRow items={[{"id":"notice-pay","label":"The notice on the payment and receipt screens","src":"/images/credit-card-sunset/notice-pay.webp"},{"id":"notice-add-card","label":"The notice when adding a new card","src":"/images/credit-card-sunset/notice-add-card.webp"}]} />
 
-The hardest question was the purchase screen. Should it feel like buying a product with fixed amounts, or like a top-up where you type a number? I explored three directions: the existing gift voucher pattern, a top-up style input, and a scroll-based amount picker. Instead of deciding by opinion, I ran a bilingual survey and tested the three prototypes with 8 users. The top-up pattern won. People already knew how it worked, and that mattered more than being technically accurate.
+The hardest question was the purchase screen. Should it feel like buying a product with fixed amounts, or like a top-up where you type a number? I explored three directions: the existing gift voucher pattern, a top-up style input, and a scroll-based amount picker. Instead of deciding by opinion, I ran a bilingual survey and tested the three prototypes with 8 users. The top-up pattern won. People already knew how it worked, and that mattered more than being technically accurate. As one tester put it, "I don't like having fixed amounts. I want to decide how much I put in myself."
 
 <Media id="concepts" label="Three directions for the purchase screen" src="/images/credit-card-sunset/concepts.webp" />
 
@@ -48,6 +50,7 @@ The hardest question was the purchase screen. Should it feel like buying a produ
 - **Context first.** Japanese users want to know why before they act, so a short page explains what is changing before asking them to do anything.
 - **Fix, don't block.** Legal required amounts in ¥10,000 steps. Instead of an error, a floating button fixes the amount in one tap.
 - **Straight back to paying.** After buying, one button goes to payment with the voucher already applied. The whole recovery takes about 10 seconds.
+- **Every state covered.** I worked with engineering to design the success, pending and error states, so nothing unplanned showed up after launch.
 
 ## When the CEO joined the review
 
@@ -55,9 +58,7 @@ In a design review, our CEO asked to use the purchase page to promote PayPay's o
 
 ## Results
 
-The feature is now live for all card users.
-
-<Stats items={[{"value":"[X]%","label":"Card payments moved to vouchers"},{"value":"[X]%","label":"Voucher purchase success rate"},{"value":"−[X]%","label":"Card network fees"}]} />
+The feature is live for all card users, and I'm still tracking the data. The main signals are the voucher purchase success rate and the payment success rate. Support inquiries are the early warning: a jump there points to friction before it shows up anywhere else. What we learn will shape the next round of changes.
 
 ## Also in this project
 
