@@ -1,0 +1,134 @@
+---
+/*
+  Screen recordings side by side, each in a simple phone frame on the case's
+  blue-gray background, with a short title under each.
+  From a 🎬 callout in Notion with one "id: Title" line per video.
+  Files: public/videos/<case slug>/<id>.mp4, poster <id>.webp
+  Videos play muted on a loop while on screen and pause when scrolled away.
+  With reduced motion they don't autoplay; tap to play.
+*/
+interface Item {
+  id: string;
+  label: string;
+  src: string;
+  poster?: string;
+}
+interface Props {
+  items: Item[];
+}
+const { items } = Astro.props;
+---
+
+<figure class="video-row" data-video-row>
+  <div class="stage" style={`--cols:${items.length}`}>
+    {
+      items.map((v) => (
+        <div class="item">
+          <div class="device">
+            <video
+              src={v.src}
+              poster={v.poster}
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              aria-label={v.label}
+            />
+          </div>
+          <p class="title">{v.label}</p>
+        </div>
+      ))
+    }
+  </div>
+</figure>
+
+<style>
+  .video-row {
+    margin: var(--space-5) 0;
+  }
+  .stage {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), auto);
+    justify-content: center;
+    gap: 9%;
+    padding: 5% 6% 3.5%;
+    border-radius: var(--radius);
+    /* Same blue-gray as the other images in this case */
+    background:
+      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
+      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
+  }
+  .item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .device {
+    width: clamp(140px, 19vw, 220px);
+    padding: 7px;
+    border-radius: 34px;
+    background: #111;
+    box-shadow:
+      0 0 0 1.5px #9aa3b2,
+      0 24px 40px rgb(0 0 0 / 0.28);
+  }
+  video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 600 / 1208;
+    object-fit: cover;
+    border-radius: 27px;
+    background: #f2f3f5;
+  }
+  .video-row .title {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+  }
+  @media (max-width: 600px) {
+    .stage {
+      grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+      align-items: start;
+      gap: 16px;
+      padding: 28px 16px 20px;
+    }
+    .device {
+      width: 100%;
+      max-width: 160px;
+      padding: 5px;
+      border-radius: 24px;
+    }
+    video {
+      border-radius: 19px;
+    }
+    .video-row .title {
+      font-size: 0.8125rem;
+    }
+  }
+</style>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-video-row]').forEach((row) => {
+    const videos = [...row.querySelectorAll('video')];
+    if (reduce) {
+      // No autoplay: show controls so people can play it themselves
+      videos.forEach((v) => (v.controls = true));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting) v.play().catch(() => {});
+          else v.pause();
+        });
+      },
+      { root: row.closest('.scroller'), threshold: 0.4 },
+    );
+    videos.forEach((v) => io.observe(v));
+  });
+</script>

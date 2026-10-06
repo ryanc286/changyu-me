@@ -11,6 +11,8 @@
       bullet becomes the text under its image.
   - Callout with the 📍 icon -> <Annotated>, a phone screen with callouts:
       first line "id: label", then one "Title | Explanation" line per callout.
+  - Callout with the 🎬 icon -> <VideoRow>, screen recordings side by side:
+      one "id: Title" line per video (public/videos/<slug>/<id>.mp4).
       Uses public/images/<slug>/<id>.webp|jpg|png when the file exists.
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
@@ -61,6 +63,18 @@ for (let i = 0; i < lines.length; i++) {
     const inner = [];
     while (++i < lines.length && !lines[i].startsWith('</callout>')) inner.push(lines[i].trim());
     const text = inner.join(' ').trim();
+    if (line.includes('🎬')) {
+      // Screen recordings side by side: one "id: Title" line per video,
+      // files at public/videos/<slug>/<id>.mp4 with a <id>.webp poster
+      const items = inner.filter(Boolean).map((l) => {
+        const [id, ...rest] = l.split(':');
+        const base = `/videos/${slug}/${id.trim()}`;
+        const poster = existsSync(new URL(`../public${base}.webp`, import.meta.url)) ? `${base}.webp` : undefined;
+        return { id: unescape(id.trim()), label: unescape(rest.join(':').trim()), src: `${base}.mp4`, ...(poster ? { poster } : {}) };
+      });
+      blocks.push({ type: 'block', md: `<VideoRow items={${JSON.stringify(items)}} />` });
+      continue;
+    }
     if (line.includes('📍')) {
       // Annotated screen: "id: label", then one "Title | Explanation" line per callout
       const [head, ...rest] = inner.filter(Boolean);
