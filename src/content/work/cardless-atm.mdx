@@ -37,19 +37,25 @@ Most competitors used the same flow: scan, get a number, type it in. The real di
 
 <Media id="competitors" label="A competitor's cardless ATM flow: scan, get a number, type it in" src="/images/cardless-atm/competitors.webp" />
 
-The first screen, where you choose withdraw or deposit, sets the tone for every step after it. I tested three versions with 8 people: icons on each button, a horizontal layout, and an illustration. Standing at an ATM, often with people waiting behind them, users need to tell the options apart without reading. Icons did that. The illustration added noise, and the vertical layout matched the rest of the app. Icons won.
+<Media id="flow" label="Set up, choose, scan, enter the number, done" />
+
+Setup came first, since 40% of users failed there. I broke it into clear steps with visible progress, so people always know where they are and what to do next.
+
+The next screen, where you choose withdraw or deposit, sets the tone for every step after it. I tested three versions with 8 people: icons on each button, a horizontal layout, and an illustration. Standing at an ATM, often with people waiting behind them, users need to tell the options apart without reading. Icons did that. The illustration added noise, and the vertical layout matched the rest of the app. Icons won.
 
 <Media id="concepts" label="Three versions of the service selection screen" src="/images/cardless-atm/concepts.webp" />
 
-<Media id="flow" label="Set up, choose, scan, enter the number, done" />
+Then the handoff, the moment we set out to fix. After scanning, the app now tells people to turn to the ATM and type the number there. That one line closes the gap where 13% used to give up.
 
-Each step answers one of the problems above. Setup shows clear steps and progress. After scanning, the app tells people to look at the ATM and type the number there, so nobody gets stuck between screens. At the end, the app can't show the amount yet, so it says so plainly and points people to where they can check it.
+The last screen couldn't show the amount or the new balance yet. Instead of leaving people guessing, it confirms the transaction went through and shows where to check the details.
 
-The ATM screen came with strict vendor rules: a few colors, fixed font sizes and fixed layout zones. With so little to work with, hierarchy did the work. Amount, balance, fees and limits are what people glance at mid-transaction, so those come first.
+## The ATM screen
+
+The other half of the handoff is the ATM itself. Its screen came with strict rules from the vendor and from regulations: a few colors, fixed font sizes and fixed layout zones. There was no design system to lean on and no mobile patterns to borrow. So hierarchy did the work. Someone glancing at the ATM mid-transaction should see their balance, the fee and the limit, and nothing else.
 
 ## What the beta showed
 
-In beta with 10 to 20% of users, people did something we did not plan for. They started at the ATM and used the app's general scan button, so the app did not know which service they had picked. I added a check: if a user has no linked PayPay Bank account, the app sends them to e-money top-up, with no extra steps or errors. A short tutorial helps people find the new flow.
+In beta with 10 to 20% of users, people did something we did not plan for. They started at the ATM and used the app's general scan button, so the app did not know which service they had picked. I worked with engineers on a fix that didn't ask people to change their habit: if a user has no linked PayPay Bank account, the app sends them to e-money top-up, with no extra steps or errors. I also added a short tutorial, so people find the new flow from the start.
 
 ## Results
 
