@@ -31,7 +31,9 @@ I interviewed 8 users across three groups: newcomers, casual users and active se
 
 The best marketplace apps I looked at did the opposite: get people to their first useful moment fast, and ask about preferences later.
 
-<Media id="competitors" label="Sign-up flows from Grab, Depop, Gojek and ASOS" src="/images/sign-up-flow/competitors.webp" />
+<MediaRow items={[{"id": "comp-grab", "label": "Grab's sign-up flow", "src": "/images/sign-up-flow/comp-grab.webp"}, {"id": "comp-depop", "label": "Depop's sign-up flow", "src": "/images/sign-up-flow/comp-depop.webp"}]} />
+
+<MediaRow items={[{"id": "comp-gojek", "label": "Gojek's sign-up flow", "src": "/images/sign-up-flow/comp-gojek.webp"}, {"id": "comp-asos", "label": "ASOS's sign-up flow", "src": "/images/sign-up-flow/comp-asos.webp"}]} />
 
 <Hypothesis>If we ask less before people see the product, more of them will finish signing up.</Hypothesis>
 
@@ -55,7 +57,7 @@ So I made a call with the PM: a clearly better sign-up now, instead of a perfect
 - **Lighter personalization.** Only gender and age. Recommendations adjust on their own instead of asking people to set them up.
 - **The new design system.** Old components replaced, instructions rewritten, and a clearer hierarchy on every screen.
 
-<Media id="before-after" label="Before and after the new design system" src="/images/sign-up-flow/before-after.webp" />
+<MediaRow items={[{"id": "before", "label": "Before: the old sign-up screens", "src": "/images/sign-up-flow/before.webp"}, {"id": "after", "label": "After: the new screens on the new design system", "src": "/images/sign-up-flow/after.webp"}]} />
 
 For web, I rebuilt native parts like date pickers, dropdowns and permission prompts with web patterns, so both versions feel the same.
 
