@@ -53,6 +53,8 @@ The last screen couldn't show the amount or the new balance yet. Instead of leav
 
 The other half of the handoff is the ATM itself. Its screen came with strict rules from the vendor and from regulations: a few colors, fixed font sizes and fixed layout zones. There was no design system to lean on and no mobile patterns to borrow. So hierarchy did the work. Someone glancing at the ATM mid-transaction should see their balance, the fee and the limit, and nothing else.
 
+<Media id="atm-screen" label="The ATM screen: fee, balance and limits at a glance" src="/images/cardless-atm/atm-screen.webp" />
+
 ## What the beta showed
 
 In beta with 10 to 20% of users, people did something we did not plan for. They started at the ATM and used the app's general scan button, so the app did not know which service they had picked. I worked with engineers on a fix that didn't ask people to change their habit: if a user has no linked PayPay Bank account, the app sends them to e-money top-up, with no extra steps or errors. I also added a short tutorial, so people find the new flow from the start.
