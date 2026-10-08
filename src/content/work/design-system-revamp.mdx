@@ -12,9 +12,13 @@ notion: "https://app.notion.com/p/3efeaff6ece38169a810c5216dfe1ec5"
 
 <Media id="hero" label="The rebuilt component library in Figma" />
 
-Carousell's design system had drifted. Components were hard to reuse, docs were out of date, and designers and engineers used different names for the same things. I helped revamp it with a clear update process, a reorganized Figma library and docs that link design to code.
+Carousell's design system had drifted. Components were hard to reuse, docs were out of date, and designers and engineers used different names for the same things. I led the revamp with a clear update process, a reorganized Figma library and docs that link design to code.
 
-## What was broken
+## Who the system was for
+
+A design system is a product too, and its users are designers and engineers. So I started with them: a survey of engineers about their pain points, and a workshop with designers. Many designers detached components and changed them, because the originals weren't flexible enough. Even experienced designers struggled to find what they needed.
+
+Three problems came up:
 
 - **No consistency.** No clear guidelines, components built on old Figma features, and no process for keeping the system up to date.
 - **Hard to find things.** No links between design and code, components that were hard to search by name, and no easy way to see what had changed.
@@ -22,7 +26,7 @@ Carousell's design system had drifted. Components were hard to reuse, docs were 
 
 ## Starting with one button
 
-Before changing everything, I ran a trial audit on the Button component. It showed the whole problem in one place: no auto layout or properties, docs that were old and incomplete, and designers making their own versions, which widened the gap with what engineers built.
+Before changing everything, I tested the approach on the Button, which is used on every platform. I invited a developer to the trial, and we compared the Button in production with the one in the system. It showed the whole problem in one place: no auto layout or properties, docs that were old and incomplete, and designers making their own versions, which widened the gap with what engineers built. There was no single source of truth.
 
 <Media id="audit" label="The Button audit, before and after" />
 
@@ -32,9 +36,13 @@ That gave us three changes to repeat for every component:
 - Put the docs inside Figma, next to the component, instead of on a separate Notion page.
 - Link each component to its code.
 
+I presented the Button trial to the team and senior management. The feedback was positive, so we took the same approach to every other component.
+
 ## Rolling it out as a team
 
 A revamp like this can't be done by one person. I made a spreadsheet that gave each component an owner, based on which team used it most. A handbook explained the update process step by step, and a weekly Slack update kept designers and engineers in the loop.
+
+Inside Figma, every component now follows the same layout: docs on the left, variants on the right, and notes that point engineers to the matching code.
 
 <Media id="library" label="Docs and code links next to each component" />
 
@@ -44,10 +52,10 @@ A revamp like this can't be done by one person. I made a spreadsheet that gave e
 
 Engineers also told us the library was easier to navigate and more consistent.
 
-## What's next
+## What I left in place
 
-Semantic color tokens come next, then font styles, spacing and shadows, all stored as Figma variables with modes.
+I set the foundation before I left Carousell. The plan from there: semantic color tokens, then font styles, spacing and shadows, all stored as Figma variables with modes.
 
 ## What I learned
 
-A design system is a team effort. Trusting people and giving them clear ownership mattered more than any single component. And there is no one-size-fits-all system. The best one fits your team's situation and builds on what already exists.
+Designers are users too. Asking them early, instead of working alone, shaped every decision. A design system is also a team effort: trusting people and giving them clear ownership mattered more than any single component. And there is no one-size-fits-all system. The best one fits your team's situation and builds on what already exists.
