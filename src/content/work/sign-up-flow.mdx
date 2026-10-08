@@ -19,13 +19,19 @@ Carousell is a marketplace for buying and selling across Southeast Asia, Taiwan 
 
 Six months of funnel data showed that the biggest drop was not account creation. It was the personalization steps after it: picking interests, following sellers and setting up a feed. We were asking people to make choices about a product they had not used yet.
 
+<Media id="funnel" label="The old sign-up funnel, with drop-off at each step" src="/images/sign-up-flow/funnel.webp" />
+
 I interviewed 8 users across three groups: newcomers, casual users and active sellers. The same thing came up again and again. The app pushed a seller identity before people had decided how to use it. One person said, "I'm getting a feeling I need to sell something."
+
+<Media id="interviews" label="Mapping interview notes against each sign-up step" src="/images/sign-up-flow/interviews.webp" />
 
 - **Too much, too soon.** People had to make choices before seeing what Carousell offered. The steps were not wrong, they were in the wrong place.
 - **The wrong first impression.** Seller-focused choices made buyers feel left out. One flow tried to serve buyers, casual sellers and merchants, and fit none of them.
 - **Unclear screens.** Old UI patterns and vague instructions made people hesitate.
 
 The best marketplace apps I looked at did the opposite: get people to their first useful moment fast, and ask about preferences later.
+
+<Media id="competitors" label="Sign-up flows from Grab, Depop, Gojek and ASOS" src="/images/sign-up-flow/competitors.webp" />
 
 <Hypothesis>If we ask less before people see the product, more of them will finish signing up.</Hypothesis>
 
@@ -37,17 +43,23 @@ The strongest idea was a personalized start. People pick buyer, casual seller or
 
 So I made a call with the PM: a clearly better sign-up now, instead of a perfect one later. We split the project. Phase 1 took the changes with the most impact for the least effort, and the personalized start moved to phase 2.
 
-<Media id="concepts" label="The personalized start, saved for phase 2" />
+<Media id="concepts" label="The personalized start, saved for phase 2" src="/images/sign-up-flow/concepts.webp" />
 
 ## What shipped
 
 <StepCompare before={[{"label": "Create an account"}, {"label": "Fill in a profile"}, {"label": "Pick interests", "tag": "After sign-up"}, {"label": "Follow sellers", "tag": "After sign-up"}, {"label": "Set up a feed", "tag": "After sign-up"}, {"label": "Turn on notifications", "tag": "Moved out"}]} after={[{"label": "Create an account"}, {"label": "Fill in a short profile"}, {"label": "Go straight into the app"}]} />
 
+<Media id="final-flow" label="The new sign-up, screen by screen" src="/images/sign-up-flow/final-flow.webp" />
+
 - **Personalization after sign-up.** Picking interests, following sellers and setting up a feed moved to after sign-up, once people have seen the product.
 - **Lighter personalization.** Only gender and age. Recommendations adjust on their own instead of asking people to set them up.
 - **The new design system.** Old components replaced, instructions rewritten, and a clearer hierarchy on every screen.
 
+<Media id="before-after" label="Before and after the new design system" src="/images/sign-up-flow/before-after.webp" />
+
 For web, I rebuilt native parts like date pickers, dropdowns and permission prompts with web patterns, so both versions feel the same.
+
+<Media id="web" label="Sign-up on web, desktop and mobile" src="/images/sign-up-flow/web.webp" />
 
 ## Results
 
