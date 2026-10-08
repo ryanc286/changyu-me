@@ -13,7 +13,7 @@ notion: "https://app.notion.com/p/3efeaff6ece381f2bd52e63c294de887"
 
 <Media id="hero" label="Withdrawing cash with just the app" src="/images/cardless-atm/hero.webp" />
 
-Over half of payments in Japan are still made in cash. PayPay wanted the app to be the only thing you need, at the ATM too. I redesigned the ATM flow so people can withdraw and deposit cash with just their phone, across two screens with very different rules.
+Over half of payments in Japan are still made in cash. PayPay wanted the app to be the only thing you need, at the ATM too. I redesigned the ATM flow so people can withdraw and deposit cash with just their phone, across the phone and the ATM, each with very different rules.
 
 ## Where people got stuck
 
@@ -33,21 +33,21 @@ All three problems came from the same place: the app made people do work it shou
 
 ## Design
 
-Before designing, I walked through the cardless ATM flows of other apps. Most solved the basics the same way: scan a QR code, get a number, type it in at the ATM. The difference was in the guidance. Almost none told people when to switch between the phone and the ATM, the same gap I'd seen in our own flow, where 13% gave up. So the opportunity wasn't a new flow. It was better guidance through the handoff, and that became our focus.
+Before designing, I looked at how other apps handled cardless ATMs. Most used the same basic flow: scan a QR code, get a number, type it in. But almost none told people when to switch from the phone to the ATM. So we didn't need a new flow. We needed better guidance at the handoff.
 
 <Media id="competitors" label="A competitor's cardless ATM flow: scan, get a number, type it in" src="/images/cardless-atm/competitors.webp" />
 
 Setup came first, since 40% of users failed there. I broke it into clear steps with visible progress, so people always know where they are and what to do next.
 
-The next screen, where you choose withdraw or deposit, sets the tone for every step after it. I tested three versions with 8 people: icons on each button, a horizontal layout, and an illustration. Standing at an ATM, often with people waiting behind them, users need to tell the options apart without reading. Icons did that. The illustration added noise, and the vertical layout matched the rest of the app. Icons won.
+The next screen, where you choose withdraw or deposit, sets up every step after it. I tested three versions with 8 people. At an ATM, often with people waiting behind them, users need to tell the options apart without reading. Icons on a vertical list did that best, and matched the rest of the app. The illustration only added noise.
 
 <Media id="concepts" label="Three versions of the service selection screen" src="/images/cardless-atm/concepts.webp" />
 
-Then the handoff, the moment we set out to fix. After scanning, the app now tells people to turn to the ATM and type the number there. That one line closes the gap where 13% used to give up.
+Then the handoff, the moment we set out to fix. After scanning, the app now tells people to follow the steps on the ATM. That one line closes the gap where 13% used to give up.
 
 <Media id="handoff" label="After scanning, the app tells people to turn to the ATM" src="/images/cardless-atm/handoff.webp" />
 
-The last screen couldn't show the amount or the new balance yet. Instead of leaving people guessing, it confirms the transaction went through and shows where to check the details.
+The last screen does what the third rule promised: it confirms the transaction went through and shows where to check the details.
 
 ## The ATM screen
 
@@ -57,7 +57,7 @@ The other half of the handoff is the ATM itself. Its screen came with strict rul
 
 ## What the beta showed
 
-In beta with 10 to 20% of users, people did something we did not plan for. They started at the ATM and used the app's general scan button, so the app did not know which service they had picked. I worked with engineers on a fix that didn't ask people to change their habit: if a user has no linked PayPay Bank account, the app sends them to e-money top-up, with no extra steps or errors. I also added a short tutorial, so people find the new flow from the start.
+In beta with 10 to 20% of users, people did something we didn't plan for: they started at the ATM and opened the app's general scan button, so the app didn't know which service they wanted. Instead of asking them to change the habit, I worked with engineers to route them by default: no linked PayPay Bank account means e-money top-up, with no extra steps. I also added a short tutorial so people find the new flow first.
 
 ## Results
 
@@ -65,6 +65,6 @@ In beta with 10 to 20% of users, people did something we did not plan for. They 
 
 ## What I learned
 
-Ask "what if people don't follow the flow?" before launch, not after. Two devices means two contexts, each with its own mood and time pressure. And strict limits helped: every element on the ATM screen had to earn its place.
+Ask "what if people don't follow the flow?" before launch, not after. Two screens mean two contexts, each with its own mood and time pressure. And strict limits helped: every element on the ATM screen had to earn its place.
 
 Next, I want the app to show the amount and status once the ATM confirms the transaction, so every withdrawal has a clear end, and to add haptic feedback when people enter the number.
