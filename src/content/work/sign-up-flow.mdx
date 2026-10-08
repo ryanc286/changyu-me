@@ -28,21 +28,25 @@ The best marketplace apps I looked at did the opposite: get people to their firs
 
 <Hypothesis>If we ask less before people see the product, more of them will finish signing up.</Hypothesis>
 
-## Phasing the work
+## The best answer had to wait
 
-My strongest concept was a personalized start: people pick buyer, casual seller or merchant, and each gets its own flow. It fixed the first impression problem directly. But it needed a lot of backend work and would not ship on time. I worked with the PM to split the project, and phase 1 took the changes with the most impact for the least effort.
+To decide what to fix, I ran a workshop with our PM and researcher. We landed on one question: how might we tailor sign-up to what each person came to do?
+
+The strongest idea was a personalized start. People pick buyer, casual seller or merchant, and each gets its own flow. It fixed the wrong first impression directly. But it needed a lot of backend work, and the timeline was already at risk.
+
+So I made a call with the PM: a clearly better sign-up now, instead of a perfect one later. We split the project. Phase 1 took the changes with the most impact for the least effort, and the personalized start moved to phase 2.
 
 <Media id="concepts" label="The personalized start, saved for phase 2" />
 
-## Design
+## What shipped
 
 <Media id="flow" label="From six steps to three" />
 
-- **Six steps down to three.** Picking interests, following sellers and setting up a feed moved to after sign-up. What stayed: create an account, fill in a short profile, then go straight into the app.
+- **Personalization after sign-up.** Picking interests, following sellers and setting up a feed moved to after sign-up, once people have seen the product.
 - **Lighter personalization.** Only gender and age. Recommendations adjust on their own instead of asking people to set them up.
 - **The new design system.** Old components replaced, instructions rewritten, and a clearer hierarchy on every screen.
 
-For web, I rebuilt native parts like date pickers and permission prompts with web patterns, so both versions feel the same.
+For web, I rebuilt native parts like date pickers, dropdowns and permission prompts with web patterns, so both versions feel the same.
 
 ## Results
 
@@ -50,6 +54,10 @@ Phase 1 shipped on schedule.
 
 <Stats items={[{"value":"+22%","label":"Sign-up completion"},{"value":"+13%","label":"New users"}]} />
 
-## What I learned
+## What I'd do differently
 
-The deadline that forced us to split the work also showed what mattered most. The personalized start was the right answer on paper, but phase 1 proved we could get most of the impact without it. I also learned that a phase 2 with no scope and no date is just a good intention. Next time, I would plan phase 2 before phase 1 ships.
+The deadline that forced us to split the work also showed what mattered most. Phase 1 got most of the impact without the personalized start.
+
+But phase 2 never shipped. A phase 2 with no scope and no date is just a good intention. Next time, I'd plan it before phase 1 ships.
+
+I'd also measure something else. Finishing sign-up isn't the real goal; using the product is. I'd define the first-week action that predicts whether someone stays, and design sign-up to lead there.
