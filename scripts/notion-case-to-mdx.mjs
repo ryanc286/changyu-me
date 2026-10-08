@@ -13,6 +13,8 @@
       first line "id: label", then one "Title | Explanation" line per callout.
   - Callout with the 🎬 icon -> <VideoRow>, screen recordings side by side:
       one "id: Title" line per video (public/videos/<slug>/<id>.mp4).
+  - Callout with the 🔀 icon -> <StepCompare>, before/after step lists:
+      "before: Step", "before: Step | Tag" (step that left), "after: Step".
       Uses public/images/<slug>/<id>.webp|jpg|png when the file exists.
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
@@ -63,6 +65,18 @@ for (let i = 0; i < lines.length; i++) {
     const inner = [];
     while (++i < lines.length && !lines[i].startsWith('</callout>')) inner.push(lines[i].trim());
     const text = inner.join(' ').trim();
+    if (line.includes('🔀')) {
+      // Before/after step lists: "before: Step", "before: Step | Tag", "after: Step"
+      const before = [];
+      const after = [];
+      for (const l of inner.filter(Boolean)) {
+        const [side, ...rest] = unescape(l).split(':');
+        const [label, tag] = rest.join(':').split('|').map((s) => s.trim());
+        (side.trim() === 'after' ? after : before).push(tag ? { label, tag } : { label });
+      }
+      blocks.push({ type: 'block', md: `<StepCompare before={${JSON.stringify(before)}} after={${JSON.stringify(after)}} />` });
+      continue;
+    }
     if (line.includes('🎬')) {
       // Screen recordings side by side: one "id: Title" line per video,
       // files at public/videos/<slug>/<id>.mp4 with a <id>.webp poster

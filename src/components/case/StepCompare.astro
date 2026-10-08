@@ -1,0 +1,158 @@
+---
+/*
+  Before and after step lists side by side. Steps that left the flow are faded,
+  with a short tag saying where they went.
+  From a 🔀 callout in Notion, one line per step:
+    before: Step name            (kept step)
+    before: Step name | Tag      (step that left the flow, with its tag)
+    after: Step name
+*/
+interface Step {
+  label: string;
+  tag?: string;
+}
+interface Props {
+  before: Step[];
+  after: Step[];
+}
+const { before, after } = Astro.props;
+---
+
+<figure class="step-compare">
+  <div class="col">
+    <p class="head">Before <span>{before.length} steps</span></p>
+    <ol>
+      {
+        before.map((s, i) => (
+          <li class:list={{ gone: !!s.tag }}>
+            <span class="n">{i + 1}</span>
+            <span class="label">{s.label}</span>
+            {s.tag && <span class="tag">{s.tag}</span>}
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+  <div class="arrow" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+  </div>
+  <div class="col">
+    <p class="head">After <span>{after.length} steps</span></p>
+    <ol class="after">
+      {
+        after.map((s, i) => (
+          <li>
+            <span class="n">{i + 1}</span>
+            <span class="label">{s.label}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</figure>
+
+<style>
+  .step-compare {
+    margin: var(--space-5) 0;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: start;
+    gap: 20px;
+    padding: 28px;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+  .head {
+    margin: 0 0 14px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .head span {
+    margin-left: 6px;
+    font-weight: 400;
+    color: var(--color-text-muted);
+  }
+  /* Beats the article's own list indent */
+  figure.step-compare .col > ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  figure.step-compare .col li {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-line);
+    font-size: var(--text-sm);
+    line-height: 1.35;
+    color: var(--color-text);
+  }
+  .n {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-text);
+    color: var(--color-bg);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .label {
+    flex: 1;
+  }
+  /* Steps that left the flow: faded, dashed, with where they went */
+  figure.step-compare .col li.gone {
+    background: transparent;
+    border-style: dashed;
+    color: var(--color-text-muted);
+  }
+  li.gone .n {
+    background: transparent;
+    border: 1px solid var(--color-line-strong);
+    color: var(--color-text-muted);
+  }
+  .tag {
+    flex: none;
+    font-size: 11px;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+  figure.step-compare .after li {
+    border-color: var(--color-line-strong);
+    font-weight: 500;
+  }
+  .arrow {
+    align-self: center;
+    color: var(--color-text-muted);
+  }
+  .arrow svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  @media (max-width: 600px) {
+    .step-compare {
+      grid-template-columns: 1fr;
+      padding: 20px 16px;
+    }
+    .arrow {
+      justify-self: center;
+      rotate: 90deg;
+    }
+  }
+</style>
