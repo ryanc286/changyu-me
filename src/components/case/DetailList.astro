@@ -60,12 +60,21 @@ const { items } = Astro.props;
     align-items: center;
     gap: 56px;
     border-radius: var(--radius);
-    /* Same blue-gray as the other images in this case */
-    background:
-      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
-      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
+    /* One blue-gray per card with a soft top-to-bottom fade; each card is a step
+       lighter than the one before, so the stack reads as layers */
+    --card: #2f3747;
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--card), #fff 6%), var(--card));
     box-shadow: 0 -12px 32px rgb(0 0 0 / 0.18);
     overflow: hidden;
+  }
+  ul.detail-list > li.detail:nth-child(2) {
+    --card: #3a4355;
+  }
+  ul.detail-list > li.detail:nth-child(3) {
+    --card: #465063;
+  }
+  ul.detail-list > li.detail:nth-child(n + 4) {
+    --card: #525d71;
   }
   /* Every other card: phone on the left, text on the right */
   ul.detail-list > li.detail.flip {
