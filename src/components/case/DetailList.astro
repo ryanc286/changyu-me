@@ -23,6 +23,7 @@ const { items } = Astro.props;
 ---
 
 <div class="detail-list" data-detail-list style={`--n:${items.length}`}>
+  <div class="pin">
   <div class="frame">
     <ul class="track">
       {
@@ -39,20 +40,27 @@ const { items } = Astro.props;
       }
     </ul>
   </div>
+  </div>
 </div>
 
 <style>
   .detail-list {
-    --h: clamp(420px, 64vh, 600px);
-    /* Scroll room: one frame height per detail */
-    height: calc(var(--h) * var(--n));
+    --h: clamp(400px, 60vh, 560px);
+    /* Scroll room: one frame height per detail, plus the heading that rides along */
+    height: calc(var(--h) * var(--n) + var(--head, 0px));
     margin: var(--space-5) 0;
   }
   /* The frame stays put and keeps its size; only what's inside moves */
-  .frame {
+  /* The heading (moved in by the script) and the frame stick together,
+     centered in the window by the script */
+  .pin {
     position: sticky;
-    /* Set by the script so the frame sits in the middle of the window */
     top: var(--stick, 32px);
+  }
+  .pin :global(h2) {
+    margin-top: 0;
+  }
+  .frame {
     height: var(--h);
     border-radius: var(--radius);
     overflow: hidden;
@@ -118,8 +126,10 @@ const { items } = Astro.props;
     .detail-list {
       height: auto;
     }
-    .frame {
+    .pin {
       position: static;
+    }
+    .frame {
       height: auto;
     }
     .detail-list ul.track {
@@ -161,7 +171,19 @@ const { items } = Astro.props;
   const still = matchMedia('(max-width: 600px), (prefers-reduced-motion: reduce)');
 
   document.querySelectorAll<HTMLElement>('[data-detail-list]').forEach((box) => {
+    const pin = box.querySelector<HTMLElement>('.pin')!;
     const frame = box.querySelector<HTMLElement>('.frame')!;
+    // The section heading right before this block rides along with the frame
+    const head = box.previousElementSibling;
+    if (head?.tagName === 'H2') {
+      // Keep the table-of-contents link landing on the start of the block, not the pinned copy
+      if (head.id) {
+        box.id = head.id;
+        box.style.scrollMarginTop = '72px';
+        head.removeAttribute('id');
+      }
+      pin.prepend(head);
+    }
     const items = [...box.querySelectorAll<HTMLElement>('li.detail')];
     const scroller = box.closest<HTMLElement>('.scroller');
     const n = items.length;
@@ -176,11 +198,12 @@ const { items } = Astro.props;
     let stick = 32;
     const measure = () => {
       const viewH = scroller ? scroller.clientHeight : window.innerHeight;
-      stick = Math.max(16, Math.round((viewH - frame.offsetHeight) / 2));
+      stick = Math.max(16, Math.round((viewH - pin.offsetHeight) / 2));
       box.style.setProperty('--stick', `${stick}px`);
+      box.style.setProperty('--head', `${pin.offsetHeight - frame.offsetHeight}px`);
     };
     const target = () => {
-      const run = box.offsetHeight - frame.offsetHeight;
+      const run = box.offsetHeight - pin.offsetHeight;
       const viewTop = scroller ? scroller.getBoundingClientRect().top : 0;
       const top = box.getBoundingClientRect().top - viewTop - stick;
       const progress = Math.min(1, Math.max(0, -top / run)) * (n - 1);
@@ -224,6 +247,10 @@ const { items } = Astro.props;
     });
     still.addEventListener('change', queue);
     measure();
+    document.fonts?.ready.then(() => {
+      measure();
+      queue();
+    });
     cur = target();
     queue();
   });
