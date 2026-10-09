@@ -20,6 +20,7 @@
       that switch when scrolled into view: "before: id: label",
       "before: id: label | gone" (step that was cut), "after: id: label".
       Images at public/images/<slug>/<id>.webp.
+      Add a line "style: slider" to show it as a drag-to-compare slider instead.
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
   - Headings, paragraphs, lists, bold            -> plain Markdown
@@ -73,13 +74,14 @@ for (let i = 0; i < lines.length; i++) {
       // Before/after flows of phone screens: "before: id: label", "before: id: label | gone", "after: id: label"
       const before = [];
       const after = [];
-      for (const l of inner.filter(Boolean)) {
+      const slider = inner.some((l) => /^style:\s*slider$/i.test(l.trim()));
+      for (const l of inner.filter((l) => l && !/^style:/i.test(l.trim()))) {
         const [side, id, ...rest] = unescape(l).split(':');
         const [label, flag] = rest.join(':').split('|').map((t) => t.trim());
         const screen = { id: id.trim(), label, src: `/images/${slug}/${id.trim()}.webp`, ...(flag === 'gone' ? { gone: true } : {}) };
         (side.trim() === 'after' ? after : before).push(screen);
       }
-      blocks.push({ type: 'block', md: `<FlowSwap before={${JSON.stringify(before)}} after={${JSON.stringify(after)}} />` });
+      blocks.push({ type: 'block', md: `<${slider ? 'CompareSlider' : 'FlowSwap'} before={${JSON.stringify(before)}} after={${JSON.stringify(after)}} />` });
       continue;
     }
     if (line.includes('🔀')) {
