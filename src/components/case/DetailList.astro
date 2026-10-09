@@ -38,13 +38,22 @@ const { items } = Astro.props;
 
 <style>
   /* Beats the article's own list styles */
+  /* One gradient behind the whole section. Cards use the same gradient, pinned to
+     the window, so it never moves: only the phone and text change as you scroll. */
   ul.detail-list {
+    --bg:
+      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
+      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
     list-style: none;
     margin: var(--space-5) 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    border-radius: var(--radius);
+    background: var(--bg);
+    background-attachment: fixed;
+    /* clip, not hidden, so the cards can still stick */
+    overflow: clip;
   }
   /* Each card sticks near the top of the page; the next one scrolls up over it */
   ul.detail-list > li.detail {
@@ -60,21 +69,9 @@ const { items } = Astro.props;
     align-items: center;
     gap: 56px;
     border-radius: var(--radius);
-    /* One blue-gray per card with a soft top-to-bottom fade; each card is a step
-       lighter than the one before, so the stack reads as layers */
-    --card: #2f3747;
-    background: linear-gradient(to bottom, color-mix(in srgb, var(--card), #fff 6%), var(--card));
-    box-shadow: 0 -12px 32px rgb(0 0 0 / 0.18);
-    overflow: hidden;
-  }
-  ul.detail-list > li.detail:nth-child(2) {
-    --card: #3a4355;
-  }
-  ul.detail-list > li.detail:nth-child(3) {
-    --card: #465063;
-  }
-  ul.detail-list > li.detail:nth-child(n + 4) {
-    --card: #525d71;
+    background: var(--bg);
+    background-attachment: fixed;
+    overflow: clip;
   }
   /* Every other card: phone on the left, text on the right */
   ul.detail-list > li.detail.flip {
@@ -109,7 +106,12 @@ const { items } = Astro.props;
   /* Phones: plain list, text above a smaller phone, no stacking */
   @media (max-width: 600px) {
     ul.detail-list {
-      gap: 16px;
+      gap: 0;
+      /* Fixed backgrounds are unreliable on phones; scroll with the section instead */
+      background-attachment: scroll;
+    }
+    ul.detail-list > li.detail {
+      background: none;
     }
     ul.detail-list > li.detail,
     ul.detail-list > li.detail.flip {
