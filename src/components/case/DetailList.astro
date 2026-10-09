@@ -1,7 +1,7 @@
 ---
 /*
-  Design details in one fixed frame. The frame (gradient background) sticks near
-  the top of the page and keeps its size; as you scroll, each detail's phone and
+  Design details in one fixed frame. The frame (gradient background) sticks in
+  the middle of the window and keeps its size; as you scroll, each detail's phone and
   text slide up into it and the previous one slides out. Sides alternate.
   From a 📱 callout in Notion with one "id: label" line per screen
   (image at public/images/<case slug>/<id>.webp, phone frame included).
@@ -51,7 +51,8 @@ const { items } = Astro.props;
   /* The frame stays put and keeps its size; only what's inside moves */
   .frame {
     position: sticky;
-    top: 32px;
+    /* Set by the script so the frame sits in the middle of the window */
+    top: var(--stick, 32px);
     height: var(--h);
     border-radius: var(--radius);
     overflow: hidden;
@@ -171,10 +172,17 @@ const { items } = Astro.props;
       const t = Math.min(1, Math.max(0, (f - 0.15) / 0.7));
       return t * t * (3 - 2 * t);
     };
+    // Stick the frame in the middle of the visible area
+    let stick = 32;
+    const measure = () => {
+      const viewH = scroller ? scroller.clientHeight : window.innerHeight;
+      stick = Math.max(16, Math.round((viewH - frame.offsetHeight) / 2));
+      box.style.setProperty('--stick', `${stick}px`);
+    };
     const target = () => {
       const run = box.offsetHeight - frame.offsetHeight;
       const viewTop = scroller ? scroller.getBoundingClientRect().top : 0;
-      const top = box.getBoundingClientRect().top - viewTop - 32;
+      const top = box.getBoundingClientRect().top - viewTop - stick;
       const progress = Math.min(1, Math.max(0, -top / run)) * (n - 1);
       const step = Math.max(0, Math.min(n - 2, Math.floor(progress)));
       return step + ease(progress - step);
@@ -210,8 +218,12 @@ const { items } = Astro.props;
     };
 
     (scroller ?? window).addEventListener('scroll', queue, { passive: true });
-    window.addEventListener('resize', queue);
+    window.addEventListener('resize', () => {
+      measure();
+      queue();
+    });
     still.addEventListener('change', queue);
+    measure();
     cur = target();
     queue();
   });
