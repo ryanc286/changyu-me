@@ -1,7 +1,8 @@
 ---
 /*
-  Design details as a list: phone screen on the left, title and text on the right,
-  one detail per row, top to bottom.
+  Design details as stacked cards: each card holds a phone screen and its text,
+  sides alternating. As you scroll, each card sticks to the top and the next one
+  slides up over it, so the details replace each other one by one.
   From a 📱 callout in Notion with one "id: label" line per screen
   (image at public/images/<case slug>/<id>.webp, phone frame included).
   A bullet list right before it, one "- **Title.** Text" bullet per screen,
@@ -22,13 +23,14 @@ const { items } = Astro.props;
 
 <ul class="detail-list">
   {
-    items.map((it) => (
-      <li class="detail">
-        <div class="shot">{it.src && <img src={it.src} alt={it.label} loading="lazy" />}</div>
+    items.map((it, i) => (
+      <li class:list={['detail', { flip: i % 2 === 1 }]} style={`--i:${i}`}>
         <div class="copy">
-          {it.title && <p class="title">{it.title.replace(/\.$/, '')}</p>}
-          {it.text && <p class="text">{it.text}</p>}
+          <p>
+            {it.title && <strong>{it.title.replace(/\.?$/, '.')}</strong>} {it.text}
+          </p>
         </div>
+        <div class="shot">{it.src && <img src={it.src} alt={it.label} loading="lazy" />}</div>
       </li>
     ))
   }
@@ -42,43 +44,89 @@ const { items } = Astro.props;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 48px;
+    gap: 24px;
   }
-  /* Rows centered in the full content width */
+  /* Each card sticks near the top of the page; the next one scrolls up over it */
   ul.detail-list > li.detail {
-    width: 100%;
-    max-width: 680px;
-    align-self: center;
+    position: sticky;
+    top: 32px;
     margin: 0;
-    padding: 0;
+    padding: 0 7%;
+    height: clamp(420px, 64vh, 600px);
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 1fr auto;
     align-items: center;
-    gap: 40px;
+    gap: 6%;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    box-shadow: 0 -1px 0 var(--color-line);
+    overflow: hidden;
+  }
+  /* Every other card: phone on the left, text on the right */
+  ul.detail-list > li.detail.flip {
+    grid-template-columns: auto 1fr;
+  }
+  li.detail.flip .shot {
+    order: -1;
+  }
+  .shot {
+    align-self: stretch;
+    min-height: 0;
+    display: flex;
+    align-items: center;
   }
   .shot img {
     display: block;
-    width: 100%;
-    height: auto;
+    height: 84%;
+    width: auto;
     filter: drop-shadow(0 16px 28px rgb(0 0 0 / 0.16));
   }
-  .copy p {
+  .copy {
+    max-width: 360px;
+  }
+  li.detail.flip .copy {
+    justify-self: end;
+  }
+  .detail-list .copy p {
     margin: 0;
   }
-  .detail-list .title {
-    font-weight: 600;
+  .detail-list .copy strong {
     color: var(--color-text);
+    font-weight: 600;
   }
-  .detail-list .text {
-    margin-top: 6px;
-  }
+
+  /* Phones: plain list, text above a smaller phone, no stacking */
   @media (max-width: 600px) {
     ul.detail-list {
-      gap: 36px;
+      gap: 16px;
     }
-    ul.detail-list > li.detail {
-      grid-template-columns: 38% 1fr;
+    ul.detail-list > li.detail,
+    ul.detail-list > li.detail.flip {
+      position: static;
+      height: auto;
+      grid-template-columns: 1fr;
       gap: 20px;
+      padding: 28px 20px 0;
+    }
+    li.detail.flip .shot {
+      order: 0;
+    }
+    li.detail.flip .copy {
+      justify-self: start;
+    }
+    .copy {
+      max-width: none;
+    }
+    .shot {
+      align-self: auto;
+      justify-content: center;
+      /* Show the top part of the phone; the card edge crops the rest */
+      max-height: 340px;
+      align-items: flex-start;
+    }
+    .shot img {
+      height: auto;
+      width: 62%;
     }
   }
 </style>
