@@ -16,6 +16,8 @@
   - Callout with the 🔀 icon -> <StepCompare>, before/after step lists:
       "before: Step", "before: Step | Tag" (step that left), "after: Step".
       Uses public/images/<slug>/<id>.webp|jpg|png when the file exists.
+  - Callout with the 🧱 icon -> <BlockBuilder>, blocks that fly into a phone and build a page:
+      one "id: label" line per block, in page order (public/images/<slug>/<id>.webp).
   - Callout with the 📱 icon -> <DetailList>, phone screens on the left with text on the right,
       one per row: one "id: label" line per screen. A bullet list right before it, one
       "- **Title.** Text" bullet per screen, becomes the text beside each screen.
@@ -77,6 +79,15 @@ for (let i = 0; i < lines.length; i++) {
     const inner = [];
     while (++i < lines.length && !lines[i].startsWith('</callout>')) inner.push(lines[i].trim());
     const text = inner.join(' ').trim();
+    if (line.includes('🧱')) {
+      // Block builder: one "id: label" per block, in page order
+      const parts = inner.filter(Boolean).map((l) => {
+        const [id, ...rest] = unescape(l).split(':');
+        return { id: id.trim(), label: rest.join(':').trim(), src: `/images/${slug}/${id.trim()}.webp` };
+      });
+      blocks.push({ type: 'block', md: `<BlockBuilder blocks={${JSON.stringify(parts)}} />` });
+      continue;
+    }
     if (line.includes('📱')) {
       // Detail list: one "id: label" per screen, text from the bullets right before it
       const items = inner.filter(Boolean).map((l) => {

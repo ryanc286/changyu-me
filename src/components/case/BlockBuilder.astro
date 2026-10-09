@@ -1,0 +1,337 @@
+---
+/*
+  A campaign page built from blocks. The blocks start scattered around an empty
+  phone; as you scroll, each one flies into its slot from top to bottom, and the
+  page inside the phone scrolls along to follow. When every block is in, the
+  page scrolls back to the top. The frame stays in the middle of the window.
+  From a 🧱 callout in Notion with one "id: label" line per block, in page order
+  (images at public/images/<case slug>/<id>.webp, all the same width, page margins
+  included). The same id can appear more than once.
+  On phones and with reduced motion it shows the finished page.
+*/
+interface Block {
+  id: string;
+  label: string;
+  src: string;
+}
+interface Props {
+  blocks: Block[];
+  label?: string;
+}
+const { blocks, label = 'A campaign page built from blocks' } = Astro.props;
+// Where each block waits before it flies in, as [x%, y%] of the frame (block centers)
+const SPOTS: [number, number][] = [
+  [17, 34],
+  [83, 27],
+  [17, 78],
+  [83, 59],
+  [83, 88],
+  [17, 92],
+];
+const TILT = [-6, 5, 4, -5, -3, 6];
+---
+
+<div class="block-builder" data-block-builder style={`--n:${blocks.length}`}>
+  <div class="pin">
+    <figure class="frame" aria-label={label}>
+      <div class="phone">
+        <div class="screen">
+          <div class="page">
+            {
+              blocks.map((b, i) => (
+                <div class="slot" data-slot={i}>
+                  <img src={b.src} alt={b.label} draggable="false" />
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+      <div class="flyers" aria-hidden="true">
+        {
+          blocks.map((b, i) => (
+            <div
+              class="flyer"
+              data-fly={i}
+              data-x={SPOTS[i % SPOTS.length][0]}
+              data-y={SPOTS[i % SPOTS.length][1]}
+              data-r={TILT[i % TILT.length]}
+            >
+              <img src={b.src} alt="" draggable="false" />
+              <span class="tag">{b.label}</span>
+            </div>
+          ))
+        }
+      </div>
+    </figure>
+  </div>
+</div>
+
+<style>
+  .block-builder {
+    --h: clamp(420px, 62vh, 580px);
+    margin: var(--space-5) 0;
+    /* Scroll room is set by the script; without it the block is just the frame */
+  }
+  .pin {
+    position: sticky;
+    top: var(--stick, 32px);
+  }
+  .frame {
+    position: relative;
+    margin: 0;
+    height: var(--h);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
+      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
+  }
+
+  /* Big phone, centered, running off the bottom edge like the cover template */
+  .phone {
+    position: absolute;
+    left: 50%;
+    top: 11%;
+    width: min(36%, calc(var(--h) * 0.56));
+    height: 100%;
+    translate: -50% 0;
+    padding: 10px;
+    border-radius: 44px 44px 0 0;
+    background: #111;
+    box-shadow:
+      0 0 0 1.5px #9aa3b2,
+      0 24px 48px rgb(0 0 0 / 0.3);
+  }
+  .screen {
+    position: relative;
+    height: 100%;
+    border-radius: 34px 34px 0 0;
+    overflow: hidden;
+    background: #fff;
+  }
+  .page {
+    position: absolute;
+    inset: 0 0 auto;
+    translate: 0 calc(var(--scroll, 0) * -1px);
+  }
+  .slot {
+    position: relative;
+    outline: 1.5px dashed transparent;
+    outline-offset: -6px;
+    transition: outline-color 300ms var(--ease-out);
+  }
+  .slot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    opacity: 1;
+  }
+  /* Empty slot: dashed outline, block hidden until it lands */
+  .block-builder.live .slot:not(.in) {
+    outline-color: rgb(61 71 90 / 0.3);
+  }
+  /* Soft gray placeholder so the empty page shows where blocks will go */
+  .block-builder.live .slot:not(.in)::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 8px;
+    background: #e8eaee;
+  }
+  .block-builder.live .slot:not(.in) img {
+    opacity: 0;
+  }
+  .block-builder.live.done .slot {
+    outline-color: transparent;
+  }
+
+  /* Blocks waiting around the phone, and flying in */
+  .flyers {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: none;
+  }
+  .block-builder.live .flyers {
+    display: block;
+  }
+  .flyer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: 50% 50%;
+    will-change: transform;
+  }
+  .flyer img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    filter: drop-shadow(0 14px 28px rgb(0 0 0 / 0.28));
+  }
+  .flyer .tag {
+    position: absolute;
+    left: 50%;
+    /* Sized for the half-scale waiting blocks, so it reads at about 12px */
+    top: -52px;
+    translate: -50% 0;
+    padding: 8px 20px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.14);
+    border: 1px solid rgb(255 255 255 / 0.28);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: var(--tag, 1);
+  }
+
+  /* Phones and reduced motion: the finished page, no scroll effect */
+  @media (max-width: 600px), (prefers-reduced-motion: reduce) {
+    .pin {
+      position: static;
+    }
+  }
+  @media (max-width: 600px) {
+    .block-builder {
+      --h: 460px;
+    }
+    .phone {
+      width: 64%;
+      top: 32px;
+    }
+  }
+</style>
+
+<script>
+  const still = matchMedia('(max-width: 600px), (prefers-reduced-motion: reduce)');
+
+  document.querySelectorAll<HTMLElement>('[data-block-builder]').forEach(async (box) => {
+    const pin = box.querySelector<HTMLElement>('.pin')!;
+    const frame = box.querySelector<HTMLElement>('.frame')!;
+    const screen = box.querySelector<HTMLElement>('.screen')!;
+    const slots = [...box.querySelectorAll<HTMLElement>('.slot')];
+    const flyers = [...box.querySelectorAll<HTMLElement>('.flyer')];
+    const scroller = box.closest<HTMLElement>('.scroller');
+    const n = slots.length;
+    const segs = n + 1; // one per block, plus the final scroll back to the top
+    let raf = 0;
+    let stick = 32;
+    let seg = 300;
+
+    // Wait for the block images so their heights are known
+    await Promise.all(
+      [...box.querySelectorAll('img')].map((img) => (img as HTMLImageElement).decode().catch(() => {})),
+    );
+
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+    const smooth = (t: number) => t * t * (3 - 2 * t);
+
+    // Layout numbers, refreshed on resize
+    let L = { fw: 0, fh: 0, sx: 0, sy: 0, sw: 0, sh: 0, tops: [] as number[], hs: [] as number[], page: 0 };
+    const measure = () => {
+      const viewH = scroller ? scroller.clientHeight : window.innerHeight;
+      stick = Math.max(16, Math.round((viewH - pin.offsetHeight) / 2));
+      box.style.setProperty('--stick', `${stick}px`);
+      seg = Math.round(frame.offsetHeight * 0.55);
+      box.style.height = still.matches ? '' : `${pin.offsetHeight + seg * segs}px`;
+      const f = frame.getBoundingClientRect();
+      const s = screen.getBoundingClientRect();
+      L = {
+        fw: f.width,
+        fh: f.height,
+        sx: s.left - f.left,
+        sy: s.top - f.top,
+        sw: s.width,
+        sh: frame.offsetHeight - (s.top - f.top),
+        tops: slots.map((el) => el.offsetTop),
+        hs: slots.map((el) => el.offsetHeight),
+        page: slots.reduce((a, el) => a + el.offsetHeight, 0),
+      };
+      flyers.forEach((fl) => (fl.style.width = `${L.sw}px`));
+    };
+
+    // Page scroll that keeps slot i in view
+    const follow = (i: number) => clamp(L.tops[i] + L.hs[i] / 2 - L.sh * 0.45, 0, Math.max(0, L.page - L.sh));
+
+    const target = () => {
+      const viewTop = scroller ? scroller.getBoundingClientRect().top : 0;
+      const top = box.getBoundingClientRect().top - viewTop - stick;
+      return clamp(-top / seg, 0, segs);
+    };
+
+    const paint = (t: number) => {
+      // Page scroll: follow the block being placed, then go back to the top
+      let scroll: number;
+      if (t < n) {
+        const i = Math.floor(t);
+        const f = smooth(clamp((t - i) / 0.6, 0, 1));
+        scroll = follow(Math.max(0, i - 1)) + (follow(i) - follow(Math.max(0, i - 1))) * f;
+      } else {
+        scroll = follow(n - 1) * (1 - smooth(clamp(t - n, 0, 1)));
+      }
+      box.style.setProperty('--scroll', scroll.toFixed(1));
+
+      flyers.forEach((fl, i) => {
+        // Each block flies during the last part of its segment, after the page has moved
+        const e = smooth(clamp((t - i - 0.35) / 0.65, 0, 1));
+        const landed = e >= 1;
+        slots[i].classList.toggle('in', landed);
+        fl.style.visibility = landed ? 'hidden' : 'visible';
+        if (landed) return;
+        const k = 0.5 + 0.5 * e; // waiting blocks are smaller
+        const w = L.sw;
+        const h = L.hs[i];
+        const sx = (Number(fl.dataset.x) / 100) * L.fw - w / 2;
+        const sy = (Number(fl.dataset.y) / 100) * L.fh - h / 2;
+        const ex = L.sx;
+        const ey = L.sy + L.tops[i] - scroll;
+        const x = sx + (ex - sx) * e;
+        const y = sy + (ey - sy) * e;
+        const r = Number(fl.dataset.r) * (1 - e);
+        fl.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${r.toFixed(2)}deg) scale(${k.toFixed(3)})`;
+        fl.style.setProperty('--tag', String(1 - e * 2));
+      });
+      box.classList.toggle('done', t >= n);
+    };
+
+    let cur = 0;
+    const update = () => {
+      raf = 0;
+      if (still.matches) {
+        box.classList.remove('live', 'done');
+        box.style.removeProperty('--scroll');
+        return;
+      }
+      box.classList.add('live');
+      const goal = target();
+      cur += (goal - cur) * 0.14;
+      if (Math.abs(goal - cur) < 0.002) cur = goal;
+      paint(cur);
+      if (cur !== goal) raf = requestAnimationFrame(update);
+    };
+    const queue = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    (scroller ?? window).addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', () => {
+      measure();
+      queue();
+    });
+    still.addEventListener('change', () => {
+      measure();
+      queue();
+    });
+    document.fonts?.ready.then(() => {
+      measure();
+      queue();
+    });
+    measure();
+    cur = target();
+    queue();
+  });
+</script>

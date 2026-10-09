@@ -12,6 +12,7 @@ import FlowSwap from '../components/case/FlowSwap.astro';
 import CompareSlider from '../components/case/CompareSlider.astro';
 import ClickMap from '../components/case/ClickMap.astro';
 import DetailList from '../components/case/DetailList.astro';
+import BlockBuilder from '../components/case/BlockBuilder.astro';
 import { t } from '../i18n/ui';
 
 export async function getStaticPaths() {
@@ -43,5 +44,5 @@ const summary = t('en', `work.${entry.id}.summary`);
     { label: 'Type', value: d.type },
   ]}
 >
-  <Content components={{ Media, MediaRow, Annotated, VideoRow, StepCompare, FlowSwap, CompareSlider, ClickMap, DetailList, Stats, Hypothesis }} />
+  <Content components={{ Media, MediaRow, Annotated, VideoRow, StepCompare, FlowSwap, CompareSlider, ClickMap, DetailList, BlockBuilder, Stats, Hypothesis }} />
 </CaseStudy>
