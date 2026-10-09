@@ -1,12 +1,13 @@
 ---
 /*
-  Design details as stacked cards: each card holds a phone screen and its text,
-  sides alternating. As you scroll, each card sticks to the top and the next one
-  slides up over it, so the details replace each other one by one.
+  Design details in one fixed frame. The frame (gradient background) sticks near
+  the top of the page and keeps its size; as you scroll, each detail's phone and
+  text slide up into it and the previous one slides out. Sides alternate.
   From a 📱 callout in Notion with one "id: label" line per screen
   (image at public/images/<case slug>/<id>.webp, phone frame included).
   A bullet list right before it, one "- **Title.** Text" bullet per screen,
   becomes the title and text beside each screen.
+  On phones, and with reduced motion, it is a plain list on the same background.
 */
 interface Item {
   id: string;
@@ -21,60 +22,67 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<ul class="detail-list">
-  {
-    items.map((it, i) => (
-      <li class:list={['detail', { flip: i % 2 === 1 }]} style={`--i:${i}`}>
-        <div class="copy">
-          <p>
-            {it.title && <strong>{it.title.replace(/\.?$/, '.')}</strong>} {it.text}
-          </p>
-        </div>
-        <div class="shot">{it.src && <img src={it.src} alt={it.label} loading="lazy" />}</div>
-      </li>
-    ))
-  }
-</ul>
+<div class="detail-list" data-detail-list style={`--n:${items.length}`}>
+  <div class="frame">
+    <ul class="track">
+      {
+        items.map((it, i) => (
+          <li class:list={['detail', { flip: i % 2 === 1 }]}>
+            <div class="copy">
+              <p>
+                {it.title && <strong>{it.title.replace(/\.?$/, '.')}</strong>} {it.text}
+              </p>
+            </div>
+            <div class="shot">{it.src && <img src={it.src} alt={it.label} loading="lazy" />}</div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
 
 <style>
-  /* Beats the article's own list styles */
-  /* One gradient behind the whole section. Cards use the same gradient, pinned to
-     the window, so it never moves: only the phone and text change as you scroll. */
-  ul.detail-list {
-    --bg:
-      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
-      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
-    list-style: none;
+  .detail-list {
+    --h: clamp(420px, 64vh, 600px);
+    /* Scroll room: one frame height per detail */
+    height: calc(var(--h) * var(--n));
     margin: var(--space-5) 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    border-radius: var(--radius);
-    background: var(--bg);
-    background-attachment: fixed;
-    /* clip, not hidden, so the cards can still stick */
-    overflow: clip;
   }
-  /* Each card sticks near the top of the page; the next one scrolls up over it */
-  ul.detail-list > li.detail {
+  /* The frame stays put and keeps its size; only what's inside moves */
+  .frame {
     position: sticky;
     top: 32px;
+    height: var(--h);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
+      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
+  }
+  /* Beats the article's own list styles */
+  .detail-list ul.track {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    height: 100%;
+  }
+  .detail-list ul.track > li.detail {
+    position: absolute;
+    inset: 0;
     margin: 0;
     padding: 0 6%;
-    height: clamp(420px, 64vh, 600px);
     display: grid;
-    /* Text and phone sit together in the middle, not pushed to the edges */
+    /* Text and phone sit together in the middle */
     grid-template-columns: minmax(0, 320px) auto;
     justify-content: center;
     align-items: center;
     gap: 56px;
-    border-radius: var(--radius);
-    background: var(--bg);
-    background-attachment: fixed;
-    overflow: clip;
+    /* Set by the script: 0 = in place, 1 = one frame below, -1 = one frame above */
+    transform: translateY(calc(var(--y, 0) * 100%));
+    will-change: transform;
   }
-  /* Every other card: phone on the left, text on the right */
-  ul.detail-list > li.detail.flip {
+  .detail-list ul.track > li.detail.flip {
     grid-template-columns: auto minmax(0, 320px);
   }
   li.detail.flip .shot {
@@ -93,7 +101,7 @@ const { items } = Astro.props;
     filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.3));
   }
 
-  /* Fixed colors: the card is always the dark gradient, whatever the site theme */
+  /* Fixed colors: the background is always the dark gradient, whatever the site theme */
   .detail-list .copy p {
     margin: 0;
     color: rgb(255 255 255 / 0.75);
@@ -103,19 +111,27 @@ const { items } = Astro.props;
     font-weight: 600;
   }
 
-  /* Phones: plain list, text above a smaller phone, no stacking */
-  @media (max-width: 600px) {
-    ul.detail-list {
-      gap: 0;
-      /* Fixed backgrounds are unreliable on phones; scroll with the section instead */
-      background-attachment: scroll;
+  /* Phones and reduced motion: a plain list on the same background */
+  @media (max-width: 600px), (prefers-reduced-motion: reduce) {
+    .detail-list {
+      height: auto;
     }
-    ul.detail-list > li.detail {
-      background: none;
-    }
-    ul.detail-list > li.detail,
-    ul.detail-list > li.detail.flip {
+    .frame {
       position: static;
+      height: auto;
+    }
+    .detail-list ul.track {
+      height: auto;
+    }
+    .detail-list ul.track > li.detail {
+      position: static;
+      transform: none;
+      height: var(--h);
+    }
+  }
+  @media (max-width: 600px) {
+    .detail-list ul.track > li.detail,
+    .detail-list ul.track > li.detail.flip {
       height: auto;
       grid-template-columns: 1fr;
       gap: 20px;
@@ -127,8 +143,9 @@ const { items } = Astro.props;
     .shot {
       align-self: auto;
       justify-content: center;
-      /* Show the top part of the phone; the card edge crops the rest */
+      /* Show the top part of the phone; the next row covers the rest */
       max-height: 340px;
+      overflow: hidden;
       align-items: flex-start;
     }
     .shot img {
@@ -137,3 +154,44 @@ const { items } = Astro.props;
     }
   }
 </style>
+
+<script>
+  const still = matchMedia('(max-width: 600px), (prefers-reduced-motion: reduce)');
+
+  document.querySelectorAll<HTMLElement>('[data-detail-list]').forEach((box) => {
+    const frame = box.querySelector<HTMLElement>('.frame')!;
+    const items = [...box.querySelectorAll<HTMLElement>('li.detail')];
+    const scroller = box.closest<HTMLElement>('.scroller');
+    const n = items.length;
+    let raf = 0;
+
+    // Hold each detail still for a while, then slide to the next
+    const ease = (f: number) => {
+      const t = Math.min(1, Math.max(0, (f - 0.3) / 0.4));
+      return t * t * (3 - 2 * t);
+    };
+
+    const update = () => {
+      raf = 0;
+      if (still.matches) {
+        items.forEach((li) => li.style.removeProperty('--y'));
+        return;
+      }
+      const run = box.offsetHeight - frame.offsetHeight;
+      const viewTop = scroller ? scroller.getBoundingClientRect().top : 0;
+      const top = box.getBoundingClientRect().top - viewTop - 32;
+      const progress = Math.min(1, Math.max(0, -top / run)) * (n - 1);
+      const step = Math.max(0, Math.min(n - 2, Math.floor(progress)));
+      const p = step + ease(progress - step);
+      items.forEach((li, i) => li.style.setProperty('--y', String(i - p)));
+    };
+    const queue = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    (scroller ?? window).addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    still.addEventListener('change', queue);
+    update();
+  });
+</script>
