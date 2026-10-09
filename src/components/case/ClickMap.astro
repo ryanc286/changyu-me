@@ -1,0 +1,442 @@
+---
+/*
+  A phone screen with each area outlined and its share of taps beside it. As the
+  block scrolls into view, the areas light up one by one, the numbers count up,
+  then everything dims except the highlighted area.
+  From a 📊 callout in Notion:
+    first line   "id: label"                 (image at public/images/<slug>/<id>.webp)
+    other lines  "Title | 12.5%"             (one per area, top to bottom)
+                 "Title | 82% | highlight"   (the area to end on)
+  Lines after the last area in REGIONS (e.g. "Others") show as a dim footnote.
+  Where each area sits on the image is set in REGIONS below, by image id,
+  as [left%, top%, width%, height%] of the image.
+*/
+interface Item {
+  title: string;
+  value: string;
+  highlight?: boolean;
+}
+interface Props {
+  id: string;
+  label: string;
+  src: string;
+  items: Item[];
+}
+const { id, label, src, items } = Astro.props;
+
+const REGIONS: Record<string, [number, number, number, number][]> = {
+  'old-activity': [
+    [9.1, 14.7, 82.2, 16.6], // marketing banner
+    [9.1, 31.9, 82.2, 12.7], // Carousell News, saved searches
+    [9.1, 45.8, 82.2, 12.6], // pinned marketing message
+    [9.1, 60.8, 82.2, 26.2], // account and listing activity
+  ],
+};
+const regions = REGIONS[id] ?? [];
+const areas = items.slice(0, regions.length);
+const extras = items.slice(regions.length);
+
+// "82%" -> number 82, 0 decimals, suffix "%"
+const parse = (v: string) => {
+  const m = v.match(/^([^\d-]*)(-?[\d.]+)(.*)$/);
+  if (!m) return { prefix: '', num: 0, dec: 0, suffix: v };
+  return { prefix: m[1], num: Number(m[2]), dec: (m[2].split('.')[1] ?? '').length, suffix: m[3] };
+};
+const alt = `${label}. ${items.map((it) => `${it.title}: ${it.value}`).join(', ')}.`;
+---
+
+<figure class="clickmap" data-clickmap>
+  <div class="stage">
+    <div class="phone">
+      <img src={src} alt={alt} loading="lazy" />
+      {
+        areas.map((it, i) => (
+          <span
+            class:list={['area', { hl: it.highlight }]}
+            data-area={i}
+            style={`left:${regions[i][0]}%;top:${regions[i][1]}%;width:${regions[i][2]}%;height:${regions[i][3]}%`}
+            aria-hidden="true"
+          >
+            <span class="badge">{i + 1}</span>
+          </span>
+        ))
+      }
+    </div>
+    <svg class="lines" aria-hidden="true">
+      {areas.map((it, i) => <path class:list={{ hl: it.highlight }} data-line={i} pathLength="1" />)}
+    </svg>
+    <ol class="notes" aria-hidden="true">
+      {
+        areas.map((it, i) => {
+          const p = parse(it.value);
+          return (
+            <li class:list={['note', { hl: it.highlight }]} data-note={i}>
+              <span class="num">{i + 1}</span>
+              <span class="body">
+                <span class="t">{it.title}</span>
+                <span class="v" data-prefix={p.prefix} data-to={p.num} data-dec={p.dec} data-suffix={p.suffix}>
+                  {it.value}
+                </span>
+              </span>
+            </li>
+          );
+        })
+      }
+      {
+        extras.map((it) => (
+          <li class="note extra">
+            <span class="num" />
+            <span class="body">
+              <span class="t">{it.title}</span>
+              <span class="v">{it.value}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</figure>
+
+<style>
+  .clickmap {
+    margin: var(--space-5) 0;
+  }
+  .stage {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    overflow: hidden;
+    /* Champagne gold, the same as this case's cover template */
+    background:
+      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.12), transparent 60%),
+      linear-gradient(115deg, #2a2114 0%, #a8834a 42%, #4d3c22 70%, #15100a 100%);
+  }
+
+  .phone {
+    position: absolute;
+    top: 6%;
+    bottom: 6%;
+    left: 15%;
+    aspect-ratio: 965 / 1948;
+  }
+  .phone img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.3));
+  }
+
+  /* Outlined areas on the screen */
+  .area {
+    position: absolute;
+    border: 1.5px solid #d39a3c;
+    border-radius: 6px;
+    background: rgb(211 154 60 / 0.1);
+    transition:
+      opacity 400ms var(--ease-out),
+      transform 400ms var(--ease-out),
+      background 400ms var(--ease-out);
+  }
+  .area.hl {
+    border-width: 2px;
+  }
+  .badge {
+    display: none;
+  }
+
+  .lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .lines path {
+    fill: none;
+    stroke: rgb(255 255 255 / 0.75);
+    stroke-width: 1;
+    stroke-linejoin: round;
+    transition:
+      stroke-dashoffset 500ms var(--ease-out),
+      opacity 400ms var(--ease-out);
+  }
+
+  /* Notes beside the phone; fixed colors since the background is always dark */
+  figure.clickmap .notes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  figure.clickmap .note {
+    position: absolute;
+    left: 58%;
+    right: 5%;
+    max-width: 280px;
+    margin: 0;
+    transition:
+      opacity 400ms var(--ease-out),
+      transform 400ms var(--ease-out);
+  }
+  .note .num {
+    display: none;
+  }
+  .note .body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .clickmap .note .t {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: rgb(255 255 255 / 0.75);
+  }
+  .clickmap .note .v {
+    font-size: 1.625rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .clickmap .note.hl .t {
+    color: #fff;
+    font-weight: 600;
+  }
+  .clickmap .note.hl .v {
+    font-size: 2.25rem;
+    color: #f6d9a4;
+  }
+  .clickmap .note.extra .t,
+  .clickmap .note.extra .v {
+    color: rgb(255 255 255 / 0.45);
+  }
+  .clickmap .note.extra .v {
+    font-size: 1rem;
+  }
+
+  /* Animation, driven by the script: .ready hides everything, .on shows one area,
+     .focus dims all but the highlighted one */
+  .clickmap.ready .phone {
+    opacity: 0;
+    translate: 0 16px;
+    transition:
+      opacity 600ms var(--ease-out),
+      translate 600ms var(--ease-out);
+  }
+  .clickmap.ready.in .phone {
+    opacity: 1;
+    translate: 0 0;
+  }
+  .clickmap.ready .area {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  .clickmap.ready .lines path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  .clickmap.ready .note {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  .clickmap.ready .area.on,
+  .clickmap.ready .note.on {
+    opacity: 1;
+    transform: none;
+  }
+  .clickmap.ready .lines path.on {
+    stroke-dashoffset: 0;
+  }
+  .clickmap.focus .area:not(.hl),
+  .clickmap.focus .note:not(.hl):not(.extra),
+  .clickmap.focus .lines path:not(.hl) {
+    opacity: 0.35;
+  }
+  .clickmap.focus .area.hl {
+    background: rgb(211 154 60 / 0.2);
+  }
+
+  /* Phones: no room on the side, so areas get numbers and notes become a list below */
+  @media (max-width: 600px) {
+    .stage {
+      aspect-ratio: auto;
+      padding: 28px 20px 24px;
+    }
+    .phone {
+      position: relative;
+      inset: auto;
+      width: 62%;
+      margin: 0 auto;
+    }
+    .phone img {
+      height: auto;
+    }
+    .badge {
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      display: grid;
+      place-items: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #d39a3c;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 600;
+      line-height: 1;
+    }
+    .lines {
+      display: none;
+    }
+    figure.clickmap .notes {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    figure.clickmap .note {
+      position: static;
+      max-width: none;
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .note .num {
+      display: block;
+      flex: none;
+      width: 14px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: rgb(255 255 255 / 0.6);
+    }
+    .note .body {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      flex: 1;
+      gap: 12px;
+    }
+    .clickmap .note .v {
+      font-size: 1.125rem;
+    }
+    .clickmap .note.hl .v {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .clickmap .phone,
+    .clickmap .area,
+    .clickmap .note,
+    .clickmap .lines path {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Place each note level with its area (pushed down so notes never overlap),
+  // then draw an elbow line from the area's right edge to the note's title.
+  function layout(fig: HTMLElement) {
+    const stage = fig.querySelector<HTMLElement>('.stage')!;
+    const notes = [...fig.querySelectorAll<HTMLElement>('.note')];
+    if (getComputedStyle(fig.querySelector('.lines')!).display === 'none') {
+      notes.forEach((n) => (n.style.top = ''));
+      return;
+    }
+    const H = stage.clientHeight;
+    const phone = fig.querySelector<HTMLElement>('.phone')!;
+    let prevBottom = 12;
+    notes.forEach((note) => {
+      const i = note.dataset.note;
+      const h = note.offsetHeight;
+      if (i === undefined) {
+        // Footnote: just below the last note
+        const top = Math.min(prevBottom + 8, H - h - 12);
+        note.style.top = `${top}px`;
+        prevBottom = top + h + 16;
+        return;
+      }
+      const area = fig.querySelector<HTMLElement>(`[data-area="${i}"]`)!;
+      const path = fig.querySelector<SVGPathElement>(`[data-line="${i}"]`)!;
+      const ay = phone.offsetTop + area.offsetTop + area.offsetHeight / 2;
+      const ax = phone.offsetLeft + area.offsetLeft + area.offsetWidth;
+      const title = note.querySelector<HTMLElement>('.t')!;
+      const titleMid = title.offsetTop + parseFloat(getComputedStyle(title).lineHeight) / 2;
+      const top = Math.min(Math.max(ay - titleMid, prevBottom), H - h - 12);
+      note.style.top = `${top}px`;
+      prevBottom = top + h + 16;
+      const ny = top + titleMid;
+      const nx = note.offsetLeft;
+      const bend = ax + 24;
+      path.setAttribute('d', `M${ax} ${ay} H${bend} L${Math.max(bend, nx - 36)} ${ny} H${nx - 10}`);
+    });
+  }
+
+  function countUp(el: HTMLElement, ms: number) {
+    const to = Number(el.dataset.to);
+    const dec = Number(el.dataset.dec);
+    const pre = el.dataset.prefix ?? '';
+    const suf = el.dataset.suffix ?? '';
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / ms);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = `${pre}${(to * eased).toFixed(dec)}${suf}`;
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-clickmap]').forEach((fig) => {
+    const img = fig.querySelector('img')!;
+    const run = () => layout(fig);
+    if (img.complete) run();
+    else img.addEventListener('load', run, { once: true });
+    const ro = new ResizeObserver(run);
+    ro.observe(fig);
+    fig.querySelectorAll('.note').forEach((n) => ro.observe(n));
+    document.fonts?.ready.then(run);
+
+    if (reduce) {
+      fig.classList.add('focus'); // final state, no motion
+      return;
+    }
+
+    fig.classList.add('ready');
+    fig.querySelectorAll<HTMLElement>('.note .v[data-to]').forEach((v) => {
+      v.textContent = `${v.dataset.prefix ?? ''}${(0).toFixed(Number(v.dataset.dec))}${v.dataset.suffix ?? ''}`;
+    });
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        run();
+        fig.classList.add('in');
+        const areas = [...fig.querySelectorAll<HTMLElement>('[data-area]')];
+        const step = 450;
+        areas.forEach((area, i) => {
+          const t = 500 + i * step;
+          setTimeout(() => area.classList.add('on'), t);
+          setTimeout(() => fig.querySelector(`[data-line="${i}"]`)?.classList.add('on'), t + 150);
+          setTimeout(() => {
+            const note = fig.querySelector<HTMLElement>(`[data-note="${i}"]`)!;
+            note.classList.add('on');
+            const v = note.querySelector<HTMLElement>('.v[data-to]');
+            if (v) countUp(v, 700);
+          }, t + 300);
+        });
+        const done = 500 + areas.length * step + 500;
+        setTimeout(() => fig.querySelectorAll('.note.extra').forEach((n) => n.classList.add('on')), done - 200);
+        setTimeout(() => fig.classList.add('focus'), done + 300);
+      },
+      { root: fig.closest('.scroller'), threshold: 0.45 },
+    );
+    io.observe(fig);
+  });
+</script>

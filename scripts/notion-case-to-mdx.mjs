@@ -16,6 +16,9 @@
   - Callout with the 🔀 icon -> <StepCompare>, before/after step lists:
       "before: Step", "before: Step | Tag" (step that left), "after: Step".
       Uses public/images/<slug>/<id>.webp|jpg|png when the file exists.
+  - Callout with the 📊 icon -> <ClickMap>, a screen with areas outlined and their share:
+      first line "id: label", then "Title | 12.5%" per area ("| highlight" on the one to end on).
+      Lines beyond the areas set in the component show as a dim footnote.
   - Callout with the 🔁 icon -> <FlowSwap>, before/after flows as phone screens
       that switch when scrolled into view: "before: id: label",
       "before: id: label | gone" (step that was cut), "after: id: label".
@@ -70,6 +73,20 @@ for (let i = 0; i < lines.length; i++) {
     const inner = [];
     while (++i < lines.length && !lines[i].startsWith('</callout>')) inner.push(lines[i].trim());
     const text = inner.join(' ').trim();
+    if (line.includes('📊')) {
+      // Click map: "id: label", then "Title | 12.5%" or "Title | 82% | highlight"
+      const [head, ...rest] = inner.filter(Boolean);
+      const [id, ...label] = head.split(':');
+      const items = rest.map((l) => {
+        const [title, value, flag] = unescape(l).split('|').map((t) => t.trim());
+        return { title, value, ...(flag === 'highlight' ? { highlight: true } : {}) };
+      });
+      blocks.push({
+        type: 'block',
+        md: `<ClickMap id="${attr(id.trim())}" label="${attr(label.join(':').trim())}" src="/images/${slug}/${id.trim()}.webp" items={${JSON.stringify(items)}} />`,
+      });
+      continue;
+    }
     if (line.includes('🔁')) {
       // Before/after flows of phone screens: "before: id: label", "before: id: label | gone", "after: id: label"
       const before = [];
