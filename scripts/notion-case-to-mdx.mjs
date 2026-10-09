@@ -24,7 +24,7 @@
       "before: id: label | gone" (step that was cut), "after: id: label".
       Images at public/images/<slug>/<id>.webp.
       Add a line "style: slider" to show it as a drag-to-compare slider instead.
-      With one before and one after screen, the slider stacks them in a single phone.
+      With one before and one after screen, both sit in the same spot so the line wipes one into the other.
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
   - Headings, paragraphs, lists, bold            -> plain Markdown
@@ -99,10 +99,7 @@ for (let i = 0; i < lines.length; i++) {
         const screen = { id: id.trim(), label, src: `/images/${slug}/${id.trim()}.webp`, ...(flag === 'gone' ? { gone: true } : {}) };
         (side.trim() === 'after' ? after : before).push(screen);
       }
-      blocks.push({ type: 'block', md:
-          slider && before.length === 1 && after.length === 1
-            ? `<ScreenCompare before={${JSON.stringify(before[0])}} after={${JSON.stringify(after[0])}} />`
-            : `<${slider ? 'CompareSlider' : 'FlowSwap'} before={${JSON.stringify(before)}} after={${JSON.stringify(after)}} />` });
+      blocks.push({ type: 'block', md: `<${slider ? 'CompareSlider' : 'FlowSwap'} before={${JSON.stringify(before)}} after={${JSON.stringify(after)}} />` });
       continue;
     }
     if (line.includes('🔀')) {

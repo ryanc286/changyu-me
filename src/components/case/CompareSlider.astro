@@ -16,9 +16,11 @@ interface Props {
   after: Screen[];
 }
 const { before, after } = Astro.props;
+// One screen on each side: both sit in the same spot, full phone frames included in the images
+const single = before.length === 1 && after.length === 1;
 ---
 
-<figure class="compare" data-compare style="--pos: 50%">
+<figure class:list={['compare', { single }]} data-compare style="--pos: 50%">
   <div class="stage">
     <div class="layer after">
       <ol class="set" aria-label={`After: ${after.length} steps`}>
@@ -30,7 +32,7 @@ const { before, after } = Astro.props;
           ))
         }
       </ol>
-      <span class="tag tag-after">After <em>{after.length} steps</em></span>
+      <span class="tag tag-after">After {!single && <em>{after.length} steps</em>}</span>
     </div>
     <div class="layer before">
       <ol class="set" aria-label={`Before: ${before.length} steps`}>
@@ -42,7 +44,7 @@ const { before, after } = Astro.props;
           ))
         }
       </ol>
-      <span class="tag tag-before">Before <em>{before.length} steps</em></span>
+      <span class="tag tag-before">Before {!single && <em>{before.length} steps</em>}</span>
     </div>
     <div class="divider" aria-hidden="true">
       <span class="knob">
@@ -56,7 +58,7 @@ const { before, after } = Astro.props;
       max="100"
       value="50"
       step="1"
-      aria-label="Drag to compare the old and new sign-up flows"
+      aria-label={single ? 'Drag to compare the old and new screens' : 'Drag to compare the old and new flows'}
     />
   </div>
 </figure>
@@ -239,6 +241,24 @@ const { before, after } = Astro.props;
       left 700ms var(--ease-out);
   }
 
+  /* Single screen: one phone (frame included in the image), same size on both sides */
+  figure.compare.single .layer {
+    padding: 0;
+  }
+  /* Phone height is 88% of the 16:10 stage: 0.88 × 10/16 × 965/1948 ≈ 27.2% of its width */
+  figure.compare.single .layer .phone {
+    width: 27.2%;
+  }
+  figure.compare.single .layer .phone img {
+    height: auto;
+    aspect-ratio: 965 / 1948;
+    object-fit: contain;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.3));
+  }
+
   @media (max-width: 600px) {
     .layer {
       aspect-ratio: auto;
@@ -272,6 +292,12 @@ const { before, after } = Astro.props;
       width: 30px;
       height: 46px;
       margin: -23px 0 0 -15px;
+    }
+    figure.compare.single .layer {
+      padding: 56px 0 28px;
+    }
+    figure.compare.single .layer .phone {
+      width: 64%;
     }
   }
 </style>
