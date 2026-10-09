@@ -9,7 +9,7 @@
                  "Title | 82% | highlight"   (the area to end on)
   Lines after the last area in REGIONS (e.g. "Others") show as a dim footnote.
   Where each area sits on the image is set in REGIONS below, by image id,
-  as [left%, top%, width%, height%] of the image.
+  as [left%, top%, width%, height%] of the image. Boxes get 4px of padding around that.
 */
 interface Item {
   title: string;
@@ -26,10 +26,10 @@ const { id, label, src, items } = Astro.props;
 
 const REGIONS: Record<string, [number, number, number, number][]> = {
   'old-activity': [
-    [9.1, 14.7, 82.2, 16.6], // marketing banner
-    [9.1, 31.9, 82.2, 12.7], // Carousell News, saved searches
-    [9.1, 45.8, 82.2, 12.6], // pinned marketing message
-    [9.1, 60.8, 82.2, 26.2], // account and listing activity
+    [9.6, 15.0, 81.2, 16.0], // marketing banner
+    [9.6, 33.2, 81.2, 10.9], // Carousell News, saved searches
+    [9.6, 46.6, 81.2, 11.2], // pinned marketing message
+    [9.6, 61.2, 81.2, 25.6], // account and listing activity
   ],
 };
 const regions = REGIONS[id] ?? [];
@@ -54,7 +54,7 @@ const alt = `${label}. ${items.map((it) => `${it.title}: ${it.value}`).join(', '
           <span
             class:list={['area', { hl: it.highlight }]}
             data-area={i}
-            style={`left:${regions[i][0]}%;top:${regions[i][1]}%;width:${regions[i][2]}%;height:${regions[i][3]}%`}
+            style={`left:calc(${regions[i][0]}% - 4px);top:calc(${regions[i][1]}% - 4px);width:calc(${regions[i][2]}% + 8px);height:calc(${regions[i][3]}% + 8px)`}
             aria-hidden="true"
           >
             <span class="badge">{i + 1}</span>
@@ -106,10 +106,10 @@ const alt = `${label}. ${items.map((it) => `${it.title}: ${it.value}`).join(', '
     aspect-ratio: 16 / 10;
     border-radius: var(--radius);
     overflow: hidden;
-    /* Champagne gold, the same as this case's cover template */
+    /* Same blue-gray as the other case images */
     background:
-      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.12), transparent 60%),
-      linear-gradient(115deg, #2a2114 0%, #a8834a 42%, #4d3c22 70%, #15100a 100%);
+      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
+      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
   }
 
   .phone {
@@ -129,9 +129,9 @@ const alt = `${label}. ${items.map((it) => `${it.title}: ${it.value}`).join(', '
   /* Outlined areas on the screen */
   .area {
     position: absolute;
-    border: 1.5px solid #d39a3c;
+    border: 1.5px solid #3d8bff;
     border-radius: 6px;
-    background: rgb(211 154 60 / 0.1);
+    background: rgb(61 139 255 / 0.08);
     transition:
       opacity 400ms var(--ease-out),
       transform 400ms var(--ease-out),
@@ -205,7 +205,7 @@ const alt = `${label}. ${items.map((it) => `${it.title}: ${it.value}`).join(', '
   }
   .clickmap .note.hl .v {
     font-size: 2.25rem;
-    color: #f6d9a4;
+    color: #b9d4ff;
   }
   .clickmap .note.extra .t,
   .clickmap .note.extra .v {
@@ -254,7 +254,7 @@ const alt = `${label}. ${items.map((it) => `${it.title}: ${it.value}`).join(', '
     opacity: 0.35;
   }
   .clickmap.focus .area.hl {
-    background: rgb(211 154 60 / 0.2);
+    background: rgb(61 139 255 / 0.16);
   }
 
   /* Phones: no room on the side, so areas get numbers and notes become a list below */
@@ -281,7 +281,7 @@ const alt = `${label}. ${items.map((it) => `${it.title}: ${it.value}`).join(', '
       width: 16px;
       height: 16px;
       border-radius: 50%;
-      background: #d39a3c;
+      background: #3d8bff;
       color: #fff;
       font-size: 9px;
       font-weight: 600;
