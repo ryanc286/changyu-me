@@ -12,6 +12,7 @@ import StepCompare from '../../components/case/StepCompare.astro';
 import FlowSwap from '../../components/case/FlowSwap.astro';
 import CompareSlider from '../../components/case/CompareSlider.astro';
 import ClickMap from '../../components/case/ClickMap.astro';
+import DetailList from '../../components/case/DetailList.astro';
 import { t } from '../../i18n/ui';
 
 export async function getStaticPaths() {
@@ -42,5 +43,5 @@ const summary = t('en', `tools.${entry.id}.summary`);
     { label: 'Type', value: d.type ?? t('en', `tools.${entry.id}.type`) },
   ]}
 >
-  <Content components={{ Media, MediaRow, Annotated, VideoRow, StepCompare, FlowSwap, CompareSlider, ClickMap, Stats, Hypothesis }} />
+  <Content components={{ Media, MediaRow, Annotated, VideoRow, StepCompare, FlowSwap, CompareSlider, ClickMap, DetailList, Stats, Hypothesis }} />
 </CaseStudy>

@@ -1,0 +1,80 @@
+---
+/*
+  Design details as a list: phone screen on the left, title and text on the right,
+  one detail per row, top to bottom.
+  From a 📱 callout in Notion with one "id: label" line per screen
+  (image at public/images/<case slug>/<id>.webp, phone frame included).
+  A bullet list right before it, one "- **Title.** Text" bullet per screen,
+  becomes the title and text beside each screen.
+*/
+interface Item {
+  id: string;
+  label: string;
+  src?: string;
+  title?: string;
+  text?: string;
+}
+interface Props {
+  items: Item[];
+}
+const { items } = Astro.props;
+---
+
+<ul class="detail-list">
+  {
+    items.map((it) => (
+      <li class="detail">
+        <div class="shot">{it.src && <img src={it.src} alt={it.label} loading="lazy" />}</div>
+        <div class="copy">
+          {it.title && <p class="title">{it.title.replace(/\.$/, '')}</p>}
+          {it.text && <p class="text">{it.text}</p>}
+        </div>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  /* Beats the article's own list styles */
+  ul.detail-list {
+    list-style: none;
+    margin: var(--space-5) 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+  ul.detail-list > li.detail {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    align-items: center;
+    gap: 40px;
+  }
+  .shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 16px 28px rgb(0 0 0 / 0.16));
+  }
+  .copy p {
+    margin: 0;
+  }
+  .detail-list .title {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .detail-list .text {
+    margin-top: 6px;
+  }
+  @media (max-width: 600px) {
+    ul.detail-list {
+      gap: 36px;
+    }
+    ul.detail-list > li.detail {
+      grid-template-columns: 38% 1fr;
+      gap: 20px;
+    }
+  }
+</style>

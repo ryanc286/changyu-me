@@ -16,6 +16,9 @@
   - Callout with the 🔀 icon -> <StepCompare>, before/after step lists:
       "before: Step", "before: Step | Tag" (step that left), "after: Step".
       Uses public/images/<slug>/<id>.webp|jpg|png when the file exists.
+  - Callout with the 📱 icon -> <DetailList>, phone screens on the left with text on the right,
+      one per row: one "id: label" line per screen. A bullet list right before it, one
+      "- **Title.** Text" bullet per screen, becomes the text beside each screen.
   - Callout with the 📊 icon -> <ClickMap>, a screen with areas outlined and their share:
       first line "id: label", then "Title | 12.5%" per area ("| highlight" on the one to end on).
       Lines beyond the areas set in the component show as a dim footnote.
@@ -74,6 +77,26 @@ for (let i = 0; i < lines.length; i++) {
     const inner = [];
     while (++i < lines.length && !lines[i].startsWith('</callout>')) inner.push(lines[i].trim());
     const text = inner.join(' ').trim();
+    if (line.includes('📱')) {
+      // Detail list: one "id: label" per screen, text from the bullets right before it
+      const items = inner.filter(Boolean).map((l) => {
+        const [id, ...rest] = l.split(':');
+        const src = ['webp', 'png', 'jpg']
+          .map((ext) => `/images/${slug}/${id.trim()}.${ext}`)
+          .find((path) => existsSync(new URL(`../public${path}`, import.meta.url)));
+        return { id: unescape(id.trim()), label: unescape(rest.join(':').trim()), ...(src ? { src } : {}) };
+      });
+      const prev = blocks.slice(-items.length);
+      if (prev.length === items.length && prev.every((b) => b.type === 'list' && b.raw?.startsWith('- '))) {
+        blocks.splice(-items.length);
+        prev.forEach((b, k) => {
+          const m = unescape(b.raw.slice(2)).match(/^\*\*(.+?)\*\*\s*(.*)$/);
+          items[k] = { ...items[k], ...(m ? { title: m[1], text: m[2] } : { text: unescape(b.raw.slice(2)) }) };
+        });
+      }
+      blocks.push({ type: 'block', md: `<DetailList items={${JSON.stringify(items)}} />` });
+      continue;
+    }
     if (line.includes('📊')) {
       // Click map: "id: label", then "Title | 12.5%" or "Title | 82% | highlight"
       const [head, ...rest] = inner.filter(Boolean);
