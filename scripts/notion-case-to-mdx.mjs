@@ -16,6 +16,10 @@
   - Callout with the 🔀 icon -> <StepCompare>, before/after step lists:
       "before: Step", "before: Step | Tag" (step that left), "after: Step".
       Uses public/images/<slug>/<id>.webp|jpg|png when the file exists.
+  - Callout with the 🔁 icon -> <FlowSwap>, before/after flows as phone screens
+      that switch when scrolled into view: "before: id: label",
+      "before: id: label | gone" (step that was cut), "after: id: label".
+      Images at public/images/<slug>/<id>.webp.
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
   - Headings, paragraphs, lists, bold            -> plain Markdown
@@ -65,6 +69,19 @@ for (let i = 0; i < lines.length; i++) {
     const inner = [];
     while (++i < lines.length && !lines[i].startsWith('</callout>')) inner.push(lines[i].trim());
     const text = inner.join(' ').trim();
+    if (line.includes('🔁')) {
+      // Before/after flows of phone screens: "before: id: label", "before: id: label | gone", "after: id: label"
+      const before = [];
+      const after = [];
+      for (const l of inner.filter(Boolean)) {
+        const [side, id, ...rest] = unescape(l).split(':');
+        const [label, flag] = rest.join(':').split('|').map((t) => t.trim());
+        const screen = { id: id.trim(), label, src: `/images/${slug}/${id.trim()}.webp`, ...(flag === 'gone' ? { gone: true } : {}) };
+        (side.trim() === 'after' ? after : before).push(screen);
+      }
+      blocks.push({ type: 'block', md: `<FlowSwap before={${JSON.stringify(before)}} after={${JSON.stringify(after)}} />` });
+      continue;
+    }
     if (line.includes('🔀')) {
       // Before/after step lists: "before: Step", "before: Step | Tag", "after: Step"
       const before = [];
