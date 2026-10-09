@@ -13,7 +13,11 @@ notion: "https://app.notion.com/p/3efeaff6ece381c2a8e3dc30c916d128"
 
 <Media id="hero" label="Three marketing tools that work together" src="/images/internal-tool/hero.webp" />
 
-At Carousell, the marketing team needed engineers for almost every campaign. I designed three internal tools that let them do it on their own. Each one works by itself, but together they work like plug-and-play blocks, turning technical tasks into simple, visual steps.
+At Carousell, the marketing team needed engineers for almost every campaign. I designed three internal tools that let them do it on their own, from interviews with the team to prototypes and handoff. Each one works by itself, but together they work like plug-and-play blocks, turning technical tasks into simple, visual steps.
+
+## The problem
+
+Every campaign ran through the same loop. Marketing sent a request, an engineer set it up in the backend, and any change started the loop again. Campaign pages were squeezed onto listing pages, and surveys ran on third-party tools that were costly and hard to change. The team could plan campaigns faster than they could launch them.
 
 ## How the blocks fit
 
@@ -32,22 +36,35 @@ To promote a category, marketing had to ask engineers to set up a listing collec
 
 ## Landing Page Builder
 
-Campaign pages were often squeezed onto listing pages. They were rigid and easy to miss. I reviewed past campaigns and talked to the team about how they built them. Three patterns covered most cases: collections, stories and images. I made them stackable and reorderable, like LEGO blocks, so marketers can build a page for any campaign.
+Campaign pages were often squeezed onto listing pages. They were rigid and easy to miss. I reviewed past campaigns and talked to the team about how they built them, then designed a builder around what I found.
 
 <Media id="builder" label="Building a campaign page from blocks" />
 
-The settings follow the order marketers set up a campaign, and the pages work on both web and app. The team's feedback after release was positive. Scheduling and preview are planned next, so campaigns go live on time and mistakes get caught before publishing.
+- **Three blocks cover most campaigns.** Collections, stories and images came up again and again, so they became the building blocks.
+- **Stack and reorder.** Blocks go in any order, like LEGO, so one builder works for any campaign.
+- **Settings in setup order.** Campaign settings are grouped by importance and follow the order marketers set up a campaign.
+- **One page, web and app.** Pages are responsive, so marketing builds once for both.
+
+The team's feedback after release was positive. Next on the list were scheduling, so campaigns go live on time without someone watching the clock, and preview, so mistakes get caught before publishing.
 
 ## LeadGen
 
-As the business grew, we needed a way to run surveys and collect leads at scale, and third-party tools were costly and hard to change. I looked at other tools and asked the team which forms and question types they used most. The result is an in-house form builder where questions can be dragged into any order.
+As the business grew, we needed a way to run surveys and collect leads at scale, and third-party tools were costly and hard to change. I designed an in-house form builder for surveys and lead forms.
 
 <Media id="leadgen" label="Building a survey with drag and drop" />
 
+- **The forms marketing uses most.** I compared other form tools and asked the team which form types and question formats they relied on, and built those first.
+- **Drag to reorder.** Questions can be dragged into any order, so changing a survey doesn't mean starting over.
+- **Owned in-house.** No license fees, and the team can change the tool when campaigns need something new.
+
+## One system, not three tools
+
+The three tools share the same patterns: a clear hierarchy, little decoration, and the same interactions for search, filters, adding and reordering. Once marketers learned one tool, the others felt familiar, which mattered for a team that used them under campaign deadlines.
+
 ## What changed for marketing
 
-Setting up a campaign takes less time, since marketers no longer wait on engineers for each step. They also have more tools to work with: collections, campaign pages and surveys they can mix for each campaign.
+Setting up a campaign takes less time, since marketers no longer wait on engineers for each step. They also have more tools to work with: collections, campaign pages and surveys they can mix for each campaign. Engineers, in turn, got their time back for product work.
 
 ## What I learned
 
-Designing for business users is still user-centered design. Interviews and workflow reviews showed that marketers needed two things: less manual work, and confidence that a campaign was set up right. A clear hierarchy, little decoration and consistent interactions made complex tasks feel simple, and feedback after each release guided the next round.
+Designing for business users is still user-centered design. Interviews and workflow reviews showed that marketers needed two things: less manual work, and confidence that a campaign was set up right. Simple, consistent patterns made complex tasks feel easy, and feedback after each release guided the next round. That is why scheduling and preview came next: both answer the same need for confidence before a campaign goes live.
