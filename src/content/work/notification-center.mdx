@@ -15,25 +15,35 @@ notion: "https://app.notion.com/p/3efeaff6ece3815594f5e84b8aca9b02"
 
 The Activity tab was one of the most used screens at Carousell. 80% of daily active users opened it to check on their account and orders. But important order updates were buried under marketing banners and promotions, and people did not know what to do next. I redesigned it to help people act on what matters and finish more orders.
 
-## What the data showed
+## The audit
 
 I looked at six months of data on each section's share of taps. Marketing banners, company news and promotions got few clicks but took up much of the screen, pushing down the account and listing updates people actually used. A review of the information architecture said the same thing: there was no clear hierarchy, so important updates were easy to miss.
 
-<ClickMap id="old-activity" label="Share of taps on the Activity tab, 6 months" src="/images/notification-center/old-activity.webp" items={[{"title": "Marketing banner", "value": "2.4%"}, {"title": "Carousell News & saved searches", "value": "12.5%"}, {"title": "Marketing messages", "value": "2.8%"}, {"title": "Account & listing activity", "value": "82%", "highlight": true}, {"title": "Others", "value": "0.3%"}]} />
+<ClickMap id="old-activity" label="Share of taps on the Activity tab, 6 months" src="/images/notification-center/old-activity.webp" items={[{"title":"Marketing banner","value":"2.4%"},{"title":"Carousell News & saved searches","value":"12.5%"},{"title":"Marketing messages","value":"2.8%"},{"title":"Account & listing activity","value":"82%","highlight":true},{"title":"Others","value":"0.3%"}]} />
 
-## When more concepts weren't the answer
+## Learning from other products
 
-I started where most redesigns start: other products' notification pages. Three patterns kept coming up: categories, a visual hierarchy, and read or unread markers. I turned them into concepts, but the concepts kept multiplying, and team discussions went back and forth without a clear direction. Competitors showed what other products do, not what our users need.
+I looked at how other products handle notifications. Three patterns kept coming up: categories, a visual hierarchy, and read or unread markers.
 
-So I stopped making concepts and proposed interviews instead. I talked to 5 people across our four main groups: buyers, sellers, people who do both, and pro sellers. They sorted example notifications into groups while thinking out loud, then tried three concepts.
+<Media id="competitors" label="Notification pages from other products" />
+
+## A turning point
+
+I turned those patterns into concepts, but the concepts kept multiplying, and team discussions went back and forth without a clear direction. Competitors showed what other products do, not what our users need. So I stopped making concepts and proposed interviews instead.
+
+## User interviews
+
+I talked to 5 people across our four main groups: buyers, sellers, people who do both, and pro sellers. They sorted example notifications into groups while thinking out loud, then tried three concepts.
 
 <Media id="research" label="Card sorting with five users" />
 
 People group notifications in two ways: by topic (buying, selling, promotions) and by urgency. Concept B matched that best and felt the smoothest to use.
 
+<Media id="concepts" label="Concepts A, B and C" />
+
 <Hypothesis>If notifications follow how people already group them, by topic and urgency, people will spot and act on the important ones faster.</Hypothesis>
 
-## Design
+## More details
 
 <Media id="design" label="Urgent items first, grouped by order" />
 
@@ -42,19 +52,25 @@ People group notifications in two ways: by topic (buying, selling, promotions) a
 - **Small things bundled.** Low-stakes updates of the same type, like item likes, are combined into one.
 - **Marketing as notifications.** Banners became notification-style items. They are easier to scan, and campaigns still get seen.
 
-I also designed a responsive web version, since the web had no Activity tab before.
-
 ## Bringing marketing along
 
 Changing marketing placements on a high-traffic page was the riskiest part. Those spots belonged to the marketing team. Instead of trading opinions, I showed six months of tap data on the old banners. To make sure the new format wasn't a downgrade, the notification-style placement takes images, text or video, so campaigns keep their range. Marketing agreed, and a joint workshop settled how campaign notifications would work.
 
-Because the change touched so many teams, I also presented the design at the tech town hall, to the whole tech org including C-level leaders, and took their questions.
+## Responsive web design
+
+The web had no Activity tab before. I designed a responsive version, so people see the same updates on any screen.
+
+<Media id="web" label="The Activity tab on web" />
+
+## Getting everyone on board
+
+The change touched many teams, so I presented the design at the tech town hall, to the whole tech org including C-level leaders, and took their questions.
 
 ## Results
 
 <Stats items={[{"value":"+20%","label":"CTR on order updates"},{"value":"+11%","label":"Order completion"}]} />
 
-## What I learned
+## Reflection
 
 Evidence before exploration. I spent too long on concepts from competitor research before understanding our own users. Competitors give ideas, not proof. Five interviews settled weeks of debate in a few days.
 
