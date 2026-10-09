@@ -44,7 +44,11 @@ const { items } = Astro.props;
     flex-direction: column;
     gap: 48px;
   }
+  /* Rows centered in the full content width */
   ul.detail-list > li.detail {
+    width: 100%;
+    max-width: 680px;
+    align-self: center;
     margin: 0;
     padding: 0;
     display: grid;
