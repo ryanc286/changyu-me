@@ -46,7 +46,7 @@ const { before, after } = Astro.props;
     </div>
     <div class="divider" aria-hidden="true">
       <span class="knob">
-        <svg viewBox="0 0 24 24"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"></path></svg>
+        <svg viewBox="0 0 24 24"><path d="M10 7l-5 5 5 5M14 7l5 5-5 5"></path></svg>
       </span>
     </div>
     <input
@@ -137,8 +137,10 @@ const { before, after } = Astro.props;
     top: 16px;
     padding: 6px 12px;
     border-radius: 999px;
-    background: rgb(0 0 0 / 0.35);
-    backdrop-filter: blur(6px);
+    background: rgb(255 255 255 / 0.14);
+    border: 1px solid rgb(255 255 255 / 0.28);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     color: #fff;
     font-size: 0.8125rem;
     font-weight: 600;
@@ -157,7 +159,7 @@ const { before, after } = Astro.props;
     right: 16px;
   }
 
-  /* The line and its handle */
+  /* The line and its handle: a thin line that fades at the ends, with a frosted knob */
   .divider {
     position: absolute;
     top: 0;
@@ -165,33 +167,49 @@ const { before, after } = Astro.props;
     left: var(--pos);
     width: 2px;
     margin-left: -1px;
-    background: #fff;
-    box-shadow: 0 0 12px rgb(0 0 0 / 0.25);
+    background: linear-gradient(
+      to bottom,
+      rgb(255 255 255 / 0) 0%,
+      #fff 14%,
+      #fff 86%,
+      rgb(255 255 255 / 0) 100%
+    );
+    /* A soft dark edge so the line still shows over white screens */
+    filter: drop-shadow(0 0 3px rgb(0 0 0 / 0.35));
     pointer-events: none;
   }
   .knob {
     position: absolute;
     top: 50%;
     left: 50%;
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    margin: -22px 0 0 -22px;
-    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 32px;
+    height: 52px;
+    margin: -26px 0 0 -16px;
+    border-radius: 999px;
     background: #fff;
     color: #262c3b;
-    box-shadow: 0 6px 18px rgb(0 0 0 / 0.25);
-    transition: transform 160ms var(--ease-out);
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.06),
+      0 8px 24px rgb(0 0 0 / 0.28);
+    transition:
+      transform 200ms var(--ease-out),
+      background 200ms var(--ease-out);
   }
   .knob svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     fill: none;
     stroke: currentColor;
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
+  }
+  .stage:hover .knob {
+    transform: scale(1.04);
   }
   .compare.dragging .knob {
     transform: scale(1.08);
@@ -251,9 +269,9 @@ const { before, after } = Astro.props;
       right: 12px;
     }
     .knob {
-      width: 38px;
-      height: 38px;
-      margin: -19px 0 0 -19px;
+      width: 30px;
+      height: 46px;
+      margin: -23px 0 0 -15px;
     }
   }
 </style>
