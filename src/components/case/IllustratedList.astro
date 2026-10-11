@@ -1,0 +1,91 @@
+---
+/*
+  A short list with an illustration above each point, in a row on desktop and
+  stacked on phones (illustration beside the text).
+  From a 🎨 callout in Notion with one "id: label" line per illustration
+  (image at public/images/<case slug>/<id>.webp, transparent background).
+  A bullet list right before it, one "- **Title.** Text" bullet per illustration,
+  becomes the text under each one.
+*/
+interface Item {
+  id: string;
+  label: string;
+  src?: string;
+  title?: string;
+  text?: string;
+}
+interface Props {
+  items: Item[];
+}
+const { items } = Astro.props;
+---
+
+<ul class="illustrated-list" style={`--cols:${items.length}`}>
+  {
+    items.map((it) => (
+      <li>
+        <div class="art">{it.src && <img src={it.src} alt={it.label} loading="lazy" />}</div>
+        <p>
+          {it.title && <strong>{it.title}</strong>} {it.text}
+        </p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  /* Beats the article's own list styles */
+  ul.illustrated-list {
+    list-style: none;
+    margin: var(--space-5) 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: 32px;
+  }
+  ul.illustrated-list > li {
+    margin: 0;
+    padding: 0;
+  }
+  .art {
+    display: grid;
+    place-items: center;
+    height: 168px;
+    margin-bottom: 16px;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+  .art img {
+    display: block;
+    max-width: 70%;
+    max-height: 132px;
+    width: auto;
+    height: auto;
+  }
+  .illustrated-list p {
+    margin: 0;
+  }
+  .illustrated-list strong {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+  @media (max-width: 600px) {
+    ul.illustrated-list {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    ul.illustrated-list > li {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      align-items: center;
+      gap: 16px;
+    }
+    .art {
+      height: 96px;
+      margin: 0;
+    }
+    .art img {
+      max-height: 76px;
+    }
+  }
+</style>

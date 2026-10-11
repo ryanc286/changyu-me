@@ -16,6 +16,9 @@
   - Callout with the 🔀 icon -> <StepCompare>, before/after step lists:
       "before: Step", "before: Step | Tag" (step that left), "after: Step".
       Uses public/images/<slug>/<id>.webp|jpg|png when the file exists.
+  - Callout with the 🎨 icon -> <IllustratedList>, a short list with an illustration above each point:
+      one "id: label" line per illustration. A bullet list right before it, one
+      "- **Title.** Text" bullet per illustration, becomes the text under each one.
   - Callout with the 🧱 icon -> <BlockBuilder>, blocks that fly into a phone and build a page:
       one "id: label" line per block, in page order (public/images/<slug>/<id>.webp).
   - Callout with the 📱 icon -> <DetailList>, phone screens on the left with text on the right,
@@ -79,6 +82,26 @@ for (let i = 0; i < lines.length; i++) {
     const inner = [];
     while (++i < lines.length && !lines[i].startsWith('</callout>')) inner.push(lines[i].trim());
     const text = inner.join(' ').trim();
+    if (line.includes('🎨')) {
+      // Illustrated list: one "id: label" per illustration, text from the bullets right before it
+      const items = inner.filter(Boolean).map((l) => {
+        const [id, ...rest] = l.split(':');
+        const src = ['webp', 'png', 'svg']
+          .map((ext) => `/images/${slug}/${id.trim()}.${ext}`)
+          .find((path) => existsSync(new URL(`../public${path}`, import.meta.url)));
+        return { id: unescape(id.trim()), label: unescape(rest.join(':').trim()), ...(src ? { src } : {}) };
+      });
+      const prev = blocks.slice(-items.length);
+      if (prev.length === items.length && prev.every((b) => b.type === 'list' && b.raw?.startsWith('- '))) {
+        blocks.splice(-items.length);
+        prev.forEach((b, k) => {
+          const m = unescape(b.raw.slice(2)).match(/^\*\*(.+?)\*\*\s*(.*)$/);
+          items[k] = { ...items[k], ...(m ? { title: m[1], text: m[2] } : { text: unescape(b.raw.slice(2)) }) };
+        });
+      }
+      blocks.push({ type: 'block', md: `<IllustratedList items={${JSON.stringify(items)}} />` });
+      continue;
+    }
     if (line.includes('🧱')) {
       // Block builder: one "id: label" per block, in page order
       const parts = inner.filter(Boolean).map((l) => {
