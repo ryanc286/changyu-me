@@ -26,6 +26,8 @@
   - Callout with the 📱 icon -> <DetailList>, phone screens on the left with text on the right,
       one per row: one "id: label" line per screen. A bullet list right before it, one
       "- **Title.** Text" bullet per screen, becomes the text beside each screen.
+  - Callout with the 💡 icon -> <TipCards>, small cards with a line icon:
+      "icon: Title | Text" per tip (icons: plan, image, code, ask, check, layers).
   - Callout with the 🧭 icon -> <FlowSteps>, a flow to click through, one screen per step:
       "id: Step name" ("| wide" for a full-width image), then "note: x,y | Text" per note
       (x,y = the point on the screen in %), or "note: Text" for no line.
@@ -136,6 +138,17 @@ for (let i = 0; i < lines.length; i++) {
         });
       }
       blocks.push({ type: 'block', md: `<DetailList items={${JSON.stringify(items)}} />` });
+      continue;
+    }
+    if (line.includes('💡')) {
+      // Tip cards: "icon: Title | Text" per tip
+      const items = inner.filter(Boolean).map((l) => {
+        const [head, ...rest] = unescape(l).split('|');
+        const [icon, ...title] = head.split(':');
+        const text = rest.join('|').trim();
+        return { icon: icon.trim(), title: title.join(':').trim(), ...(text ? { text } : {}) };
+      });
+      blocks.push({ type: 'block', md: `<TipCards items={${JSON.stringify(items)}} />` });
       continue;
     }
     if (line.includes('🧭')) {
