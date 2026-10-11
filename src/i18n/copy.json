@@ -241,8 +241,8 @@
     "key": "tools.coach-match.summary",
     "section": "首頁 · 工具",
     "note": "工具頁上的一句話說明",
-    "en": "A quiz that matches designers with the right coach. Built with AI-generated code, Google Sheets, and Apps Script.",
-    "zh-tw": "一個幫設計師找到合適教練的測驗，用 AI 生成的程式碼、Google Sheets 和 Apps Script 打造。"
+    "en": "A quiz that matches product builders with the right career coach. Built with AI-generated code, Google Sheets, and Apps Script.",
+    "zh-tw": "一個幫產品人找到合適職涯教練的測驗，用 AI 生成的程式碼、Google Sheets 和 Apps Script 打造。"
   },
   {
     "key": "tools.vocab-translator.title",
@@ -283,8 +283,8 @@
     "key": "org.aapd",
     "section": "hover 卡片",
     "note": "滑到 AAPD 時卡片裡的說明",
-    "en": "Taiwan community for product builders",
-    "zh-tw": "台灣的產品人社群"
+    "en": "Education platform for product builders in Taiwan",
+    "zh-tw": "台灣的產品人教育平台"
   },
   {
     "key": "preview.cover",
