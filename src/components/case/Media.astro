@@ -58,14 +58,6 @@ const { id, label, src, video, poster, plain = false } = Astro.props;
       radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
       linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
   }
-  /* Plain: no gradient, the video fills the box height */
-  .plain .video-stage {
-    --inset: 0%;
-    background: none;
-  }
-  .plain video {
-    box-shadow: 0 0 0 1px var(--color-line);
-  }
   /* Centered and kept whole, whatever its shape */
   video {
     position: absolute;
@@ -78,6 +70,19 @@ const { id, label, src, video, poster, plain = false } = Astro.props;
     box-shadow:
       0 0 0 1px rgb(255 255 255 / 0.08),
       0 24px 48px rgb(0 0 0 / 0.3);
+  }
+  /* Plain: no gradient; the video fills the whole box, cropping the edges if needed */
+  .plain .video-stage {
+    background: none;
+  }
+  .plain video {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    border-radius: var(--radius);
+    box-shadow: none;
   }
   @media (max-width: 600px) {
     .video-stage {
