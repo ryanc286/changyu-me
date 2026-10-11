@@ -31,15 +31,15 @@ I'm not a trained engineer. AI wrote the code. I made the product calls: what co
 
 ## How I built it
 
-1. **Foundation.** Define the need, pick the platform, lock the features, then explore five UI directions and combine them.
-2. **The logic.** Turn the guideline rules into code, test them on real frames, tighten them, and cut what wasn't reliable.
-3. **Ship.** Add dark and light mode and Japanese and English from team feedback, then ship to the whole design team.
+1. **Foundation.** Define the need, lock the features, explore the UI.
+2. **Logic.** Turn the rules into code, test on real frames, cut what wasn't reliable.
+3. **Ship.** Add dark mode and Japanese from team feedback, then roll out.
 
-**Start from the need, not the platform.** I didn't set out to build a Figma plugin. I wrote down what designers needed: check a frame against the rules without opening a separate doc, and fix what fails without leaving the canvas. I talked it through with AI, comparing a web tool, a Figma widget and a plugin. Only a plugin worked inside the file people already had open.
+**Start from the need.** Designers needed to check a frame without opening a separate doc, and fix it without leaving the canvas. Only a Figma plugin worked inside the file they already had open.
 
-**Features before visuals.** Before designing any UI, I locked all six checks, what each should catch, and roughly what a fix looks like. That way the UI work was about showing six fixed checks well, not guessing how many there might be.
+**Features before visuals.** I locked all six checks before designing any UI, so the design didn't change every time a check was added or cut.
 
-**Turning rules into math.** The hardest checks were stretching and flat shapes. The guidelines just say "keep proportions", not how to spot that in a layer's transform. I went frame by frame with AI and turned design intent into geometry. One frame exposed a gap early: a head with visibly stretched layers passed, because the rule let anything rotated off the hook. We fixed it so rotated layers still fail past a small threshold. One bad frame taught more than any theory.
+**Turning rules into math.** The guidelines say "keep proportions" but not how to detect stretching. I worked frame by frame with AI to turn that into geometry. One stretched head that slipped through showed us where the rule was too loose.
 
 <Media id="deformation" label="A stretched layer caught by the deformation check" />
 
