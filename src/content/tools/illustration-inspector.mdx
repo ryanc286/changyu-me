@@ -23,12 +23,6 @@ None of the rules were hard on their own. But designers had to remember the whol
 
 Our H2 retrospective showed this wasn't just one or two people. I surveyed the design team: everyone used illustrations at least once a quarter, and 83% had ended up ordering custom illustrations because nothing in the library fit. Illustrations were part of everyone's work, but checking them against the rules still came down to memory. Our H1 plan had already named this as a place to try AI, so I built it instead of leaving it as an idea on a slide.
 
-## What it does
-
-Select a frame and click Inspect. The plugin checks six things: colors, strokes, gradients, stretching, flat shapes and logo use. Each problem links to the layer that caused it, so fixing it means clicking that layer, not reading the guidelines again.
-
-I'm not a trained engineer. AI wrote the code. I made the product calls: what counts as a failure, how it shows up on screen, and when a rule was wrong and needed to change.
-
 ## How I built it
 
 1. **Foundation.** Define the need, lock the features, explore the UI.
@@ -45,7 +39,13 @@ I'm not a trained engineer. AI wrote the code. I made the product calls: what co
 
 <Media id="directions" label="Exploring UI directions for the results page" src="/images/illustration-inspector/directions.webp" />
 
-**Knowing what not to build.** Early versions also checked halation, all-black or all-white frames, size presets, and whether the right library component was used. I cut them. They depend on context the plugin can't see, like the screen behind the illustration. A tool that flags false problems loses trust fast. **Six reliable checks beat ten noisy ones.**
+**Knowing what not to build.** Early versions also checked things like halation and size presets. I cut them, since they depend on context the plugin can't see. A tool that flags false problems loses trust fast. **Six reliable checks beat ten noisy ones.**
+
+## What it does
+
+Select a frame and click Inspect. The plugin checks six things: colors, strokes, gradients, stretching, flat shapes and logo use. Each problem links to the layer that caused it, so fixing it means clicking that layer, not reading the guidelines again.
+
+I'm not a trained engineer. AI wrote the code. I made the product calls: what counts as a failure, how it shows up on screen, and when a rule was wrong and needed to change.
 
 ## What shipped
 
