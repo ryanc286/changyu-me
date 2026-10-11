@@ -308,6 +308,13 @@
     "zh-tw": "其他連結"
   },
   {
+    "key": "footer.copied",
+    "section": "介面文字",
+    "note": "點 Email 複製後，畫面下方跳出的提示",
+    "en": "Copied",
+    "zh-tw": "已複製"
+  },
+  {
     "key": "theme.label",
     "section": "介面文字",
     "note": "深淺色開關的名稱（給螢幕閱讀器）",
