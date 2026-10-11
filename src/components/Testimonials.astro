@@ -1,9 +1,13 @@
 ---
 /*
-  "What people I've worked with say": short quotes in the same list style as Work and Tools.
-  Text lives in copy.json (testimonials.<n>.quote / .by), synced with Notion.
-  A blank line in a quote starts a new paragraph.
+  "What people I've worked with say": five people in a row (photo, name, title, company).
+  Hover or focus one to see what they said in a small floating card that follows the cursor.
+  On phones the row scrolls sideways; tap someone to show their words below.
+  Text lives in copy.json (testimonials.<n>.quote, testimonials.<n>.by = "Name, Title · Company"),
+  synced with Notion. Photos: public/images/people/person-<n>.webp.
 */
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { t, tOpt, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -11,68 +15,265 @@ interface Props {
 }
 const { lang } = Astro.props;
 
-const items: { quote: string[]; by: string }[] = [];
+const items: { quote: string; name: string; title: string; company: string; photo?: string }[] = [];
 for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
+  const by = t(lang, `testimonials.${n}.by`);
+  const [who, company = ''] = by.split(' · ');
+  const [name, ...rest] = who.split(/[,，]\s*/);
+  const photo = `/images/people/person-${n}.webp`;
   items.push({
-    quote: t(lang, `testimonials.${n}.quote`).split(/\n\s*\n/),
-    by: t(lang, `testimonials.${n}.by`),
+    quote: t(lang, `testimonials.${n}.quote`).replace(/\n\s*\n/g, ' '),
+    name: name.trim(),
+    title: rest.join(', ').trim(),
+    company: company.trim(),
+    photo: existsSync(join(process.cwd(), 'public', photo)) ? photo : undefined,
   });
 }
 ---
 
 {
   items.length > 0 && (
-    <section aria-labelledby="testimonials-title">
+    <section aria-labelledby="testimonials-title" data-people>
       <h2 id="testimonials-title" class="section-title">
         {t(lang, 'section.testimonials')}
       </h2>
-      <ul class="list">
-        {items.map((it) => (
+      <ul class="people">
+        {items.map((it, i) => (
           <li>
-            <figure>
-              <blockquote>
-                {it.quote.map((para) => (
-                  <p>{para}</p>
-                ))}
-              </blockquote>
-              <figcaption>
-                {it.by}
-              </figcaption>
-            </figure>
+            <button
+              type="button"
+              class:list={['person', { on: i === 0 }]}
+              data-quote={it.quote}
+              aria-describedby={`quote-${i}`}
+            >
+              <span class="photo">{it.photo && <img src={it.photo} alt="" loading="lazy" />}</span>
+              <span class="name">{it.name}</span>
+              <span class="role">{it.title}</span>
+              <span class="role">{it.company}</span>
+            </button>
+            {/* Screen readers get the quote right with the person */}
+            <span class="sr-only" id={`quote-${i}`}>
+              {it.quote}
+            </span>
           </li>
         ))}
       </ul>
+      {/* Phones: the chosen person's words */}
+      <p class="picked" aria-live="polite">
+        {items[0].quote}
+      </p>
+      {/* Desktop: floating card that follows the cursor */}
+      <div class="float" aria-hidden="true">
+        <p class="float-quote" />
+      </div>
     </section>
   )
 }
 
 <style>
-  .list {
+  .people {
     list-style: none;
     margin: 0;
     padding: 0;
-    border-bottom: 1px solid var(--color-line);
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
   }
-  li {
-    border-top: 1px solid var(--color-line);
-    padding: 20px 0;
-  }
-  figure {
+  .people li {
     margin: 0;
   }
-  blockquote {
-    margin: 0;
+  .person {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 16px 6px;
+    border: 0;
+    border-radius: var(--radius);
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: center;
+    cursor: default;
+    transition: background-color var(--duration) var(--ease-out);
   }
-  blockquote p {
-    margin: 0;
-    color: var(--color-text-body);
+  .photo {
+    display: block;
+    width: 72px;
+    height: 72px;
+    margin-bottom: 12px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--color-surface);
   }
-  blockquote p + p {
-    margin-top: var(--space-2);
+  /* Photos sit in the site's warm gray until you point at someone */
+  .photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) sepia(0.18) contrast(0.95) brightness(1.04);
+    transition: filter 400ms var(--ease-out);
   }
-  figcaption {
-    margin-top: 10px;
+  .name {
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .role {
+    margin-top: 2px;
     font-size: var(--text-sm);
+    line-height: 1.35;
     color: var(--color-text-muted);
   }
+  .picked {
+    display: none;
+  }
+
+  /* The floating quote card, same look as the homepage preview card */
+  .float {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    width: 300px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-line-strong);
+    box-shadow: var(--shadow-float);
+    pointer-events: none;
+    opacity: 0;
+    scale: 0.96;
+    transition:
+      opacity var(--duration) var(--ease-out),
+      scale var(--duration) var(--ease-out);
+  }
+  .float.is-visible {
+    opacity: 1;
+    scale: 1;
+  }
+  .float-quote {
+    margin: 0;
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    color: var(--color-text-body);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .person:hover,
+    .person:focus-visible {
+      background: var(--color-surface);
+    }
+    .person:hover .photo img,
+    .person:focus-visible .photo img {
+      filter: none;
+    }
+  }
+
+  /* Phones and touch: a sideways row, tap to read */
+  @media (hover: none), (max-width: 600px) {
+    .people {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    .people::-webkit-scrollbar {
+      display: none;
+    }
+    .people li {
+      flex: 0 0 112px;
+      scroll-snap-align: start;
+    }
+    .person {
+      cursor: pointer;
+    }
+    .person.on {
+      background: var(--color-surface);
+    }
+    .person.on .photo img {
+      filter: none;
+    }
+    .picked {
+      display: block;
+      margin: 12px 0 0;
+      color: var(--color-text-body);
+    }
+    .float {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .photo img,
+    .float {
+      transition: none;
+    }
+  }
 </style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-people]').forEach((section) => {
+    const people = [...section.querySelectorAll<HTMLButtonElement>('.person')];
+    const picked = section.querySelector<HTMLElement>('.picked')!;
+    const card = section.querySelector<HTMLElement>('.float')!;
+    const text = card.querySelector<HTMLElement>('.float-quote')!;
+    const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Tap (phones): show this person's words below the row
+    people.forEach((p) =>
+      p.addEventListener('click', () => {
+        people.forEach((o) => o.classList.toggle('on', o === p));
+        picked.textContent = p.dataset.quote ?? '';
+      }),
+    );
+    if (!canHover) return;
+
+    // Hover (desktop): a card that follows the cursor, flipping near the window edges
+    const OFFSET = 20;
+    const EDGE = 16;
+    let tx = 0, ty = 0, x = 0, y = 0, frame = 0;
+    const place = () => {
+      const k = reduce ? 1 : 0.18;
+      x += (tx - x) * k;
+      y += (ty - y) * k;
+      card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      frame = Math.abs(tx - x) > 0.5 || Math.abs(ty - y) > 0.5 ? requestAnimationFrame(place) : 0;
+    };
+    const aim = (px: number, py: number) => {
+      const w = card.offsetWidth;
+      const h = card.offsetHeight;
+      tx = px + OFFSET + w < innerWidth - EDGE ? px + OFFSET : px - OFFSET - w;
+      ty = py + OFFSET + h < innerHeight - EDGE ? py + OFFSET : py - OFFSET - h;
+      tx = Math.max(EDGE, tx);
+      ty = Math.max(EDGE, ty);
+      if (!frame) frame = requestAnimationFrame(place);
+    };
+    const show = (p: HTMLElement, px: number, py: number) => {
+      const fresh = !card.classList.contains('is-visible');
+      text.textContent = p.dataset.quote ?? '';
+      aim(px, py);
+      if (fresh) {
+        x = tx;
+        y = ty;
+        card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      }
+      card.classList.add('is-visible');
+    };
+    const hide = () => card.classList.remove('is-visible');
+
+    people.forEach((p) => {
+      p.addEventListener('pointerenter', (e) => show(p, e.clientX, e.clientY));
+      p.addEventListener('pointermove', (e) => aim(e.clientX, e.clientY));
+      p.addEventListener('pointerleave', hide);
+      p.addEventListener('focus', () => {
+        if (!p.matches(':focus-visible')) return;
+        const r = p.getBoundingClientRect();
+        show(p, r.left, r.bottom);
+      });
+      p.addEventListener('blur', hide);
+    });
+    (section.closest('.scroller') ?? window).addEventListener('scroll', hide, { passive: true });
+  });
+</script>
