@@ -13,38 +13,65 @@ notion: "https://app.notion.com/p/3efeaff6ece3814f98cefdf964b46d6a"
 
 <Media id="hero" label="Checking an illustration in Figma" video="/videos/illustration-inspector/hero.mp4" poster="/videos/illustration-inspector/hero.webp" />
 
-PayPay's illustration library comes with a lot of rules: approved colors, bound variables, flat shapes only, no strokes or gradients, no stretching, and the right way to use logos. Checking all of that by hand was slow and depended on who was looking. I designed and built a Figma plugin that checks an illustration in one click and points to the exact layer to fix.
+PayPay's illustration library comes with a long list of rules: approved colors bound to variables, flat shapes only, no strokes or gradients, no stretching, and strict logo use. I designed and built a Figma plugin, with AI writing the code, that checks an illustration against all of them in one click.
 
-## The problem
+## Why I built it
 
-The guidelines were long, and reviews were uneven. A survey also showed that 83% of designers had ordered custom illustrations because nothing in the library fit what they needed. The library and its rules were not working for the people using them.
+None of the rules were hard on their own. But designers had to remember the whole list while they worked, so the bar moved with whoever was reviewing that day and how close the deadline was.
 
-## How it works
+Our H2 retrospective showed this wasn't just one or two people. I surveyed the design team: everyone used illustrations at least once a quarter, and 83% had ended up ordering custom illustrations because nothing in the library fit. Illustrations were part of everyone's work, but checking them against the rules still came down to memory. Our H1 plan had already named this as a place to try AI, so I built it instead of leaving it as an idea on a slide.
 
-Select a frame and run the check. The plugin looks at six things: colors, strokes, gradients, stretching, flat shapes and logo use.
+## What it does
 
-<Media id="checks" label="Six checks, each linked to the layer" />
+Select a frame and click Inspect. The plugin checks six things: colors, strokes, gradients, stretching, flat shapes and logo use. Each problem links to the layer that caused it, so fixing it means clicking that layer, not reading the guidelines again.
 
-- **Straight to the layer.** Each problem links to the layer that caused it, so you can fix it without opening the guidelines.
-- **Closest color.** For colors outside the palette, it suggests the nearest approved one, and Apply All fixes them in one go.
-- **Fits the team.** Dark and light mode, in Japanese and English.
+I'm not a trained engineer. AI wrote the code. I made the product calls: what counts as a failure, how it shows up on screen, and when a rule was wrong and needed to change.
 
 ## How I built it
 
-I locked the full feature list before designing any UI, so the scope would not keep growing. I explored five UI directions and combined the best parts. Then I used AI to turn the guideline rules into code, tested the checks on real frames, and tightened them again and again.
+1. **Foundation.** Define the need, pick the platform, lock the features, then explore five UI directions and combine them.
+2. **The logic.** Turn the guideline rules into code, test them on real frames, tighten them, and cut what wasn't reliable.
+3. **Ship.** Add dark and light mode and Japanese and English from team feedback, then ship to the whole design team.
 
-Early versions had eight checks. Two were not reliable, so I cut them. **Six reliable checks beat ten noisy ones.** If a tool flags things that are fine, people stop trusting it.
+**Start from the need, not the platform.** I didn't set out to build a Figma plugin. I wrote down what designers needed: check a frame against the rules without opening a separate doc, and fix what fails without leaving the canvas. I talked it through with AI, comparing a web tool, a Figma widget and a plugin. Only a plugin worked inside the file people already had open.
 
-AI wrote the code. I made the product calls: what counts as a failure, how it shows up on screen, and when a check needed to change.
+**Features before visuals.** Before designing any UI, I locked all six checks, what each should catch, and roughly what a fix looks like. That way the UI work was about showing six fixed checks well, not guessing how many there might be.
 
-<Media id="modes" label="Dark mode and the Japanese version" />
+**Turning rules into math.** The hardest checks were stretching and flat shapes. The guidelines just say "keep proportions", not how to spot that in a layer's transform. I went frame by frame with AI and turned design intent into geometry. One frame exposed a gap early: a head with visibly stretched layers passed, because the rule let anything rotated off the hook. We fixed it so rotated layers still fail past a small threshold. One bad frame taught more than any theory.
+
+<Media id="deformation" label="A stretched layer caught by the deformation check" src="/images/illustration-inspector/deformation.webp" />
+
+**Five directions, then one.** AI generated five UI directions. Two stayed close to PayPay's product style, and three were bolder. I tried all five against the real empty state and results, then combined the best parts. That's how the near-black button and the mascot empty state made it in.
+
+<Media id="directions" label="Exploring UI directions for the results page" src="/images/illustration-inspector/directions.webp" />
+
+**Knowing what not to build.** Early versions also checked halation, all-black or all-white frames, size presets, and whether the right library component was used. I cut them. They depend on context the plugin can't see, like the screen behind the illustration. A tool that flags false problems loses trust fast. **Six reliable checks beat ten noisy ones.**
+
+## What shipped
+
+<MediaRow items={[{"id": "demo-before-after", "label": "Fixing off-palette colors with Apply All", "video": "/videos/illustration-inspector/demo-before-after.mp4", "poster": "/videos/illustration-inspector/demo-before-after.webp", "title": "Closest color.", "text": "For colors off the palette, it suggests the nearest approved one. Pick another if you like, or fix them all with Apply All."}, {"id": "demo-logo", "label": "Checking a PayPay logo", "video": "/videos/illustration-inspector/demo-logo.mp4", "poster": "/videos/illustration-inspector/demo-logo.webp", "title": "Logo check.", "text": "PayPay's logo has its own rules for color and shape, so the plugin checks logos too."}, {"id": "demo-theme", "label": "Switching language and theme", "video": "/videos/illustration-inspector/demo-theme.mp4", "poster": "/videos/illustration-inspector/demo-theme.webp", "title": "Fits the team.", "text": "Switch between Japanese and English, or dark and light, in one tap."}]} />
 
 ## Results
 
-The whole design team uses it now. It replaced uneven manual reviews with one shared standard. The illustration team spends its time on design intent instead of checking palettes, and designers get feedback on exact layers instead of vague comments.
+No formal metrics yet, since it's still early. But the whole design team uses it now, not just me. One shared standard replaced uneven manual checks, and designers get feedback on exact layers instead of vague "off-brand" comments.
+
+It also freed up the illustration team. They used to run a full rules check before they could even discuss whether an illustration said the right thing. Now that part is mostly done, so they spend their time on intent.
+
+<Media id="published" label="Published to the PayPay design team in Figma" src="/images/illustration-inspector/published.webp" />
 
 ## What's next
 
-- A time study to measure how much prep time it saves
+- A time study with a few designers to measure how much prep time it saves
 - Confidence labels on the less certain checks: flat shapes and stretching
 - An export so design ops can see trends across the team
+
+## Reflection
+
+Building this changed how I think about AI as a designer. It isn't about AI making the visuals. It gives me enough building power to spend my attention where design judgment matters: what counts as a failure, what a fix should feel like, and when a rule is right on paper but wrong in practice.
+
+A few tips for working with AI:
+
+- **Plan before code.** Lock the full feature list before touching any UI.
+- **Show, don't describe.** Give AI a screenshot instead of a paragraph.
+- **Make repeated work reusable.** Anything you do twice, turn into a pattern.
+- **Ask before building.** Have AI ask clarifying questions instead of guessing.

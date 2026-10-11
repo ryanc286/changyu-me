@@ -2,12 +2,12 @@
 /*
   Two or more images side by side in a case study (one row on desktop,
   stacked on phones). From a 🖼️ callout in Notion with one "id: label" per line.
-  Items can carry a title and text, shown under the image.
+  Items can carry a title and text, shown under the image, and a video in place of the image.
 */
 import Media from './Media.astro';
 
 interface Props {
-  items: { id: string; label: string; src?: string; title?: string; text?: string }[];
+  items: { id: string; label: string; src?: string; video?: string; poster?: string; title?: string; text?: string }[];
 }
 const { items } = Astro.props;
 const hasText = items.some((m) => m.title || m.text);
@@ -17,7 +17,7 @@ const hasText = items.some((m) => m.title || m.text);
   {
     items.map((m) => (
       <div class="item">
-        <Media id={m.id} label={m.label} src={m.src} />
+        <Media id={m.id} label={m.label} src={m.src} video={m.video} poster={m.poster} />
         {(m.title || m.text) && (
           <p>
             {m.title && <strong>{m.title}</strong>} {m.text}
@@ -41,6 +41,10 @@ const hasText = items.some((m) => m.title || m.text);
   }
   .item :global(figure.media) {
     margin: 0;
+  }
+  /* Smaller tiles: less padding around a video so it stays readable */
+  .item :global(.video-stage) {
+    padding: 5%;
   }
   .item p {
     margin: 16px 0 0;

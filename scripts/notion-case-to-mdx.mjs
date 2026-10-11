@@ -254,7 +254,15 @@ for (let i = 0; i < lines.length; i++) {
         const src = ['webp', 'jpg', 'png']
           .map((ext) => `/images/${slug}/${id.trim()}.${ext}`)
           .find((path) => existsSync(new URL(`../public${path}`, import.meta.url)));
-        return { id: unescape(id.trim()), label: unescape(rest.join(':').trim()), ...(src ? { src } : {}) };
+        // A video at public/videos/<slug>/<id>.mp4 wins over an image (poster: <id>.webp next to it)
+        const video = `/videos/${slug}/${id.trim()}.mp4`;
+        const poster = `/videos/${slug}/${id.trim()}.webp`;
+        const media = existsSync(new URL(`../public${video}`, import.meta.url))
+          ? { video, ...(existsSync(new URL(`../public${poster}`, import.meta.url)) ? { poster } : {}) }
+          : src
+            ? { src }
+            : {};
+        return { id: unescape(id.trim()), label: unescape(rest.join(':').trim()), ...media };
       });
       if (images.length > 1) {
         // A bullet list right before the row, one bullet per image, becomes the text
@@ -272,17 +280,8 @@ for (let i = 0; i < lines.length; i++) {
         }
         blocks.push({ type: 'block', md: `<MediaRow items={${JSON.stringify(images)}} />` });
       } else {
-        const { id, label, src } = images[0];
-        // A video at public/videos/<slug>/<id>.mp4 wins over an image (poster: <id>.webp next to it)
-        const video = `/videos/${slug}/${id}.mp4`;
-        const hasVideo = existsSync(new URL(`../public${video}`, import.meta.url));
-        const poster = `/videos/${slug}/${id}.webp`;
-        const hasPoster = existsSync(new URL(`../public${poster}`, import.meta.url));
-        const extra = hasVideo
-          ? ` video="${video}"${hasPoster ? ` poster="${poster}"` : ''}`
-          : src
-            ? ` src="${src}"`
-            : '';
+        const { id, label, src, video, poster } = images[0];
+        const extra = video ? ` video="${video}"${poster ? ` poster="${poster}"` : ''}` : src ? ` src="${src}"` : '';
         blocks.push({ type: 'block', md: `<Media id="${attr(id)}" label="${attr(label)}"${extra} />` });
       }
     } else {
