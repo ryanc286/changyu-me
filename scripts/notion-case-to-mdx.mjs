@@ -259,7 +259,10 @@ for (let i = 0; i < lines.length; i++) {
         // A bullet list right before the row, one bullet per image, becomes the text
         // under each image ("- **Title.** Description").
         const prev = blocks.slice(-images.length);
-        if (prev.length === images.length && prev.every((b) => b.type === 'list' && b.raw?.startsWith('- '))) {
+        const before = blocks[blocks.length - images.length - 1];
+        // Only when the list has exactly one bullet per image, not a longer list that happens to end here
+        const isBullet = (b) => b?.type === 'list' && b.raw?.startsWith('- ');
+        if (prev.length === images.length && prev.every(isBullet) && !isBullet(before)) {
           blocks.splice(-images.length);
           prev.forEach((b, k) => {
             const m = unescape(b.raw.slice(2)).match(/^\*\*(.+?)\*\*\s*(.*)$/);
