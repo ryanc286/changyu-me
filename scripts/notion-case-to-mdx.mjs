@@ -7,6 +7,7 @@
   Notion conventions (also explained on the Notion page):
   - Callout with the 🖼️ icon, text "id: label"  -> <Media id label />
       Two or more "id: label" lines -> <MediaRow>, images side by side.
+      A single line with a video at public/videos/<slug>/<id>.mp4 plays that video on the gradient.
       If a bullet list with one bullet per image comes right before it, each
       bullet becomes the text under its image.
   - Callout with the 📍 icon -> <Annotated>, a phone screen with callouts:
@@ -272,7 +273,17 @@ for (let i = 0; i < lines.length; i++) {
         blocks.push({ type: 'block', md: `<MediaRow items={${JSON.stringify(images)}} />` });
       } else {
         const { id, label, src } = images[0];
-        blocks.push({ type: 'block', md: `<Media id="${attr(id)}" label="${attr(label)}"${src ? ` src="${src}"` : ''} />` });
+        // A video at public/videos/<slug>/<id>.mp4 wins over an image (poster: <id>.webp next to it)
+        const video = `/videos/${slug}/${id}.mp4`;
+        const hasVideo = existsSync(new URL(`../public${video}`, import.meta.url));
+        const poster = `/videos/${slug}/${id}.webp`;
+        const hasPoster = existsSync(new URL(`../public${poster}`, import.meta.url));
+        const extra = hasVideo
+          ? ` video="${video}"${hasPoster ? ` poster="${poster}"` : ''}`
+          : src
+            ? ` src="${src}"`
+            : '';
+        blocks.push({ type: 'block', md: `<Media id="${attr(id)}" label="${attr(label)}"${extra} />` });
       }
     } else {
       blocks.push({ type: 'block', md: mdxText(text) });

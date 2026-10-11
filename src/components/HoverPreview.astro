@@ -17,6 +17,7 @@ const { lang } = Astro.props;
 <div class="preview" data-preview data-cover-word={t(lang, 'preview.cover')} aria-hidden="true">
   <div class="preview-media">
     <img data-preview-img alt="" />
+    <video data-preview-video muted loop playsinline preload="auto"></video>
     <span class="preview-fallback" data-preview-fallback></span>
   </div>
   <div class="preview-text">
@@ -59,6 +60,27 @@ const { lang } = Astro.props;
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  /* Video covers: the clip kept whole on the gray-blue gradient, like the page's hero */
+  .preview-media video {
+    display: none;
+    position: absolute;
+    inset: 9%;
+    width: 82%;
+    height: 82%;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 16px rgb(0 0 0 / 0.3));
+  }
+  .preview.is-video .preview-media {
+    background:
+      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
+      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
+  }
+  .preview.is-video .preview-media video {
+    display: block;
+  }
+  .preview.is-video .preview-media img {
+    display: none;
   }
   .preview-fallback {
     position: absolute;
@@ -108,6 +130,7 @@ const { lang } = Astro.props;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const preview = document.querySelector<HTMLElement>('[data-preview]');
   const img = document.querySelector<HTMLImageElement>('[data-preview-img]');
+  const vid = document.querySelector<HTMLVideoElement>('[data-preview-video]');
   const fallback = document.querySelector<HTMLElement>('[data-preview-fallback]');
   const titleEl = document.querySelector<HTMLElement>('[data-preview-title]');
   const summaryEl = document.querySelector<HTMLElement>('[data-preview-summary]');
@@ -151,7 +174,23 @@ const { lang } = Astro.props;
       titleEl.textContent = title;
       summaryEl.textContent = summary;
       resultEl.textContent = result;
-      if (cover) {
+      const isVideo = !!cover && cover.endsWith('.mp4');
+      preview.classList.toggle('is-video', isVideo);
+      if (vid) {
+        if (isVideo) {
+          if (!vid.src.endsWith(cover!)) {
+            // First frame (<name>.webp next to the clip) shows until the video can play
+            vid.poster = cover!.replace(/\.mp4$/, '.webp');
+            vid.src = cover!;
+          }
+          if (!reduceMotion) vid.play().catch(() => {});
+        } else {
+          vid.pause();
+        }
+      }
+      if (isVideo) {
+        preview.classList.remove('no-image');
+      } else if (cover) {
         img.src = cover;
         preview.classList.remove('no-image');
       } else {
@@ -171,7 +210,10 @@ const { lang } = Astro.props;
       }
       preview.classList.add('is-visible');
     };
-    const hide = () => preview.classList.remove('is-visible');
+    const hide = () => {
+      preview.classList.remove('is-visible');
+      vid?.pause();
+    };
 
     document.querySelectorAll<HTMLAnchorElement>('[data-preview-link]').forEach((link) => {
       link.addEventListener('pointerenter', (e) => show(link, e.clientX, e.clientY));
@@ -194,6 +236,11 @@ const { lang } = Astro.props;
         const src = l.dataset.cover!;
         if (seen.has(src)) return;
         seen.add(src);
+        if (src.endsWith('.mp4')) {
+          // Warm the cache so the clip starts right away on first hover
+          fetch(src).catch(() => {});
+          return;
+        }
         const im = new Image();
         im.decoding = 'async';
         im.src = src;

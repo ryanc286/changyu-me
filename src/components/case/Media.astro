@@ -3,18 +3,26 @@
   Wide image slot in a case study. No caption is shown; the label becomes the
   image's alt text. Until real images are added it shows a placeholder. To add an image, put it at
   public/images/<case slug>/<id>.(jpg|png|webp) and pass src.
+  A video (public/videos/<slug>/<id>.mp4, with a <id>.webp poster) plays muted on a loop,
+  centered on the gray-blue gradient, while it is on screen.
 */
 interface Props {
   id: string;
   label: string;
   src?: string;
+  video?: string;
+  poster?: string;
 }
-const { id, label, src } = Astro.props;
+const { id, label, src, video, poster } = Astro.props;
 ---
 
-<figure class="media" data-id={id}>
+<figure class:list={['media', { 'is-video': video }]} data-id={id} data-media-video={video ? '' : undefined}>
   {
-    src ? (
+    video ? (
+      <div class="video-stage">
+        <video src={video} poster={poster} muted loop playsinline preload="metadata" aria-label={label} />
+      </div>
+    ) : src ? (
       <img src={src} alt={label} loading="lazy" />
     ) : (
       <div class="placeholder" role="img" aria-label={`Image placeholder: ${label}`}>
@@ -39,6 +47,35 @@ const { id, label, src } = Astro.props;
     font-family: var(--font-mono);
     font-size: var(--text-sm);
   }
+  /* Video: kept whole, centered on the gradient */
+  .video-stage {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 10;
+    padding: 7%;
+    border-radius: var(--radius);
+    background:
+      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
+      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
+  }
+  video {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    min-height: 0;
+    border-radius: 10px;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.08),
+      0 24px 48px rgb(0 0 0 / 0.3);
+  }
+  @media (max-width: 600px) {
+    .video-stage {
+      padding: 6%;
+    }
+    video {
+      border-radius: 6px;
+    }
+  }
   img {
     width: 100%;
     /* Covers are 16:10; reserve the space before the image loads */
@@ -47,3 +84,21 @@ const { id, label, src } = Astro.props;
     border-radius: var(--radius);
   }
 </style>
+
+<script>
+  // Play while on screen, pause when scrolled away. With reduced motion, show controls instead.
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-media-video]').forEach((fig) => {
+    const v = fig.querySelector('video');
+    if (!v) return;
+    if (reduce) {
+      v.controls = true;
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => (e.isIntersecting ? v.play().catch(() => {}) : v.pause())),
+      { root: fig.closest('.scroller'), threshold: 0.3 },
+    );
+    io.observe(v);
+  });
+</script>
