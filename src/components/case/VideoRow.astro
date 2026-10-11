@@ -1,7 +1,7 @@
 ---
 /*
-  Screen recordings side by side, each in a simple phone frame on the case's
-  blue-gray background, with a short title under each.
+  Screen recordings side by side, each in a simple phone frame on its own
+  blue-gray card, with a short title under each.
   From a 🎬 callout in Notion with one "id: Title" line per video.
   Files: public/videos/<case slug>/<id>.mp4, poster <id>.webp
   Videos play muted on a loop while on screen and pause when scrolled away.
@@ -46,23 +46,23 @@ const { items } = Astro.props;
   .video-row {
     margin: var(--space-5) 0;
   }
+  /* Each video sits in its own card, cards side by side */
   .stage {
     display: grid;
-    grid-template-columns: repeat(var(--cols), auto);
-    justify-content: center;
-    gap: 9%;
-    padding: 5% 6% 3.5%;
-    border-radius: var(--radius);
-    /* Same blue-gray as the other images in this case */
-    background:
-      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
-      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: 16px;
   }
   .item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
+    gap: 18px;
+    padding: 9% 6% 7%;
+    border-radius: var(--radius);
+    /* Same blue-gray as the other images in this case */
+    background:
+      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
+      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
   }
   .device {
     width: clamp(140px, 19vw, 220px);
@@ -90,10 +90,11 @@ const { items } = Astro.props;
   }
   @media (max-width: 600px) {
     .stage {
-      grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-      align-items: start;
-      gap: 16px;
-      padding: 28px 16px 20px;
+      gap: 10px;
+    }
+    .item {
+      padding: 24px 12px 18px;
+      gap: 12px;
     }
     .device {
       width: 100%;
