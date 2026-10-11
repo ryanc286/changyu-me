@@ -133,6 +133,17 @@ if (src && !video) {
     transform-origin: left;
     transform: scaleX(0);
   }
+  /* On the video: white on a dark track, with a soft shadow so it reads on light frames */
+  .progress.on-video {
+    background: rgb(255 255 255 / 0.45);
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.12),
+      0 1px 4px rgb(0 0 0 / 0.2);
+    z-index: 1;
+  }
+  .progress.on-video .progress-fill {
+    background: #fff;
+  }
   .plain .progress {
     background: var(--color-line);
   }
@@ -229,11 +240,15 @@ if (src && !video) {
     const bar = fig.querySelector<HTMLElement>('.progress');
     const fill = fig.querySelector<HTMLElement>('.progress-fill');
     if (!bar || !fill) return;
+    // In side-by-side detail rows the bar sits on the video itself, near the bottom edge
+    const onTop = !!fig.closest('.media-row.split');
+    if (onTop) bar.classList.add('on-video');
     const place = () => {
       if (!v.offsetWidth) return;
-      bar.style.left = `${v.offsetLeft}px`;
-      bar.style.width = `${v.offsetWidth}px`;
-      bar.style.top = `${v.offsetTop + v.offsetHeight + 12}px`;
+      const inset = onTop ? 14 : 0;
+      bar.style.left = `${v.offsetLeft + inset}px`;
+      bar.style.width = `${v.offsetWidth - inset * 2}px`;
+      bar.style.top = onTop ? `${v.offsetTop + v.offsetHeight - inset - 3}px` : `${v.offsetTop + v.offsetHeight + 12}px`;
       bar.classList.add('ready');
     };
     let raf = 0;

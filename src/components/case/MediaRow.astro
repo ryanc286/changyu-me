@@ -79,17 +79,6 @@ const hasText = items.some((m) => m.title || m.text);
   .media-row.split .item p {
     margin: 0;
   }
-  /* Room for the bar under each video */
-  .media-row.split.with-progress {
-    row-gap: 52px;
-  }
-  /* No gradient behind split videos, so the bar uses the page colors */
-  .media-row.split .item :global(.progress) {
-    background: var(--color-line);
-  }
-  .media-row.split .item :global(.progress-fill) {
-    background: var(--color-text);
-  }
   @media (max-width: 600px) {
     .media-row {
       grid-template-columns: 1fr;
