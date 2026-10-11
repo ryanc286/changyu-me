@@ -1,0 +1,314 @@
+---
+/*
+  A few versions of the same screen. Pick one from the list and the phone
+  switches to it, with an outline around the part that changed.
+  From a 🔘 callout in Notion with one line per version:
+    id: Title | Short text | x,y,w,h | Tag
+  x,y,w,h is the changed area in % of the image; Tag (like "Dropped") is optional.
+  Images at public/images/<case slug>/<id>.webp, phone frame included.
+  Cycles through once when first seen; any click stops that.
+*/
+interface Item {
+  id: string;
+  title: string;
+  text?: string;
+  src: string;
+  box?: number[];
+  tag?: string;
+}
+interface Props {
+  items: Item[];
+}
+const { items } = Astro.props;
+const uid = `vs-${items.map((it) => it.id).join('-')}`;
+---
+
+<figure class="variant-switch" data-variant-switch>
+  <div class="stage">
+    <div class="list" role="tablist" aria-label="Versions">
+      {
+        items.map((it, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`${uid}-tab-${i}`}
+            aria-controls={`${uid}-panel`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            class="option"
+          >
+            <span class="name">
+              {it.title}
+              {it.tag && <em class="tag">{it.tag}</em>}
+            </span>
+            {it.text && <span class="text">{it.text}</span>}
+          </button>
+        ))
+      }
+    </div>
+    <div class="phone" id={`${uid}-panel`} role="tabpanel" aria-live="polite">
+      {
+        items.map((it, i) => (
+          <div class:list={['screen', { on: i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
+            <img src={it.src} alt={it.title} loading="lazy" draggable="false" />
+            {it.box && (
+              <span
+                class="box"
+                style={`left:calc(${it.box[0]}% - 4px);top:calc(${it.box[1]}% - 4px);width:calc(${it.box[2]}% + 8px);height:calc(${it.box[3]}% + 8px)`}
+              />
+            )}
+          </div>
+        ))
+      }
+    </div>
+    <p class="caption" aria-hidden="true">{items[0].text}</p>
+  </div>
+</figure>
+
+<style>
+  .variant-switch {
+    margin: var(--space-5) 0;
+  }
+  .stage {
+    display: grid;
+    /* Phone is 88% of the 16:10 stage's height: 0.88 × 10/16 × 760/1535 ≈ 27.2% of its width */
+    grid-template-columns: minmax(0, 1fr) 27.2%;
+    align-items: center;
+    gap: 8%;
+    aspect-ratio: 16 / 10;
+    padding: 0 9% 0 8%;
+    border-radius: var(--radius);
+    /* Same warm olive as the other images in this case */
+    background:
+      radial-gradient(110% 80% at 55% 0%, rgb(255 255 255 / 0.12), transparent 60%),
+      linear-gradient(160deg, #6e604c 0%, #8c7b66 32%, #6a6553 62%, #3f463c 100%);
+  }
+
+  /* The list of versions */
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    background: transparent;
+    color: rgb(255 255 255 / 0.6);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background 250ms var(--ease-out),
+      border-color 250ms var(--ease-out),
+      color 250ms var(--ease-out);
+  }
+  .option:hover {
+    color: rgb(255 255 255 / 0.85);
+  }
+  .option[aria-selected='true'] {
+    background: rgb(255 255 255 / 0.14);
+    border-color: rgb(255 255 255 / 0.24);
+    color: #fff;
+  }
+  .option:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+  .name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .text {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    opacity: 0.85;
+  }
+  .tag {
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.25);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* The phone: all versions stacked, the chosen one fades in */
+  .phone {
+    position: relative;
+    display: grid;
+  }
+  .screen {
+    grid-area: 1 / 1;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 760 / 1535;
+    opacity: 0;
+    transition: opacity 400ms var(--ease-out);
+  }
+  .screen.on {
+    opacity: 1;
+  }
+  .screen img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.3));
+    user-select: none;
+  }
+  /* Outline around what changed, drawn in after the screen fades in */
+  .box {
+    position: absolute;
+    border: 2px solid #3d8bff;
+    border-radius: 10px;
+    box-shadow: 0 0 0 4px rgb(61 139 255 / 0.18);
+    opacity: 0;
+    transform: scale(1.06);
+    transition:
+      opacity 300ms var(--ease-out),
+      transform 300ms var(--ease-out);
+  }
+  .screen.on .box {
+    opacity: 1;
+    transform: none;
+    transition-delay: 300ms;
+  }
+
+  .caption {
+    display: none;
+  }
+  @media (max-width: 600px) {
+    .caption {
+      display: block;
+      min-height: 2.9em;
+      margin: -4px 0 0;
+      color: rgb(255 255 255 / 0.85);
+      font-size: 0.8125rem;
+      line-height: 1.45;
+      text-align: center;
+    }
+    .stage {
+      grid-template-columns: 1fr;
+      aspect-ratio: auto;
+      gap: 20px;
+      padding: 20px 16px 28px;
+    }
+    .list {
+      flex-direction: row;
+      gap: 6px;
+    }
+    .option {
+      flex: 1;
+      align-items: center;
+      padding: 8px 6px;
+      text-align: center;
+    }
+    .name {
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.75rem;
+    }
+    /* Only the chosen version's text, under the phone */
+    .text {
+      display: none;
+    }
+    .phone {
+      justify-items: center;
+    }
+    .screen {
+      width: 62%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .screen,
+    .box,
+    .option {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-variant-switch]').forEach((fig) => {
+    const tabs = [...fig.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const screens = [...fig.querySelectorAll<HTMLElement>('.screen')];
+    const texts = tabs.map((t) => t.querySelector('.text')?.textContent ?? '');
+    const caption = fig.querySelector<HTMLElement>('.caption')!;
+    let current = 0;
+    let touched = false;
+    let timer = 0;
+
+    const show = (i: number, focus = false) => {
+      current = (i + tabs.length) % tabs.length;
+      tabs.forEach((t, k) => {
+        const on = k === current;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      screens.forEach((s, k) => {
+        s.classList.toggle('on', k === current);
+        if (k === current) s.removeAttribute('aria-hidden');
+        else s.setAttribute('aria-hidden', 'true');
+      });
+      caption.textContent = texts[current];
+      if (focus) tabs[current].focus();
+    };
+    const stop = () => {
+      touched = true;
+      clearTimeout(timer);
+    };
+
+    tabs.forEach((t, i) =>
+      t.addEventListener('click', () => {
+        stop();
+        show(i);
+      }),
+    );
+    fig.querySelector('[role="tablist"]')!.addEventListener('keydown', (e) => {
+      const key = (e as KeyboardEvent).key;
+      const next =
+        key === 'ArrowDown' || key === 'ArrowRight'
+          ? current + 1
+          : key === 'ArrowUp' || key === 'ArrowLeft'
+            ? current - 1
+            : key === 'Home'
+              ? 0
+              : key === 'End'
+                ? tabs.length - 1
+                : null;
+      if (next === null) return;
+      e.preventDefault();
+      stop();
+      show(next, true);
+    });
+
+    // First time in view: go through each version once, then back to the first
+    if (reduce) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        const step = (i: number) => {
+          if (touched) return;
+          show(i);
+          if (i !== 0) timer = window.setTimeout(() => step((i + 1) % tabs.length), 2600);
+        };
+        timer = window.setTimeout(() => step(1), 2200);
+      },
+      { root: fig.closest('.scroller'), threshold: 0.5 },
+    );
+    io.observe(fig);
+  });
+</script>

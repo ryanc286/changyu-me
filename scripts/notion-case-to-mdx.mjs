@@ -24,6 +24,8 @@
   - Callout with the 📱 icon -> <DetailList>, phone screens on the left with text on the right,
       one per row: one "id: label" line per screen. A bullet list right before it, one
       "- **Title.** Text" bullet per screen, becomes the text beside each screen.
+  - Callout with the 🔘 icon -> <VariantSwitch>, versions of one screen to click between:
+      "id: Title | Short text | x,y,w,h | Tag" per version (x,y,w,h = changed area in %).
   - Callout with the 📊 icon -> <ClickMap>, a screen with areas outlined and their share:
       first line "id: label", then "Title | 12.5%" per area ("| highlight" on the one to end on).
       Lines beyond the areas set in the component show as a dim footnote.
@@ -129,6 +131,24 @@ for (let i = 0; i < lines.length; i++) {
         });
       }
       blocks.push({ type: 'block', md: `<DetailList items={${JSON.stringify(items)}} />` });
+      continue;
+    }
+    if (line.includes('🔘')) {
+      // Variant switch: "id: Title | Short text | x,y,w,h | Tag" per version
+      const items = inner.filter(Boolean).map((l) => {
+        const [head, text, box, tag] = unescape(l).split('|').map((x) => x.trim());
+        const [id, ...title] = head.split(':');
+        const nums = (box ?? '').split(',').map(Number).filter((n) => !Number.isNaN(n));
+        return {
+          id: id.trim(),
+          title: title.join(':').trim(),
+          ...(text ? { text } : {}),
+          src: `/images/${slug}/${id.trim()}.webp`,
+          ...(nums.length === 4 ? { box: nums } : {}),
+          ...(tag ? { tag } : {}),
+        };
+      });
+      blocks.push({ type: 'block', md: `<VariantSwitch items={${JSON.stringify(items)}} />` });
       continue;
     }
     if (line.includes('📊')) {
