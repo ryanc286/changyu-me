@@ -1,8 +1,48 @@
 ---
+company: "Personal"
 order: 3
 cover: /videos/vocab-translator/cover.mp4
+subtitle: "Translates selected English or Japanese text into Chinese and saves it to Notion to learn and review later"
+role: "Design and build (with AI)"
+timeline: "June 2026"
+type: "Chrome extension"
+notion: "https://app.notion.com/p/3f6eaff6ece38122b7a4fcb53480e682"
 ---
+
+{/* Synced from Notion. Edit the case there, not here. */}
 
 <Media id="hero" label="Translating a word on a web page and saving it to Notion" video="/videos/vocab-translator/hero.mp4" poster="/videos/vocab-translator/hero.webp" />
 
-Tool write-up goes here.
+When I read online in English or Japanese, I kept finding words I wanted to learn later. Copying them into a note broke my reading, so I built a browser extension: select the text, press a shortcut, and it's translated into Chinese and saved to Notion to review later.
+
+## Plan first, then build
+
+I asked AI not to write any code until the plan was locked, and I confirmed each decision before we moved on. Three choices shaped the tool:
+
+- **From Mac Shortcuts to an extension.** I started with a macOS shortcut, then switched to a browser extension so I could share it with others.
+- **DeepL for translation.** It translates more naturally, and it supports Traditional Chinese.
+- **Notion as the word list.** Each person adds their own API keys, so everyone's words stay separate and no one pays for anyone else's translations.
+
+## How it works
+
+Select any text on a page and press Ctrl+Y. A card shows the original, how to say it, and the translation. Save it to Notion, or click anywhere outside to close it.
+
+<Media id="card" label="The card: original, pronunciation and translation" />
+
+## The details
+
+<MediaRow layout="split" items={[{"id": "detail-confirm", "label": "The card waiting for confirmation", "title": "Confirm before saving.", "text": "The card asks first instead of saving right away, so only the words worth keeping end up in Notion."}, {"id": "detail-duplicate", "label": "An already saved word with the button turned off", "title": "No duplicates.", "text": "If a word is already saved, the button turns off and says so. It ignores capital letters and extra spaces when comparing."}, {"id": "detail-pronunciation", "label": "IPA for English and hiragana for Japanese, with a play button", "title": "Hear it and read it.", "text": "English shows IPA, Japanese shows hiragana, and a play button reads it out with the browser's built-in voice."}, {"id": "detail-speed", "label": "The card showing up right after the shortcut", "title": "Fast enough to keep reading.", "text": "Translation, the duplicate check and the pronunciation lookup all run at the same time, so the card shows up sooner."}]} />
+
+## Small things that went wrong
+
+- **A shortcut that was already taken.** Cmd+Y opens Chrome's history, so the extension never heard it. I moved it to Ctrl+Y.
+- **A button some sites covered.** On sites with a custom cursor, an invisible layer sat on top of the play button. I made the card's buttons catch clicks first.
+
+## What's next
+
+- Publish it on the Chrome and Edge stores. It still needs an icon and a privacy page.
+- Turn it into a desktop app, so it also works on text outside the browser, like PDFs and email.
+
+## What I learned
+
+As my own user, what I cared about most was not breaking my reading. Almost every decision came back to that: a shortcut instead of a menu, a card I can close with one click, and three lookups running at once so I'm not left waiting.
