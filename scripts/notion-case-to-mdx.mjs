@@ -7,7 +7,8 @@
   Notion conventions (also explained on the Notion page):
   - Callout with the 🖼️ icon, text "id: label"  -> <Media id label />
       Two or more "id: label" lines -> <MediaRow>, images side by side.
-      A single line with a video at public/videos/<slug>/<id>.mp4 plays that video on the gradient.
+      A single line with a video at public/videos/<slug>/<id>.mp4 plays that video on the gradient
+      (add a "style: plain" line for no gradient).
       If a bullet list with one bullet per image comes right before it, each
       bullet becomes the text under its image. Add a "style: split" line to stack them
       with the image on the left and the text on the right.
@@ -297,7 +298,11 @@ for (let i = 0; i < lines.length; i++) {
         blocks.push({ type: 'block', md: `<MediaRow${split ? ' layout="split"' : ''} items={${JSON.stringify(images)}} />` });
       } else {
         const { id, label, src, video, poster } = images[0];
-        const extra = video ? ` video="${video}"${poster ? ` poster="${poster}"` : ''}` : src ? ` src="${src}"` : '';
+        const extra = video
+          ? ` video="${video}"${poster ? ` poster="${poster}"` : ''}${/^style:\s*plain$/im.test(inner.join('\n')) ? ' plain' : ''}`
+          : src
+            ? ` src="${src}"`
+            : '';
         blocks.push({ type: 'block', md: `<Media id="${attr(id)}" label="${attr(label)}"${extra} />` });
       }
     } else {

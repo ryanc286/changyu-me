@@ -4,7 +4,7 @@
   image's alt text. Until real images are added it shows a placeholder. To add an image, put it at
   public/images/<case slug>/<id>.(jpg|png|webp) and pass src.
   A video (public/videos/<slug>/<id>.mp4, with a <id>.webp poster) plays muted on a loop,
-  centered on the gray-blue gradient, while it is on screen.
+  centered on the gray-blue gradient (or on nothing, with plain), while it is on screen.
 */
 interface Props {
   id: string;
@@ -12,11 +12,12 @@ interface Props {
   src?: string;
   video?: string;
   poster?: string;
+  plain?: boolean; // video without the gradient behind it
 }
-const { id, label, src, video, poster } = Astro.props;
+const { id, label, src, video, poster, plain = false } = Astro.props;
 ---
 
-<figure class:list={['media', { 'is-video': video }]} data-id={id} data-media-video={video ? '' : undefined}>
+<figure class:list={['media', { 'is-video': video, plain }]} data-id={id} data-media-video={video ? '' : undefined}>
   {
     video ? (
       <div class="video-stage">
@@ -56,6 +57,14 @@ const { id, label, src, video, poster } = Astro.props;
     background:
       radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
       linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
+  }
+  /* Plain: no gradient, the video fills the box height */
+  .plain .video-stage {
+    --inset: 0%;
+    background: none;
+  }
+  .plain video {
+    box-shadow: 0 0 0 1px var(--color-line);
   }
   /* Centered and kept whole, whatever its shape */
   video {
