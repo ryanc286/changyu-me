@@ -39,11 +39,11 @@ I'm not a trained engineer. AI wrote the code. I made the product calls: what co
 
 **Turning rules into math.** The hardest checks were stretching and flat shapes. The guidelines just say "keep proportions", not how to spot that in a layer's transform. I went frame by frame with AI and turned design intent into geometry. One frame exposed a gap early: a head with visibly stretched layers passed, because the rule let anything rotated off the hook. We fixed it so rotated layers still fail past a small threshold. One bad frame taught more than any theory.
 
-<Media id="deformation" label="A stretched layer caught by the deformation check" src="/images/illustration-inspector/deformation.webp" />
+<Media id="deformation" label="A stretched layer caught by the deformation check" />
 
 **Five directions, then one.** AI generated five UI directions. Two stayed close to PayPay's product style, and three were bolder. I tried all five against the real empty state and results, then combined the best parts. That's how the near-black button and the mascot empty state made it in.
 
-<Media id="directions" label="Exploring UI directions for the results page" src="/images/illustration-inspector/directions.webp" />
+<Media id="directions" label="Exploring UI directions for the results page" />
 
 **Knowing what not to build.** Early versions also checked halation, all-black or all-white frames, size presets, and whether the right library component was used. I cut them. They depend on context the plugin can't see, like the screen behind the illustration. A tool that flags false problems loses trust fast. **Six reliable checks beat ten noisy ones.**
 
@@ -57,7 +57,7 @@ No formal metrics yet, since it's still early. But the whole design team uses it
 
 It also freed up the illustration team. They used to run a full rules check before they could even discuss whether an illustration said the right thing. Now that part is mostly done, so they spend their time on intent.
 
-<Media id="published" label="Published to the PayPay design team in Figma" src="/images/illustration-inspector/published.webp" />
+<Media id="published" label="Published to the PayPay design team in Figma" />
 
 ## What's next
 
