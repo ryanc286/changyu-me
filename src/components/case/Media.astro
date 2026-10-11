@@ -45,7 +45,7 @@ if (src && !video) {
       <div
         class="zoom"
         data-zoom
-        style={`--zx:${zoom.x}%;--zy:${zoom.y}%;--zk:${(100 / zoom.w).toFixed(4)}`}
+        style={`--ox:${((zoom.x / (100 - zoom.w)) * 100).toFixed(3)}%;--oy:${((zoom.y / (100 - zoom.w)) * 100).toFixed(3)}%;--zk:${(100 / zoom.w).toFixed(4)}`}
       >
         <img class="zoom-base" src={src} alt={label} loading="lazy" />
         <img class="zoom-close" src={zoom.src} alt="" aria-hidden="true" loading="lazy" />
@@ -153,8 +153,10 @@ if (src && !video) {
     height: 100%;
     border-radius: 0;
   }
+  /* One steady push: a plain scale around the point that stays put, so the picture
+     only grows and drifts toward that point, never back and forth */
   .zoom-base {
-    transform-origin: 0 0;
+    transform-origin: var(--ox) var(--oy);
     transition: transform 1400ms cubic-bezier(0.65, 0, 0.35, 1) 600ms;
   }
   .zoom-close {
@@ -162,7 +164,7 @@ if (src && !video) {
     transition: opacity 300ms linear 1900ms;
   }
   .zoom.in .zoom-base {
-    transform: scale(var(--zk)) translate(calc(-1 * var(--zx)), calc(-1 * var(--zy)));
+    transform: scale(var(--zk));
   }
   .zoom.in .zoom-close {
     opacity: 1;
