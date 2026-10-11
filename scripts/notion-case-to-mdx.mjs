@@ -8,7 +8,7 @@
   - Callout with the 🖼️ icon, text "id: label"  -> <Media id label />
       Two or more "id: label" lines -> <MediaRow>, images side by side.
       A single line with a video at public/videos/<slug>/<id>.mp4 plays that video on the gradient
-      (add a "style: plain" line for no gradient).
+      (add a "style: plain" line for no gradient, "style: progress" for a playback bar; both: "style: plain progress").
       If a bullet list with one bullet per image comes right before it, each
       bullet becomes the text under its image. Add a "style: split" line to stack them
       with the image on the left and the text on the right.
@@ -302,7 +302,7 @@ for (let i = 0; i < lines.length; i++) {
       } else {
         const { id, label, src, video, poster } = images[0];
         const extra = video
-          ? ` video="${video}"${poster ? ` poster="${poster}"` : ''}${/^style:\s*plain$/im.test(inner.join('\n')) ? ' plain' : ''}`
+          ? ` video="${video}"${poster ? ` poster="${poster}"` : ''}${/^style:.*\bplain\b/im.test(inner.join('\n')) ? ' plain' : ''}${/^style:.*\bprogress\b/im.test(inner.join('\n')) ? ' progress' : ''}`
           : src
             ? ` src="${src}"`
             : '';

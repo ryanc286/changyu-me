@@ -5,6 +5,7 @@
   public/images/<case slug>/<id>.(jpg|png|webp) and pass src.
   A video (public/videos/<slug>/<id>.mp4, with a <id>.webp poster) plays muted on a loop,
   centered on the gray-blue gradient (or on nothing, with plain), while it is on screen.
+  With progress, a thin bar under the video follows playback; it can't be dragged.
 */
 interface Props {
   id: string;
@@ -13,8 +14,9 @@ interface Props {
   video?: string;
   poster?: string;
   plain?: boolean; // video without the gradient behind it
+  progress?: boolean; // a thin bar under the video that follows playback (display only)
 }
-const { id, label, src, video, poster, plain = false } = Astro.props;
+const { id, label, src, video, poster, plain = false, progress = false } = Astro.props;
 ---
 
 <figure class:list={['media', { 'is-video': video, plain }]} data-id={id} data-media-video={video ? '' : undefined}>
@@ -22,6 +24,11 @@ const { id, label, src, video, poster, plain = false } = Astro.props;
     video ? (
       <div class="video-stage">
         <video src={video} poster={poster} muted loop playsinline preload="metadata" aria-label={label} />
+        {progress && (
+          <span class="progress" aria-hidden="true">
+            <span class="progress-fill" />
+          </span>
+        )}
       </div>
     ) : src ? (
       <img src={src} alt={label} loading="lazy" />
@@ -84,6 +91,34 @@ const { id, label, src, video, poster, plain = false } = Astro.props;
     border-radius: var(--radius);
     box-shadow: none;
   }
+  /* Playback bar, placed right under the video by the script */
+  .progress {
+    position: absolute;
+    height: 3px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.25);
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 200ms var(--ease-out);
+  }
+  .progress.ready {
+    opacity: 1;
+  }
+  .progress-fill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  .plain .progress {
+    background: var(--color-line);
+  }
+  .plain .progress-fill {
+    background: var(--color-text);
+  }
   @media (max-width: 600px) {
     .video-stage {
       --inset: 6%;
@@ -116,5 +151,30 @@ const { id, label, src, video, poster, plain = false } = Astro.props;
       { root: fig.closest('.scroller'), threshold: 0.3 },
     );
     io.observe(v);
+
+    // Progress bar: sits just under the video and fills as it plays
+    const bar = fig.querySelector<HTMLElement>('.progress');
+    const fill = fig.querySelector<HTMLElement>('.progress-fill');
+    if (!bar || !fill) return;
+    const place = () => {
+      if (!v.offsetWidth) return;
+      bar.style.left = `${v.offsetLeft}px`;
+      bar.style.width = `${v.offsetWidth}px`;
+      bar.style.top = `${v.offsetTop + v.offsetHeight + 12}px`;
+      bar.classList.add('ready');
+    };
+    let raf = 0;
+    const tick = () => {
+      if (v.duration) fill.style.transform = `scaleX(${v.currentTime / v.duration})`;
+      raf = v.paused ? 0 : requestAnimationFrame(tick);
+    };
+    v.addEventListener('loadedmetadata', place);
+    v.addEventListener('play', () => {
+      place();
+      if (!raf) raf = requestAnimationFrame(tick);
+    });
+    v.addEventListener('seeked', tick);
+    window.addEventListener('resize', place);
+    if (v.readyState >= 1) place();
   });
 </script>
