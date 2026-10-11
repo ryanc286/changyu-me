@@ -3,17 +3,19 @@
   Two or more images side by side in a case study (one row on desktop,
   stacked on phones). From a 🖼️ callout in Notion with one "id: label" per line.
   Items can carry a title and text, shown under the image, and a video in place of the image.
+  layout="split" stacks the items instead: image on the left, text on the right ("style: split" in Notion).
 */
 import Media from './Media.astro';
 
 interface Props {
+  layout?: 'row' | 'split';
   items: { id: string; label: string; src?: string; video?: string; poster?: string; title?: string; text?: string }[];
 }
-const { items } = Astro.props;
+const { items, layout = 'row' } = Astro.props;
 const hasText = items.some((m) => m.title || m.text);
 ---
 
-<div class:list={['media-row', { 'has-text': hasText }]} style={`--cols: ${items.length}`}>
+<div class:list={['media-row', { 'has-text': hasText, split: layout === 'split' }]} style={`--cols: ${items.length}`}>
   {
     items.map((m) => (
       <div class="item">
@@ -44,14 +46,35 @@ const hasText = items.some((m) => m.title || m.text);
   }
   /* Smaller tiles: less padding around a video so it stays readable */
   .item :global(.video-stage) {
-    padding: 5%;
+    --inset: 5%;
   }
   .item p {
     margin: 16px 0 0;
   }
+  /* Split: one item per row, image left and text right */
+  .media-row.split {
+    grid-template-columns: 1fr;
+    row-gap: 32px;
+  }
+  .media-row.split .item {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 40px;
+  }
+  .media-row.split .item p {
+    margin: 0;
+  }
   @media (max-width: 600px) {
     .media-row {
       grid-template-columns: 1fr;
+    }
+    .media-row.split .item {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .media-row.split .item p {
+      margin: 16px 0 0;
     }
   }
 </style>

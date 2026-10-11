@@ -9,7 +9,8 @@
       Two or more "id: label" lines -> <MediaRow>, images side by side.
       A single line with a video at public/videos/<slug>/<id>.mp4 plays that video on the gradient.
       If a bullet list with one bullet per image comes right before it, each
-      bullet becomes the text under its image.
+      bullet becomes the text under its image. Add a "style: split" line to stack them
+      with the image on the left and the text on the right.
   - Callout with the 📍 icon -> <Annotated>, a phone screen with callouts:
       first line "id: label", then one "Title | Explanation" line per callout.
   - Callout with the 🎬 icon -> <VideoRow>, screen recordings side by side:
@@ -248,7 +249,9 @@ for (let i = 0; i < lines.length; i++) {
     }
     if (line.includes('🖼')) {
       // One "id: label" line per image. Two or more lines become a side-by-side row.
-      const images = inner.filter(Boolean).map((l) => {
+      // "style: split" puts each image on its own row, text on the right
+      const split = inner.some((l) => /^style:\s*split$/i.test(l));
+      const images = inner.filter((l) => l && !/^style:/i.test(l)).map((l) => {
         const [id, ...rest] = l.split(':');
         // Use the real image if it exists at public/images/<slug>/<id>.(webp|jpg|png)
         const src = ['webp', 'jpg', 'png']
@@ -278,7 +281,7 @@ for (let i = 0; i < lines.length; i++) {
             images[k] = { ...images[k], ...(m ? { title: m[1], text: m[2] } : { text: unescape(b.raw.slice(2)) }) };
           });
         }
-        blocks.push({ type: 'block', md: `<MediaRow items={${JSON.stringify(images)}} />` });
+        blocks.push({ type: 'block', md: `<MediaRow${split ? ' layout="split"' : ''} items={${JSON.stringify(images)}} />` });
       } else {
         const { id, label, src, video, poster } = images[0];
         const extra = video ? ` video="${video}"${poster ? ` poster="${poster}"` : ''}` : src ? ` src="${src}"` : '';
