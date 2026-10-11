@@ -43,11 +43,9 @@ The next screen, where you choose withdraw or deposit, sets up every step after 
 
 <Media id="concepts" label="Three versions of the service selection screen" src="/images/cardless-atm/concepts.webp" />
 
-Then the handoff, the moment we set out to fix. After scanning, the app now tells people to follow the steps on the ATM. That one line closes the gap where 13% used to give up.
+Then the handoff, the moment we set out to fix. The app now tells people when to turn to the ATM, which closes the gap where 13% used to give up, and the last screen shows where to check the details. Pick a step to see each screen.
 
-<Media id="handoff" label="After scanning, the app tells people to turn to the ATM" src="/images/cardless-atm/handoff.webp" />
-
-The last screen does what the third rule promised: it confirms the transaction went through and shows where to check the details.
+<FlowSteps steps={[{"id": "flow-choose", "label": "Choose withdraw/deposit", "src": "/images/cardless-atm/flow-choose.webp", "notes": [{"text": "PayPay Balance and PayPay Bank sit in separate blocks.", "x": 89, "y": 28}, {"text": "Icons and fee tags show what people can do at a glance.", "x": 87.5, "y": 63}]}, {"id": "flow-scan", "label": "Scan QR code", "src": "/images/cardless-atm/flow-scan.webp", "notes": [{"text": "A line tells people what to scan.", "x": 88.7, "y": 77}, {"text": "If something goes wrong, a second button opens the guide.", "x": 88.7, "y": 91}]}, {"id": "flow-number", "label": "Display bank number", "src": "/images/cardless-atm/flow-number.webp", "notes": [{"text": "The number to type on the ATM is the biggest thing on the screen. Everything else steps back.", "x": 88.7, "y": 39}]}, {"id": "atm-screen", "label": "On the ATM", "src": "/images/cardless-atm/atm-screen.webp", "wide": true, "notes": [{"text": "From here, people follow the ATM: enter the number and PIN, pick withdraw or deposit, set the amount, then take or insert cash."}]}, {"id": "flow-complete", "label": "Complete", "src": "/images/cardless-atm/flow-complete.webp", "notes": [{"text": "A title and an illustration tell people to turn to the ATM.", "x": 75.7, "y": 40}, {"text": "A button opens the transaction details, so people can check it worked.", "x": 88.7, "y": 81}]}]} />
 
 ## The ATM screen
 

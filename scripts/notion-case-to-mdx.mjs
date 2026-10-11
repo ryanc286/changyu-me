@@ -24,6 +24,9 @@
   - Callout with the 📱 icon -> <DetailList>, phone screens on the left with text on the right,
       one per row: one "id: label" line per screen. A bullet list right before it, one
       "- **Title.** Text" bullet per screen, becomes the text beside each screen.
+  - Callout with the 🧭 icon -> <FlowSteps>, a flow to click through, one screen per step:
+      "id: Step name" ("| wide" for a full-width image), then "note: x,y | Text" per note
+      (x,y = the point on the screen in %), or "note: Text" for no line.
   - Callout with the 🔘 icon -> <VariantSwitch>, versions of one screen to click between:
       "id: Title | Short text | Tag" per version (Tag is optional, like "Dropped").
   - Callout with the 📊 icon -> <ClickMap>, a screen with areas outlined and their share:
@@ -131,6 +134,30 @@ for (let i = 0; i < lines.length; i++) {
         });
       }
       blocks.push({ type: 'block', md: `<DetailList items={${JSON.stringify(items)}} />` });
+      continue;
+    }
+    if (line.includes('🧭')) {
+      // Flow steps: "id: Step name" (add "| wide" for a full-width image),
+      // then "note: x,y | Text" or "note: Text" lines for that step
+      const steps = [];
+      for (const l of inner.filter(Boolean).map(unescape)) {
+        const note = l.match(/^note:\s*(?:([\d.]+)\s*,\s*([\d.]+)\s*\|)?\s*(.+)$/);
+        if (note) {
+          const n = { text: note[3].trim(), ...(note[1] ? { x: Number(note[1]), y: Number(note[2]) } : {}) };
+          steps.at(-1)?.notes.push(n);
+          continue;
+        }
+        const [head, flag] = l.split('|').map((x) => x.trim());
+        const [id, ...label] = head.split(':');
+        steps.push({
+          id: id.trim(),
+          label: label.join(':').trim(),
+          src: `/images/${slug}/${id.trim()}.webp`,
+          ...(flag === 'wide' ? { wide: true } : {}),
+          notes: [],
+        });
+      }
+      blocks.push({ type: 'block', md: `<FlowSteps steps={${JSON.stringify(steps)}} />` });
       continue;
     }
     if (line.includes('🔘')) {

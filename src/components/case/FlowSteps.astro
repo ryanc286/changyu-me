@@ -1,0 +1,387 @@
+---
+/*
+  A flow you can click through. The steps sit in a row on top; picking one shows
+  its screen below with short notes, each joined by a thin line to the part of
+  the screen it talks about.
+  From a 🧭 callout in Notion:
+    id: Step name                  a phone screen (public/images/<case slug>/<id>.webp, frame included)
+    id: Step name | wide           a wide image that fills the box instead (like the ATM screen)
+    note: 90,28 | Text             a note for the step above, pointing at x,y (% of the screen)
+    note: Text                     a note with no line (used as the caption for wide steps)
+  On phones the notes sit under the screen, without lines.
+*/
+interface Note {
+  text: string;
+  x?: number;
+  y?: number;
+}
+interface Step {
+  id: string;
+  label: string;
+  src: string;
+  wide?: boolean;
+  notes?: Note[];
+}
+interface Props {
+  steps: Step[];
+}
+const { steps } = Astro.props;
+const uid = `fs-${steps[0]?.id ?? 'flow'}`;
+---
+
+<figure class="flow-steps" data-flow-steps>
+  <div class="bar" role="tablist" aria-label="Steps in the flow">
+    {
+      steps.map((s, i) => (
+        <>
+          {i > 0 && (
+            <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M2 8h11M9 4l4 4-4 4" />
+            </svg>
+          )}
+          <button
+            type="button"
+            role="tab"
+            id={`${uid}-tab-${i}`}
+            aria-controls={`${uid}-step-${i}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            class:list={['step', { wide: s.wide }]}
+          >
+            {s.label}
+          </button>
+        </>
+      ))
+    }
+  </div>
+
+  <div class="stage">
+    {
+      steps.map((s, i) => (
+        <div
+          class:list={['layer', s.wide ? 'is-wide' : 'is-phone', { on: i === 0 }]}
+          id={`${uid}-step-${i}`}
+          role="tabpanel"
+          aria-labelledby={`${uid}-tab-${i}`}
+          hidden={i === 0 ? undefined : true}
+        >
+          {s.wide ? (
+            <>
+              <img class="wide-img" src={s.src} alt={s.label} loading="lazy" />
+              {s.notes?.length ? <p class="caption">{s.notes.map((n) => n.text).join(' ')}</p> : null}
+            </>
+          ) : (
+            <div class="shot">
+              <img class="screen" src={s.src} alt={s.label} loading="lazy" />
+              {s.notes?.map((n, k) => (
+                <div class="note" style={`--y:${n.y ?? 50 + k * 12}%;--x:${n.x ?? 100};--k:${k}`}>
+                  {n.x !== undefined && <span class="line" aria-hidden="true" />}
+                  <p>{n.text}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))
+    }
+  </div>
+</figure>
+
+<style>
+  .flow-steps {
+    margin: var(--space-5) 0;
+  }
+
+  /* The row of steps */
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .bar::-webkit-scrollbar {
+    display: none;
+  }
+  .step {
+    flex: none;
+    padding: 7px 14px;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text-muted);
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background 250ms var(--ease-out),
+      color 250ms var(--ease-out),
+      border-color 250ms var(--ease-out);
+  }
+  /* The steps done on the ATM, not in the app */
+  .step.wide {
+    border-style: dashed;
+  }
+  .step:hover {
+    color: var(--color-text);
+  }
+  .step[aria-selected='true'] {
+    background: var(--color-text);
+    border-color: var(--color-text);
+    color: var(--color-bg);
+  }
+  .step:focus-visible {
+    outline: 2px solid var(--color-text);
+    outline-offset: 2px;
+  }
+  .arrow {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: var(--color-text-muted);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.6;
+  }
+
+  /* The box below: every step stacked in the same spot, the chosen one fades in */
+  .stage {
+    display: grid;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    overflow: hidden;
+    /* Same navy as the other images in this case */
+    background:
+      radial-gradient(110% 90% at 30% 0%, rgb(255 255 255 / 0.1), transparent 60%),
+      linear-gradient(120deg, #202c43 0%, #435777 38%, #1b2337 70%, #101724 100%);
+  }
+  .layer {
+    grid-area: 1 / 1;
+    position: relative;
+    min-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 400ms var(--ease-out),
+      visibility 0s 400ms;
+  }
+  .layer[hidden] {
+    display: block;
+  }
+  .layer.on {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 400ms var(--ease-out);
+  }
+
+  /* Phone steps: phone on the left, notes on the right joined by lines */
+  .shot {
+    position: absolute;
+    top: 6%;
+    left: 20%;
+    container-type: inline-size;
+    /* 88% of the 16:10 box's height: 0.88 × 10/16 × 773/1562 ≈ 27.2% of its width */
+    width: 27.2%;
+    aspect-ratio: 773 / 1562;
+  }
+  .screen {
+    display: block;
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.35));
+  }
+  /* Sizes below are in phone widths (cqw): notes end at 235% of the phone's width,
+     text starts at 140%, and each line runs from its point to just before the text */
+  .note {
+    position: absolute;
+    top: var(--y);
+    left: calc(var(--x) * 1cqw);
+    width: calc(235cqw - var(--x) * 1cqw);
+    height: 0;
+  }
+  .line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(140cqw - var(--x) * 1cqw - 12px);
+    height: 1px;
+    background: rgb(255 255 255 / 0.45);
+  }
+  .line::before {
+    content: '';
+    position: absolute;
+    left: -3px;
+    top: -3px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    /* Blue with a white ring, so it shows on light and dark screens */
+    background: #3d8bff;
+    box-shadow: 0 0 0 2px #fff;
+  }
+  .note p {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 95cqw;
+    margin: 0;
+    transform: translateY(-50%);
+    color: rgb(255 255 255 / 0.88);
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  /* Wide steps: the image fills the box, with a short caption at the bottom */
+  .wide-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .caption {
+    position: absolute;
+    left: 50%;
+    bottom: 5%;
+    width: min(76%, 560px);
+    margin: 0;
+    transform: translateX(-50%);
+    color: rgb(255 255 255 / 0.88);
+    font-size: 0.875rem;
+    line-height: 1.45;
+    text-align: center;
+  }
+
+  /* Notes slide in a little after the screen */
+  .layer .note p,
+  .layer .caption {
+    opacity: 0;
+    translate: 8px 0;
+    transition:
+      opacity 350ms var(--ease-out),
+      translate 350ms var(--ease-out);
+  }
+  .layer.on .note p,
+  .layer.on .caption {
+    opacity: 1;
+    translate: 0 0;
+    transition-delay: calc(200ms + var(--k, 0) * 80ms);
+  }
+
+  @media (max-width: 600px) {
+    .bar {
+      justify-content: flex-start;
+      margin: 0 calc(-1 * var(--gutter, 16px)) 12px;
+      padding: 0 var(--gutter, 16px);
+    }
+    .step {
+      padding: 6px 12px;
+      font-size: 0.75rem;
+    }
+    .stage {
+      aspect-ratio: auto;
+    }
+    .layer.is-phone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 20px 24px;
+    }
+    .shot {
+      display: contents;
+    }
+    .screen {
+      width: 58%;
+      height: auto;
+    }
+    .note {
+      position: static;
+      height: auto;
+      width: 100%;
+    }
+    .note:first-of-type {
+      margin-top: 20px;
+    }
+    .note + .note {
+      margin-top: 10px;
+    }
+    .line {
+      display: none;
+    }
+    .note p,
+    .caption {
+      position: static;
+      width: auto;
+      transform: none;
+      text-align: left;
+      font-size: 0.8125rem;
+    }
+    .layer.is-wide {
+      display: flex;
+      flex-direction: column;
+    }
+    .wide-img {
+      height: auto;
+      aspect-ratio: 16 / 10;
+    }
+    .caption {
+      padding: 4px 20px 24px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .layer,
+    .layer .note p,
+    .layer .caption {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-flow-steps]').forEach((fig) => {
+    const tabs = [...fig.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const layers = [...fig.querySelectorAll<HTMLElement>('.layer')];
+    let current = 0;
+
+    const show = (i: number, focus = false) => {
+      current = (i + tabs.length) % tabs.length;
+      tabs.forEach((t, k) => {
+        const on = k === current;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      layers.forEach((l, k) => {
+        const on = k === current;
+        l.classList.toggle('on', on);
+        l.hidden = !on;
+      });
+      const tab = tabs[current];
+      // Keep the chosen step in view when the row scrolls (phones)
+      const bar = tab.parentElement!;
+      if (bar.scrollWidth > bar.clientWidth) {
+        bar.scrollTo({ left: tab.offsetLeft - (bar.clientWidth - tab.offsetWidth) / 2, behavior: 'smooth' });
+      }
+      if (focus) tab.focus();
+    };
+
+    tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+    fig.querySelector('[role="tablist"]')!.addEventListener('keydown', (e) => {
+      const key = (e as KeyboardEvent).key;
+      const next =
+        key === 'ArrowRight' ? current + 1
+        : key === 'ArrowLeft' ? current - 1
+        : key === 'Home' ? 0
+        : key === 'End' ? tabs.length - 1
+        : null;
+      if (next === null) return;
+      e.preventDefault();
+      show(next, true);
+    });
+  });
+</script>
