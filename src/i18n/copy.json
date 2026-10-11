@@ -311,8 +311,8 @@
     "key": "footer.copied",
     "section": "介面文字",
     "note": "點 Email 複製後，畫面下方跳出的提示",
-    "en": "Copied",
-    "zh-tw": "已複製"
+    "en": "Email copied",
+    "zh-tw": "Email 已複製"
   },
   {
     "key": "theme.label",
