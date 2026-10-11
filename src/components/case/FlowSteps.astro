@@ -94,15 +94,15 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
   /* The row of steps, along the top of the box */
   .bar {
     position: absolute;
-    top: 18px;
+    top: 32px;
     left: 0;
     right: 0;
     z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 0 16px;
+    gap: 10px;
+    padding: 0 24px;
     overflow-x: auto;
     scrollbar-width: none;
   }
@@ -111,7 +111,7 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
   }
   .step {
     flex: none;
-    padding: 7px 14px;
+    padding: 8px 16px;
     border: 1px solid rgb(255 255 255 / 0.2);
     border-radius: 999px;
     background: rgb(255 255 255 / 0.08);
@@ -162,7 +162,7 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
   .stage {
     position: relative;
     display: grid;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 4 / 3;
     border-radius: var(--radius);
     overflow: hidden;
     /* Same navy as the other images in this case */
@@ -192,11 +192,11 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
   /* Phone steps: phone on the left, notes on the right joined by lines */
   .shot {
     position: absolute;
-    top: 14%;
-    left: 21%;
+    top: 17%;
+    left: 19%;
     container-type: inline-size;
-    /* 82% of the 16:10 box's height, below the steps: 0.82 × 10/16 × 773/1562 ≈ 25.4% of its width */
-    width: 25.4%;
+    /* 74% of the 4:3 box's height, below the steps: 0.74 × 3/4 × 773/1562 ≈ 27.5% of its width */
+    width: 27.5%;
     aspect-ratio: 773 / 1562;
   }
   .screen {
@@ -205,20 +205,20 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
     height: 100%;
     filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.35));
   }
-  /* Sizes below are in phone widths (cqw): notes end at 250% of the phone's width,
-     text starts at 145%, and each line runs from its point to just before the text */
+  /* Sizes below are in phone widths (cqw): notes end at 245% of the phone's width,
+     text starts at 150%, and each line runs from its point to just before the text */
   .note {
     position: absolute;
     top: var(--y);
     left: calc(var(--x) * 1cqw);
-    width: calc(250cqw - var(--x) * 1cqw);
+    width: calc(245cqw - var(--x) * 1cqw);
     height: 0;
   }
   .line {
     position: absolute;
     top: 0;
     left: 0;
-    width: calc(145cqw - var(--x) * 1cqw - 12px);
+    width: calc(150cqw - var(--x) * 1cqw - 16px);
     height: 1px;
     background: rgb(255 255 255 / 0.45);
   }
@@ -238,7 +238,7 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
     position: absolute;
     top: 0;
     right: 0;
-    width: 105cqw;
+    width: 95cqw;
     margin: 0;
     transform: translateY(-50%);
     color: rgb(255 255 255 / 0.88);
@@ -256,8 +256,8 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
   .caption {
     position: absolute;
     left: 50%;
-    bottom: 5%;
-    width: min(76%, 560px);
+    bottom: 7%;
+    width: min(72%, 540px);
     margin: 0;
     transform: translateX(-50%);
     color: rgb(255 255 255 / 0.88);
@@ -287,7 +287,8 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
       position: static;
       grid-area: 1 / 1;
       justify-content: flex-start;
-      padding: 16px 16px 0;
+      gap: 8px;
+      padding: 20px 20px 0;
     }
     .step {
       padding: 6px 12px;
@@ -303,7 +304,7 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 20px 24px;
+      padding: 32px 24px 32px;
     }
     .shot {
       display: contents;
@@ -318,10 +319,10 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
       width: 100%;
     }
     .note:first-of-type {
-      margin-top: 20px;
+      margin-top: 28px;
     }
     .note + .note {
-      margin-top: 10px;
+      margin-top: 14px;
     }
     .line {
       display: none;
@@ -343,7 +344,7 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
       aspect-ratio: 16 / 10;
     }
     .caption {
-      padding: 4px 20px 24px;
+      padding: 8px 24px 32px;
     }
   }
   @media (prefers-reduced-motion: reduce) {
