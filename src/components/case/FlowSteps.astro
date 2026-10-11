@@ -30,32 +30,31 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
 ---
 
 <figure class="flow-steps" data-flow-steps>
-  <div class="bar" role="tablist" aria-label="Steps in the flow">
-    {
-      steps.map((s, i) => (
-        <>
-          {i > 0 && (
-            <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M2 8h11M9 4l4 4-4 4" />
-            </svg>
-          )}
-          <button
-            type="button"
-            role="tab"
-            id={`${uid}-tab-${i}`}
-            aria-controls={`${uid}-step-${i}`}
-            aria-selected={i === 0 ? 'true' : 'false'}
-            tabindex={i === 0 ? 0 : -1}
-            class:list={['step', { wide: s.wide }]}
-          >
-            {s.label}
-          </button>
-        </>
-      ))
-    }
-  </div>
-
   <div class="stage">
+    <div class="bar" role="tablist" aria-label="Steps in the flow">
+      {
+        steps.map((s, i) => (
+          <>
+            {i > 0 && (
+              <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M2 8h11M9 4l4 4-4 4" />
+              </svg>
+            )}
+            <button
+              type="button"
+              role="tab"
+              id={`${uid}-tab-${i}`}
+              aria-controls={`${uid}-step-${i}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+              class:list={['step', { wide: s.wide }]}
+            >
+              {s.label}
+            </button>
+          </>
+        ))
+      }
+    </div>
     {
       steps.map((s, i) => (
         <div
@@ -92,13 +91,18 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
     margin: var(--space-5) 0;
   }
 
-  /* The row of steps */
+  /* The row of steps, along the top of the box */
   .bar {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    right: 0;
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    margin-bottom: 16px;
+    padding: 0 16px;
     overflow-x: auto;
     scrollbar-width: none;
   }
@@ -108,10 +112,12 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
   .step {
     flex: none;
     padding: 7px 14px;
-    border: 1px solid var(--color-line);
+    border: 1px solid rgb(255 255 255 / 0.2);
     border-radius: 999px;
-    background: transparent;
-    color: var(--color-text-muted);
+    background: rgb(255 255 255 / 0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: rgb(255 255 255 / 0.75);
     font: inherit;
     font-size: 0.8125rem;
     font-weight: 600;
@@ -126,17 +132,19 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
   /* The steps done on the ATM, not in the app */
   .step.wide {
     border-style: dashed;
+    border-color: rgb(255 255 255 / 0.35);
   }
   .step:hover {
-    color: var(--color-text);
+    background: rgb(255 255 255 / 0.16);
+    color: #fff;
   }
   .step[aria-selected='true'] {
-    background: var(--color-text);
-    border-color: var(--color-text);
-    color: var(--color-bg);
+    background: #fff;
+    border-color: #fff;
+    color: #1b2337;
   }
   .step:focus-visible {
-    outline: 2px solid var(--color-text);
+    outline: 2px solid #fff;
     outline-offset: 2px;
   }
   .arrow {
@@ -144,15 +152,15 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
     width: 14px;
     height: 14px;
     fill: none;
-    stroke: var(--color-text-muted);
+    stroke: rgb(255 255 255 / 0.45);
     stroke-width: 1.5;
     stroke-linecap: round;
     stroke-linejoin: round;
-    opacity: 0.6;
   }
 
   /* The box below: every step stacked in the same spot, the chosen one fades in */
   .stage {
+    position: relative;
     display: grid;
     aspect-ratio: 16 / 10;
     border-radius: var(--radius);
@@ -184,11 +192,11 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
   /* Phone steps: phone on the left, notes on the right joined by lines */
   .shot {
     position: absolute;
-    top: 6%;
-    left: 20%;
+    top: 14%;
+    left: 21%;
     container-type: inline-size;
-    /* 88% of the 16:10 box's height: 0.88 × 10/16 × 773/1562 ≈ 27.2% of its width */
-    width: 27.2%;
+    /* 82% of the 16:10 box's height, below the steps: 0.82 × 10/16 × 773/1562 ≈ 25.4% of its width */
+    width: 25.4%;
     aspect-ratio: 773 / 1562;
   }
   .screen {
@@ -197,20 +205,20 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
     height: 100%;
     filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.35));
   }
-  /* Sizes below are in phone widths (cqw): notes end at 235% of the phone's width,
-     text starts at 140%, and each line runs from its point to just before the text */
+  /* Sizes below are in phone widths (cqw): notes end at 250% of the phone's width,
+     text starts at 145%, and each line runs from its point to just before the text */
   .note {
     position: absolute;
     top: var(--y);
     left: calc(var(--x) * 1cqw);
-    width: calc(235cqw - var(--x) * 1cqw);
+    width: calc(250cqw - var(--x) * 1cqw);
     height: 0;
   }
   .line {
     position: absolute;
     top: 0;
     left: 0;
-    width: calc(140cqw - var(--x) * 1cqw - 12px);
+    width: calc(145cqw - var(--x) * 1cqw - 12px);
     height: 1px;
     background: rgb(255 255 255 / 0.45);
   }
@@ -230,7 +238,7 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
     position: absolute;
     top: 0;
     right: 0;
-    width: 95cqw;
+    width: 105cqw;
     margin: 0;
     transform: translateY(-50%);
     color: rgb(255 255 255 / 0.88);
@@ -276,9 +284,10 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
 
   @media (max-width: 600px) {
     .bar {
+      position: static;
+      grid-area: 1 / 1;
       justify-content: flex-start;
-      margin: 0 calc(-1 * var(--gutter, 16px)) 12px;
-      padding: 0 var(--gutter, 16px);
+      padding: 16px 16px 0;
     }
     .step {
       padding: 6px 12px;
@@ -286,6 +295,9 @@ const uid = `fs-${steps[0]?.id ?? 'flow'}`;
     }
     .stage {
       aspect-ratio: auto;
+    }
+    .layer {
+      grid-area: 2 / 1;
     }
     .layer.is-phone {
       display: flex;
