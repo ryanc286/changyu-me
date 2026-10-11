@@ -267,7 +267,8 @@ for (let i = 0; i < lines.length; i++) {
     if (line.includes('🖼')) {
       // One "id: label" line per image. Two or more lines become a side-by-side row.
       // "style: split" puts each image on its own row, text on the right
-      const split = inner.some((l) => /^style:\s*split$/i.test(l));
+      const split = inner.some((l) => /^style:.*\bsplit\b/i.test(l));
+      const rowProgress = inner.some((l) => /^style:.*\bprogress\b/i.test(l));
       const images = inner.filter((l) => l && !/^style:/i.test(l)).map((l) => {
         const [id, ...rest] = l.split(':');
         // Use the real image if it exists at public/images/<slug>/<id>.(webp|jpg|png)
@@ -298,7 +299,7 @@ for (let i = 0; i < lines.length; i++) {
             images[k] = { ...images[k], ...(m ? { title: m[1], text: m[2] } : { text: unescape(b.raw.slice(2)) }) };
           });
         }
-        blocks.push({ type: 'block', md: `<MediaRow${split ? ' layout="split"' : ''} items={${JSON.stringify(images)}} />` });
+        blocks.push({ type: 'block', md: `<MediaRow${split ? ' layout="split"' : ''}${rowProgress ? ' progress' : ''} items={${JSON.stringify(images)}} />` });
       } else {
         const { id, label, src, video, poster } = images[0];
         const extra = video

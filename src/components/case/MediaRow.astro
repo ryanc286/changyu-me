@@ -9,17 +9,18 @@ import Media from './Media.astro';
 
 interface Props {
   layout?: 'row' | 'split';
+  progress?: boolean; // playback bar under each video
   items: { id: string; label: string; src?: string; video?: string; poster?: string; title?: string; text?: string }[];
 }
-const { items, layout = 'row' } = Astro.props;
+const { items, layout = 'row', progress = false } = Astro.props;
 const hasText = items.some((m) => m.title || m.text);
 ---
 
-<div class:list={['media-row', { 'has-text': hasText, split: layout === 'split' }]} style={`--cols: ${items.length}`}>
+<div class:list={['media-row', { 'has-text': hasText, split: layout === 'split', 'with-progress': progress }]} style={`--cols: ${items.length}`}>
   {
     items.map((m) => (
       <div class="item">
-        <Media id={m.id} label={m.label} src={m.src} video={m.video} poster={m.poster} />
+        <Media id={m.id} label={m.label} src={m.src} video={m.video} poster={m.poster} progress={progress} />
         {(m.title || m.text) && (
           <p>
             {m.title && <strong>{m.title}</strong>} {m.text}
@@ -77,6 +78,17 @@ const hasText = items.some((m) => m.title || m.text);
   }
   .media-row.split .item p {
     margin: 0;
+  }
+  /* Room for the bar under each video */
+  .media-row.split.with-progress {
+    row-gap: 52px;
+  }
+  /* No gradient behind split videos, so the bar uses the page colors */
+  .media-row.split .item :global(.progress) {
+    background: var(--color-line);
+  }
+  .media-row.split .item :global(.progress-fill) {
+    background: var(--color-text);
   }
   @media (max-width: 600px) {
     .media-row {
