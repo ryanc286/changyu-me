@@ -1,10 +1,10 @@
 ---
 /*
   A few versions of the same screen. Pick one from the list and the phone
-  switches to it, with an outline around the part that changed.
+  switches to it.
   From a 🔘 callout in Notion with one line per version:
-    id: Title | Short text | x,y,w,h | Tag
-  x,y,w,h is the changed area in % of the image; Tag (like "Dropped") is optional.
+    id: Title | Short text | Tag
+  Tag (like "Dropped") is optional.
   Images at public/images/<case slug>/<id>.webp, phone frame included.
   Cycles through once when first seen; any click stops that.
 */
@@ -13,7 +13,6 @@ interface Item {
   title: string;
   text?: string;
   src: string;
-  box?: number[];
   tag?: string;
 }
 interface Props {
@@ -51,12 +50,6 @@ const uid = `vs-${items.map((it) => it.id).join('-')}`;
         items.map((it, i) => (
           <div class:list={['screen', { on: i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
             <img src={it.src} alt={it.title} loading="lazy" draggable="false" />
-            {it.box && (
-              <span
-                class="box"
-                style={`left:calc(${it.box[0]}% - 4px);top:calc(${it.box[1]}% - 4px);width:calc(${it.box[2]}% + 8px);height:calc(${it.box[3]}% + 8px)`}
-              />
-            )}
           </div>
         ))
       }
@@ -88,16 +81,17 @@ const uid = `vs-${items.map((it) => it.id).join('-')}`;
   .list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
+    max-width: 340px;
   }
   .option {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
     width: 100%;
-    padding: 14px 16px;
+    padding: 8px 12px;
     border: 1px solid transparent;
-    border-radius: 14px;
+    border-radius: 10px;
     background: transparent;
     color: rgb(255 255 255 / 0.6);
     font: inherit;
@@ -123,22 +117,22 @@ const uid = `vs-${items.map((it) => it.id).join('-')}`;
   .name {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     font-weight: 600;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
   }
   .text {
-    font-size: 0.8125rem;
-    line-height: 1.45;
+    font-size: 0.75rem;
+    line-height: 1.4;
     opacity: 0.85;
   }
   .tag {
-    padding: 2px 8px;
+    padding: 1px 6px;
     border-radius: 999px;
     background: rgb(0 0 0 / 0.25);
     font-style: normal;
     font-weight: 500;
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     letter-spacing: 0.02em;
   }
 
@@ -166,23 +160,6 @@ const uid = `vs-${items.map((it) => it.id).join('-')}`;
     filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.3));
     user-select: none;
   }
-  /* Outline around what changed, drawn in after the screen fades in */
-  .box {
-    position: absolute;
-    border: 2px solid #3d8bff;
-    border-radius: 10px;
-    box-shadow: 0 0 0 4px rgb(61 139 255 / 0.18);
-    opacity: 0;
-    transform: scale(1.06);
-    transition:
-      opacity 300ms var(--ease-out),
-      transform 300ms var(--ease-out);
-  }
-  .screen.on .box {
-    opacity: 1;
-    transform: none;
-    transition-delay: 300ms;
-  }
 
   .caption {
     display: none;
@@ -203,20 +180,30 @@ const uid = `vs-${items.map((it) => it.id).join('-')}`;
       gap: 20px;
       padding: 20px 16px 28px;
     }
+    /* A small segmented bar */
     .list {
       flex-direction: row;
-      gap: 6px;
+      gap: 2px;
+      max-width: none;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgb(0 0 0 / 0.2);
     }
     .option {
       flex: 1;
       align-items: center;
-      padding: 8px 6px;
+      min-width: 0;
+      padding: 6px 2px;
+      border-radius: 999px;
       text-align: center;
     }
     .name {
-      flex-direction: column;
-      gap: 4px;
-      font-size: 0.75rem;
+      font-size: 0.625rem;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .tag {
+      display: none;
     }
     /* Only the chosen version's text, under the phone */
     .text {
@@ -231,7 +218,6 @@ const uid = `vs-${items.map((it) => it.id).join('-')}`;
   }
   @media (prefers-reduced-motion: reduce) {
     .screen,
-    .box,
     .option {
       transition: none;
     }
