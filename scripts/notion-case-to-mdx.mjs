@@ -43,6 +43,7 @@
       Images at public/images/<slug>/<id>.webp.
       Add a line "style: slider" to show it as a drag-to-compare slider instead.
       With one before and one after screen, both sit in the same spot so the line wipes one into the other.
+      "style: slider wide" compares one wide image per side (e.g. a row of desktop screens).
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
   - Headings, paragraphs, lists, bold            -> plain Markdown
@@ -210,14 +211,16 @@ for (let i = 0; i < lines.length; i++) {
       // Before/after flows of phone screens: "before: id: label", "before: id: label | gone", "after: id: label"
       const before = [];
       const after = [];
-      const slider = inner.some((l) => /^style:\s*slider$/i.test(l.trim()));
+      const slider = inner.some((l) => /^style:\s*slider\b/i.test(l.trim()));
+      // "style: slider wide": one wide image per side (like a row of desktop screens) instead of phones
+      const wide = inner.some((l) => /^style:\s*slider\s+wide$/i.test(l.trim()));
       for (const l of inner.filter((l) => l && !/^style:/i.test(l.trim()))) {
         const [side, id, ...rest] = unescape(l).split(':');
         const [label, flag] = rest.join(':').split('|').map((t) => t.trim());
         const screen = { id: id.trim(), label, src: `/images/${slug}/${id.trim()}.webp`, ...(flag === 'gone' ? { gone: true } : {}) };
         (side.trim() === 'after' ? after : before).push(screen);
       }
-      blocks.push({ type: 'block', md: `<${slider ? 'CompareSlider' : 'FlowSwap'} before={${JSON.stringify(before)}} after={${JSON.stringify(after)}} />` });
+      blocks.push({ type: 'block', md: `<${slider ? 'CompareSlider' : 'FlowSwap'}${wide ? ' wide' : ''} before={${JSON.stringify(before)}} after={${JSON.stringify(after)}} />` });
       continue;
     }
     if (line.includes('🔀')) {

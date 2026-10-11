@@ -14,13 +14,14 @@ interface Screen {
 interface Props {
   before: Screen[];
   after: Screen[];
+  wide?: boolean; // one wide image per side (a row of desktop screens) instead of phones
 }
-const { before, after } = Astro.props;
+const { before, after, wide = false } = Astro.props;
 // One screen on each side: both sit in the same spot, full phone frames included in the images
 const single = before.length === 1 && after.length === 1;
 ---
 
-<figure class:list={['compare', { single }]} data-compare style="--pos: 50%">
+<figure class:list={['compare', { single, wide }]} data-compare style="--pos: 50%">
   <div class="stage">
     <div class="layer after">
       <ol class="set" aria-label={`After: ${after.length} steps`}>
@@ -32,7 +33,7 @@ const single = before.length === 1 && after.length === 1;
           ))
         }
       </ol>
-      <span class="tag tag-after">After {!single && <em>{after.length} steps</em>}</span>
+      <span class="tag tag-after">After {wide ? <em>{after[0]?.label}</em> : !single && <em>{after.length} steps</em>}</span>
     </div>
     <div class="layer before">
       <ol class="set" aria-label={`Before: ${before.length} steps`}>
@@ -44,7 +45,7 @@ const single = before.length === 1 && after.length === 1;
           ))
         }
       </ol>
-      <span class="tag tag-before">Before {!single && <em>{before.length} steps</em>}</span>
+      <span class="tag tag-before">Before {wide ? <em>{before[0]?.label}</em> : !single && <em>{before.length} steps</em>}</span>
     </div>
     <div class="divider" aria-hidden="true">
       <span class="knob">
@@ -259,6 +260,23 @@ const single = before.length === 1 && after.length === 1;
     filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.3));
   }
 
+  /* Wide: one wide image per side, kept whole */
+  figure.compare.wide .layer {
+    aspect-ratio: 12 / 5;
+    padding: 40px 3% 0;
+  }
+  figure.compare.wide .layer .phone {
+    width: 100%;
+  }
+  figure.compare.wide .layer .phone img {
+    height: auto;
+    aspect-ratio: auto;
+    object-fit: contain;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
   @media (max-width: 600px) {
     .layer {
       aspect-ratio: auto;
@@ -298,6 +316,17 @@ const single = before.length === 1 && after.length === 1;
     }
     figure.compare.single .layer .phone {
       width: 64%;
+    }
+    figure.compare.wide .layer {
+      aspect-ratio: auto;
+      padding: 52px 8px 20px;
+    }
+    figure.compare.wide .layer .phone {
+      width: 100%;
+    }
+    /* Short tags on small screens */
+    figure.compare.wide .tag em {
+      display: none;
     }
   }
 </style>
