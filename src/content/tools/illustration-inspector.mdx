@@ -25,21 +25,17 @@ Our H2 retrospective showed this wasn't just one or two people. I surveyed the d
 
 ## How I built it
 
-1. **Foundation.** Define the need, lock the features, explore the UI.
-2. **Logic.** Turn the rules into code, test on real frames, cut what wasn't reliable.
-3. **Ship.** Add dark mode and Japanese from team feedback, then roll out.
+I built it in three steps: lock the features, turn the rules into code, then ship to the team with dark mode and Japanese.
 
-**Start from the need.** Designers needed to check a frame without opening a separate doc, and fix it without leaving the canvas. Only a Figma plugin worked inside the file they already had open.
+**Features before visuals.** I locked all six checks before designing any UI, so the design stayed stable.
 
-**Features before visuals.** I locked all six checks before designing any UI, so the design didn't change every time a check was added or cut.
+**Rules into math.** The guidelines say "keep proportions", not how to detect stretching. I worked frame by frame with AI to turn rules like that into geometry.
 
-**Turning rules into math.** The guidelines say "keep proportions" but not how to detect stretching. I worked frame by frame with AI to turn that into geometry. One stretched head that slipped through showed us where the rule was too loose.
-
-**Five directions, then one.** AI generated five UI directions. Two stayed close to PayPay's product style, and three were bolder. I tried all five against the real empty state and results, then combined the best parts. That's how the near-black button and the mascot empty state made it in.
+**Five directions, then one.** AI generated five UI directions. I tested them against real results and combined the best parts.
 
 <Media id="directions" label="Exploring UI directions for the results page" src="/images/illustration-inspector/directions.webp" />
 
-**Knowing what not to build.** Early versions also checked things like halation and size presets. I cut them, since they depend on context the plugin can't see. A tool that flags false problems loses trust fast. **Six reliable checks beat ten noisy ones.**
+**Knowing what not to build.** I cut checks that needed context the plugin can't see. **Six reliable checks beat ten noisy ones.**
 
 ## What it does
 
@@ -56,8 +52,6 @@ I'm not a trained engineer. AI wrote the code. I made the product calls: what co
 No formal metrics yet, since it's still early. But the whole design team uses it now, not just me. One shared standard replaced uneven manual checks, and designers get feedback on exact layers instead of vague "off-brand" comments.
 
 It also freed up the illustration team. They used to run a full rules check before they could even discuss whether an illustration said the right thing. Now that part is mostly done, so they spend their time on intent.
-
-<Media id="published" label="Published to the PayPay design team in Figma" />
 
 ## What's next
 
