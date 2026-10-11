@@ -2,9 +2,8 @@
 /*
   "What people I've worked with say": short quotes in the same list style as Work and Tools.
   Text lives in copy.json (testimonials.<n>.quote / .by), synced with Notion.
-  A blank line in a quote starts a new paragraph. {PAYPAY} / {CAROUSELL} / {AAPD} in .by become company links.
+  A blank line in a quote starts a new paragraph.
 */
-import CopyWithLinks from './CopyWithLinks.astro';
 import { t, tOpt, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -37,7 +36,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
                 ))}
               </blockquote>
               <figcaption>
-                <CopyWithLinks lang={lang} text={it.by} />
+                {it.by}
               </figcaption>
             </figure>
           </li>

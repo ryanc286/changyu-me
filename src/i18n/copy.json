@@ -276,27 +276,27 @@
     "key": "testimonials.1.quote",
     "section": "首頁 · 推薦",
     "note": "Kazuya 的推薦語，空一行就是分段",
-    "en": "Ryan was a key team member during my time at PayPay, where he consistently delivered high-quality designs across multiple projects. As a team member, I saw how well he prioritized tasks, communicated with stakeholders, and ensured smooth progress.\n\nHe also contributed to Design Ops by improving QA processes and accessibility. His professionalism and proactive approach greatly enhanced our team’s effectiveness and design quality.",
-    "zh-tw": "Ryan 是我在 PayPay 時團隊裡的關鍵成員，在多個專案中持續交出高品質的設計。和他共事時，我看到他很會安排優先順序、和利害關係人溝通，並讓專案順利推進。\n\n他也投入 Design Ops，改善 QA 流程和無障礙設計。他的專業和主動，大幅提升了團隊的效率和設計品質。"
+    "en": "Ryan was a key team member during my time at PayPay, where he consistently delivered high-quality designs across multiple projects. He also contributed to Design Ops by improving QA processes and accessibility.",
+    "zh-tw": "Ryan 是我在 PayPay 時團隊裡的關鍵成員，在多個專案中持續交出高品質的設計。他也投入 Design Ops，改善 QA 流程和無障礙設計。"
   },
   {
     "key": "testimonials.1.by",
     "section": "首頁 · 推薦",
-    "note": "Kazuya 的名字和職稱。{PAYPAY}、{CAROUSELL} 是連結記號",
-    "en": "Kazuya, Design Manager · {PAYPAY}",
-    "zh-tw": "Kazuya，設計經理 · {PAYPAY}"
+    "note": "Kazuya 的名字和職稱",
+    "en": "Kazuya, Design Manager · PayPay",
+    "zh-tw": "Kazuya，設計經理 · PayPay"
   },
   {
     "key": "testimonials.2.quote",
     "section": "首頁 · 推薦",
     "note": "Simon Lin 的推薦語，空一行就是分段",
-    "en": "Ryan is my team member at AAPD, where we teach Figma and UI design. He began as a teaching assistant and quickly advanced to an instructor role, demonstrating strong learning ability, attention to detail, and clear communication. Now, he independently leads projects and works seamlessly with stakeholders, fostering a positive and efficient team dynamic. He’s a reliable and valued collaborator.",
-    "zh-tw": "Ryan 是我在 AAPD 的團隊夥伴，我們一起教 Figma 和 UI 設計。他從助教做起，很快就成為講師，展現出很強的學習能力、對細節的用心和清楚的溝通。現在他能獨立帶專案，和各方合作順暢，也讓團隊氣氛正向又有效率。他是可靠、也很受重視的夥伴。"
+    "en": "Ryan is my team member at AAPD, where we teach Figma and UI design. He began as a teaching assistant and quickly advanced to an instructor role, demonstrating strong learning ability, attention to detail, and clear communication.",
+    "zh-tw": "Ryan 是我在 AAPD 的團隊夥伴，我們一起教 Figma 和 UI 設計。他從助教做起，很快就成為講師，展現出很強的學習能力、對細節的用心和清楚的溝通。"
   },
   {
     "key": "testimonials.2.by",
     "section": "首頁 · 推薦",
-    "note": "Simon Lin 的名字和職稱。{PAYPAY}、{CAROUSELL} 是連結記號",
+    "note": "Simon Lin 的名字和職稱",
     "en": "Simon Lin, Principal Product Designer · Canva",
     "zh-tw": "Simon Lin，首席產品設計師 · Canva"
   },
@@ -304,43 +304,43 @@
     "key": "testimonials.3.quote",
     "section": "首頁 · 推薦",
     "note": "Keith Oh 的推薦語，空一行就是分段",
-    "en": "Ryan was a valued team member who independently led several challenging projects with unclear requirements. He brought clarity through thorough research and tackled problems with patience and a methodical approach. His strong communication skills and collaboration with engineers ensured smooth progress and a positive team dynamic. Yu’s professionalism and reliability made him a trusted contributor.",
-    "zh-tw": "Ryan 是很受重視的團隊成員，獨立帶領了好幾個需求不明確、很有挑戰的專案。他透過扎實的研究釐清方向，用耐心和有條理的方式解決問題。他溝通能力很強，和工程師合作緊密，讓專案順利推進，團隊氣氛也很正向。他的專業和可靠，讓他成為大家信任的夥伴。"
+    "en": "Ryan was a valued team member who independently led several challenging projects with unclear requirements. He brought clarity through thorough research and tackled problems with patience and a methodical approach.",
+    "zh-tw": "Ryan 是很受重視的團隊成員，獨立帶領了好幾個需求不明確、很有挑戰的專案。他透過扎實的研究釐清方向，用耐心和有條理的方式解決問題。"
   },
   {
     "key": "testimonials.3.by",
     "section": "首頁 · 推薦",
-    "note": "Keith Oh 的名字和職稱。{PAYPAY}、{CAROUSELL} 是連結記號",
-    "en": "Keith Oh, Head of Product Design · {CAROUSELL}",
-    "zh-tw": "Keith Oh，產品設計負責人 · {CAROUSELL}"
+    "note": "Keith Oh 的名字和職稱",
+    "en": "Keith Oh, Head of Product Design · Carousell",
+    "zh-tw": "Keith Oh，產品設計負責人 · Carousell"
   },
   {
     "key": "testimonials.4.quote",
     "section": "首頁 · 推薦",
     "note": "Belissa 的推薦語，空一行就是分段",
-    "en": "Ryan was a former colleague at Carousell, and I was always impressed by his ability to balance user needs with business goals to deliver practical, thoughtful designs. He encouraged collaboration through pair design sessions and brought a positive, solution-focused mindset to the team. His drive for growth, openness to feedback, and creative energy made him an invaluable teammate.",
-    "zh-tw": "Ryan 是我在 Carousell 的前同事，他總能在使用者需求和商業目標之間取得平衡，做出實用又周到的設計，這點一直讓我很佩服。他會用 pair design 促進合作，也為團隊帶來正向、專注解決問題的態度。他求進步的動力、對回饋的開放和創意，讓他成為不可或缺的隊友。"
+    "en": "Ryan was a former colleague at Carousell, and I was always impressed by his ability to balance user needs with business goals to deliver practical, thoughtful designs.",
+    "zh-tw": "Ryan 是我在 Carousell 的前同事，他總能在使用者需求和商業目標之間取得平衡，做出實用又周到的設計，這點一直讓我很佩服。"
   },
   {
     "key": "testimonials.4.by",
     "section": "首頁 · 推薦",
-    "note": "Belissa 的名字和職稱。{PAYPAY}、{CAROUSELL} 是連結記號",
-    "en": "Belissa, Senior Product Designer · {CAROUSELL}",
-    "zh-tw": "Belissa，資深產品設計師 · {CAROUSELL}"
+    "note": "Belissa 的名字和職稱",
+    "en": "Belissa, Senior Product Designer · Carousell",
+    "zh-tw": "Belissa，資深產品設計師 · Carousell"
   },
   {
     "key": "testimonials.5.quote",
     "section": "首頁 · 推薦",
     "note": "Tom Lee 的推薦語，空一行就是分段",
-    "en": "Ryan is a product designer I worked with at PayPay on several QA projects. He showed great professionalism and attention to detail: from pixel checks to process improvements. When design and development misaligned, he calmly found practical solutions with the team. His suggestions for bug fixes and optimizations boosted both product quality and team efficiency. A reliable teammate, Yu consistently raises the standard of any design outcome.",
-    "zh-tw": "Ryan 是我在 PayPay 一起做過好幾個 QA 專案的產品設計師。他非常專業、注重細節，從像素檢查到流程改善都是。當設計和開發對不上時，他會冷靜地和團隊一起找出務實的解法。他對修 bug 和優化的建議，提升了產品品質，也讓團隊更有效率。他是可靠的隊友，總能把設計成果的水準再往上拉。"
+    "en": "When design and development misaligned, he calmly found practical solutions with the team. His suggestions for bug fixes and optimizations boosted both product quality and team efficiency.",
+    "zh-tw": "當設計和開發對不上時，他會冷靜地和團隊一起找出務實的解法。他對修 bug 和優化的建議，提升了產品品質，也讓團隊更有效率。"
   },
   {
     "key": "testimonials.5.by",
     "section": "首頁 · 推薦",
-    "note": "Tom Lee 的名字和職稱。{PAYPAY}、{CAROUSELL} 是連結記號",
-    "en": "Tom Lee, QA Engineer Manager · {PAYPAY}",
-    "zh-tw": "Tom Lee，QA 工程經理 · {PAYPAY}"
+    "note": "Tom Lee 的名字和職稱",
+    "en": "Tom Lee, QA Engineer Manager · PayPay",
+    "zh-tw": "Tom Lee，QA 工程經理 · PayPay"
   },
   {
     "key": "org.paypay",
