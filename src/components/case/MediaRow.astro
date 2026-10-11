@@ -51,19 +51,32 @@ const hasText = items.some((m) => m.title || m.text);
   .item p {
     margin: 16px 0 0;
   }
-  /* Split: one item per row, image left and text right */
+  /* Split: one card per row, on the gradient: image left, text right */
   .media-row.split {
     grid-template-columns: 1fr;
-    row-gap: 32px;
+    row-gap: 16px;
   }
   .media-row.split .item {
     display: grid;
     grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
     align-items: center;
-    gap: 40px;
+    gap: 8px;
+    padding-right: 40px;
+    border-radius: var(--radius);
+    background:
+      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
+      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
+  }
+  /* The card carries the gradient, so the image box inside is clear */
+  .media-row.split .item :global(.video-stage) {
+    background: none;
   }
   .media-row.split .item p {
     margin: 0;
+    color: rgb(255 255 255 / 0.8);
+  }
+  .media-row.split .item strong {
+    color: #fff;
   }
   @media (max-width: 600px) {
     .media-row {
@@ -72,9 +85,10 @@ const hasText = items.some((m) => m.title || m.text);
     .media-row.split .item {
       grid-template-columns: 1fr;
       gap: 0;
+      padding: 0 0 24px;
     }
     .media-row.split .item p {
-      margin: 16px 0 0;
+      margin: 4px 24px 0;
     }
   }
 </style>
