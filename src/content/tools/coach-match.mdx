@@ -29,7 +29,9 @@ I gave Claude Code the old tool and the context. The first version worked, but i
 
 ## Picking a simple stack
 
-We looked at Firebase, but nobody on the team could maintain it. I chose Google Sheets with Apps Script instead. Everyone already knows it, and anyone can update coach info without touching code. The site runs on GitHub Pages: free, light and easy for any team member to manage.
+The team needed to keep it running without me. Firebase was an option, but no one on the team knew how to maintain it. So I kept it simple: the coach list lives in a Google Sheet, and a short Apps Script sends it to the quiz. To add or update a coach, you just edit the sheet. The site itself is hosted on GitHub Pages, which is free and easy to manage.
+
+<MediaRow items={[{"id": "stack-sheets", "label": "The coach list in Google Sheets, read by Apps Script", "src": "/images/coach-match/stack-sheets.webp"}, {"id": "stack-github", "label": "The quiz hosted on GitHub Pages", "src": "/images/coach-match/stack-github.webp"}]} />
 
 ## Testing and launch
 
