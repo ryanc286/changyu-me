@@ -59,8 +59,8 @@
     "key": "work.credit-card-sunset.result",
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的成果數字，留空就不顯示",
-    "en": "[X]% of card payments moved to vouchers",
-    "zh-tw": "[X]% 的信用卡付款轉為使用 voucher"
+    "en": "About 30% of card users moved to vouchers",
+    "zh-tw": "約 30% 的信用卡使用者改用 voucher"
   },
   {
     "key": "work.top-up-ab-test.title",
@@ -122,8 +122,8 @@
     "key": "work.sign-up-flow.summary",
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的一句話",
-    "en": "Research with buyers, sellers, and merchants",
-    "zh-tw": "訪談買家、賣家和商家"
+    "en": "Making sign-up shorter, so more new users finish and stay",
+    "zh-tw": "縮短註冊流程，讓更多新使用者完成註冊、留下來"
   },
   {
     "key": "work.sign-up-flow.result",
@@ -143,8 +143,8 @@
     "key": "work.notification-center.summary",
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的一句話",
-    "en": "Card sorting and concept tests",
-    "zh-tw": "卡片分類與概念測試"
+    "en": "Putting order updates first, so people know what to do next",
+    "zh-tw": "把訂單更新放在最前面，讓使用者知道下一步該做什麼"
   },
   {
     "key": "work.notification-center.result",
