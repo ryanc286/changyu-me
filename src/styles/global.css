@@ -32,6 +32,11 @@ h2,
 h3 {
   font-family: var(--font-heading);
 }
+/* Avoid a single word left alone on the last line */
+p,
+li {
+  text-wrap: pretty;
+}
 
 a {
   color: inherit;
