@@ -17,17 +17,17 @@ PayPay let people link an outside credit card and pay through the app. Every one
 
 ## Why people linked a card
 
-Before designing anything, I talked to users who paid with a linked card. Most of them were not loyal PayPay users. They used PayPay because it is accepted almost everywhere in Japan, and their card gave them airline miles and rewards. So we were not just removing a feature. We were removing the main reason these users opened the app. So the question changed from "how do we remove card payments?" to "how do people keep their rewards without the card network?"
+I started by talking to users who paid with a linked card. Most weren't loyal to PayPay. They used it because it's accepted almost everywhere in Japan, while their card earned them miles and rewards. Removing card payments meant removing their reason to open the app. So the real question became: how do people keep their rewards without the card network?
 
 ## When the obvious answer got blocked
 
-The obvious fix was a top-up: charge the card, load the balance, pay from that. But legal flagged it. A new stored balance counts as e-money in Japan, and that meant a new license we could not get in time.
+The obvious fix was a top-up: charge the card, then pay from the balance. But legal flagged it. In Japan, a new stored balance counts as e-money, which needed a license we couldn't get in time.
 
-PayPay already had vouchers, and vouchers stay outside those rules because they can't be transferred. So I proposed Credit Card Vouchers: buy a voucher with your card, keep your rewards, and pay with PayPay as usual. Legal needed no new license, business kept its users, and engineering reused the voucher system. It was approved quickly.
+Vouchers don't have that problem, because they can't be transferred. So I proposed Credit Card Vouchers: buy a voucher with your card, keep your rewards, and pay as usual. No new license, no lost users, and engineering could reuse PayPay's existing voucher system. It was approved quickly.
 
 ## A softer cutoff
 
-Engineering wanted a hard cutoff on a set date. But support data showed that surprise errors at checkout make people retry, lose trust, and feel embarrassed at the register. So I proposed a transition instead: a notice before the date, then a guided first voucher purchase. Engineering agreed.
+Engineering wanted to switch it off on a set date. But support data showed that surprise errors at checkout make people retry, lose trust, and feel embarrassed at the register. So I proposed a gentler path: a notice before the date, then a guided first voucher purchase. Engineering agreed.
 
 ## Design
 
