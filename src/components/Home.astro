@@ -13,14 +13,16 @@ const { lang } = Astro.props;
 <Base lang={lang} page={lang === 'en' ? 'home' : 'home-' + lang} alternates={{ en: '/', 'zh-tw': '/zh-tw' }}>
   <HomeContent lang={lang} />
   {
-    lang === 'en' && (
-      <script is:inline>
+    (
+      <script is:inline define:vars={{ lang }}>
         /* Case studies show this page behind them at the same scroll position.
            Remember where we are, and come back to it after closing a case. */
         (() => {
           const save = () => {
             try { sessionStorage.setItem('homeScroll', String(Math.round(scrollY))); } catch {}
           };
+          // Case studies show this language's homepage behind them, and close back to it
+          try { sessionStorage.setItem('homeLang', lang); } catch {}
           addEventListener('scroll', save, { passive: true });
           addEventListener('pagehide', save);
           try {

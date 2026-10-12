@@ -64,7 +64,10 @@ const hasOtherLang = altEntries.some(([l]) => l !== lang);
         window.__isCasePath = (path) => kind(path) === 'case';
         const html = document.documentElement;
         try {
-          if (html.dataset.page === 'case') html.style.setProperty('--home-y', sessionStorage.getItem('homeScroll') || '0');
+          if (html.dataset.page === 'case') {
+            html.style.setProperty('--home-y', sessionStorage.getItem('homeScroll') || '0');
+            html.dataset.homeLang = sessionStorage.getItem('homeLang') === 'zh-tw' ? 'zh-tw' : 'en';
+          }
         } catch {}
         addEventListener('pagereveal', (e) => {
           if (!e.viewTransition) return;
@@ -74,7 +77,7 @@ const hasOtherLang = altEntries.some(([l]) => l !== lang);
           } catch {}
           if (!from) return;
           const pair = [kind(new URL(from).pathname), html.dataset.page];
-          if (pair.includes('case') && pair.every((k) => k === 'case' || k === 'home')) {
+          if (pair.includes('case') && pair.every((k) => k === 'case' || k === 'home' || k === 'home-zh-tw')) {
             html.classList.add('vt-case');
             e.viewTransition.finished.finally(() => html.classList.remove('vt-case'));
           }

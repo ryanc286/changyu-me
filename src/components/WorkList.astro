@@ -30,7 +30,9 @@ const groups = [...companies]
               const zh = lang === 'zh-tw';
               const title = t(lang, `work.${id}.title`);
               const summary = t(lang, `work.${id}.summary`);
-              const result = tOpt(lang, `work.${id}.result`);
+              // A result still waiting for its number ("[X]%") stays hidden until it's filled in
+              const raw = tOpt(lang, `work.${id}.result`);
+              const result = /\[x\]/i.test(raw) ? '' : raw;
               return (
                 <li>
                   <a

@@ -29,14 +29,18 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
 ---
 
 <Base title={`${title} · Chang Yu`} description={description ?? subtitle} page="case">
+  {/* The homepage you came from (English or Chinese) shows behind the card */}
   <div class="backdrop" aria-hidden="true" inert>
-    <div class="backdrop-inner">
+    <div class="backdrop-inner" data-lang="en">
       <HomeContent lang="en" />
+    </div>
+    <div class="backdrop-inner" data-lang="zh-tw" lang="zh-Hant-TW">
+      <HomeContent lang="zh-tw" />
     </div>
   </div>
 
   <div class="layer">
-    <a class="dismiss" href="/" aria-label="Close and go back to home"></a>
+    <a class="dismiss" href="/" data-home aria-label="Close and go back to home"></a>
 
     <article class="sheet">
       <div class="grab" aria-hidden="true"><span></span></div>
@@ -45,7 +49,7 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
         <div class="case-grid">
           <aside class="side">
             <header class="head">
-              <a href="/" class:list={['back', { 'no-icon': !icon }]} aria-label="Back to home">
+              <a href="/" data-home class:list={['back', { 'no-icon': !icon }]} aria-label="Back to home">
                 {icon && <img class="face face-icon" src={icon} alt="" width="32" height="32" />}
                 <span class="face face-arrow" aria-hidden="true">
                   <svg viewBox="0 0 16 16" width="16" height="16"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -95,6 +99,10 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
 
 <script>
   const scroller = document.querySelector<HTMLElement>('.scroller')!;
+
+  // Close back to the homepage you came from
+  const home = document.documentElement.dataset.homeLang === 'zh-tw' ? '/zh-tw' : '/';
+  document.querySelectorAll<HTMLAnchorElement>('a[data-home]').forEach((a) => (a.href = home));
   const card = document.querySelector<HTMLElement>('.sheet')!;
 
   // Highlight the section in view in the left nav
@@ -124,7 +132,7 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
 
   // Esc closes the case
   addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !e.defaultPrevented) location.href = '/';
+    if (e.key === 'Escape' && !e.defaultPrevented) location.href = home;
   });
 
   // Drag the handle down to close
@@ -140,7 +148,7 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
     removeEventListener('pointerup', onUp);
     removeEventListener('pointercancel', onUp);
     card.style.transition = '';
-    if (dy > 100) location.href = '/';
+    if (dy > 100) location.href = home;
     else card.style.transform = '';
   };
   grab.addEventListener('pointerdown', (e) => {
@@ -165,6 +173,13 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
     position: fixed;
     inset: 0;
     overflow: hidden;
+  }
+  .backdrop-inner[data-lang='zh-tw'],
+  :global(html[data-home-lang='zh-tw']) .backdrop-inner[data-lang='en'] {
+    display: none;
+  }
+  :global(html[data-home-lang='zh-tw']) .backdrop-inner[data-lang='zh-tw'] {
+    display: block;
   }
   .backdrop-inner {
     transform: translateY(calc(var(--home-y, 0) * -1px));
