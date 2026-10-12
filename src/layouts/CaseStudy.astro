@@ -479,10 +479,21 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
 
   /* Phones: full width, square bottom, a bit more room on top for the controls */
   @media (max-width: 767px) {
+    /* A dark scrim over the homepage, so the card clearly sits on top */
+    .dismiss {
+      background: rgb(0 0 0 / 0.32);
+    }
+    :global(:root[data-theme='dark']) .dismiss {
+      background: rgb(0 0 0 / 0.55);
+    }
     .sheet {
       --top: 56px;
+      --card-shadow: 0 -6px 28px rgb(0 0 0 / 0.18);
       inset: var(--top) 0 0;
       border-radius: 24px 24px 0 0;
+    }
+    :global(:root[data-theme='dark']) .sheet {
+      --card-shadow: 0 -6px 28px rgb(0 0 0 / 0.6);
     }
     .grab {
       background: linear-gradient(var(--card-bg) 70%, transparent);

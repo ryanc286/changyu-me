@@ -17,8 +17,8 @@
     "key": "home.previously",
     "section": "首頁 · 開頭",
     "note": "標題下第二段。{PAYPAY}、{CAROUSELL} 會變成有 hover 卡片的連結，請保留這兩個記號",
-    "en": "At {PAYPAY} in Tokyo, I design how 65M+ users pay and manage their money, within strict financial rules. Previously, I worked on growth and engagement at {CAROUSELL} across Taiwan and Singapore, where I rebuilt sign-up and the notification center.",
-    "zh-tw": "在東京的 {PAYPAY}，我在嚴格的金融法規下，為超過 6,500 萬名使用者設計付款和理財的體驗。在這之前，我在 {CAROUSELL} 負責成長和使用者互動，橫跨台灣和新加坡市場，重新設計了註冊流程和通知中心。"
+    "en": "At {PAYPAY} in Tokyo, I design how 65M+ users pay and manage their money, and keep it easy even when the rules behind it are not. Previously, I worked on growth and engagement at {CAROUSELL} across Taiwan and Singapore, where I rebuilt sign-up and the notification center.",
+    "zh-tw": "在東京的 {PAYPAY}，我為超過 6,500 萬名使用者設計付款和理財的體驗，讓它用起來輕鬆，就算背後的規則一點也不簡單。在這之前，我在 {CAROUSELL} 負責成長和使用者互動，橫跨台灣和新加坡市場，重新設計了註冊流程和通知中心。"
   },
   {
     "key": "home.outside",
