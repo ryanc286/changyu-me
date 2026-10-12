@@ -3,15 +3,15 @@
     "key": "home.title",
     "section": "首頁 · 開頭",
     "note": "首頁最上方的大標",
-    "en": "Hi, I'm Yu, a designer who makes complex things clear.",
-    "zh-tw": "嗨，我是 Yu，擅長把複雜的事情變清楚的產品設計師。"
+    "en": "Hi, I'm Yu. I design products that make complex things feel simple.",
+    "zh-tw": "嗨，我是 Yu。我設計產品，讓複雜的事情用起來很簡單。"
   },
   {
     "key": "home.intro",
     "section": "首頁 · 開頭",
     "note": "標題下第一段。{PAYPAY} 會變成有 hover 卡片的連結，請保留這個記號",
-    "en": "I care about systems thinking, asking the right questions, and turning messy problems into products people trust, using quick AI prototypes to test and iterate. At {PAYPAY}, I make paying and managing money simple for 65M+ users, even when the rules behind it are not.",
-    "zh-tw": "我重視系統思考、問對問題，也擅長把複雜混亂的問題，做成讓人信任的產品，過程中常用 AI 快速做原型來驗證和迭代。在 {PAYPAY}，我讓超過 6,500 萬名使用者付款和理財都很簡單，就算背後的規則一點也不簡單。"
+    "en": "I care about systems thinking and asking the right questions. I use quick AI prototypes to test ideas early, and turn messy problems into products people trust. At {PAYPAY}, I make paying and managing money simple for 65M+ users, even when the rules behind it are not.",
+    "zh-tw": "我重視系統思考，也重視問對問題。我常用 AI 快速做原型，及早驗證想法，把複雜混亂的問題做成讓人信任的產品。在 {PAYPAY}，我讓超過 6,500 萬名使用者付款和理財都很簡單，就算背後的規則一點也不簡單。"
   },
   {
     "key": "home.previously",
