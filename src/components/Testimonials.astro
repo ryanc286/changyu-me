@@ -71,16 +71,34 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
 }
 
 <style>
+  /* A sideways row: four and a half people show, the half hints there's more */
   .people {
+    --gap: 8px;
     list-style: none;
     margin: 0;
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 8px;
+    display: flex;
+    gap: var(--gap);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .people::-webkit-scrollbar {
+    display: none;
   }
   .people li {
+    flex: 0 0 calc((100% - 4 * var(--gap)) / 4.5);
     margin: 0;
+    scroll-snap-align: start;
+  }
+  /* Dragging with a mouse */
+  .people.dragging {
+    scroll-snap-type: none;
+    cursor: grabbing;
+  }
+  .people.dragging .person {
+    pointer-events: none;
   }
   .person {
     display: flex;
@@ -173,18 +191,10 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
   /* Phones and touch: a sideways row, tap to read */
   @media (hover: none), (max-width: 600px) {
     .people {
-      display: flex;
-      gap: 4px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-    }
-    .people::-webkit-scrollbar {
-      display: none;
+      --gap: 4px;
     }
     .people li {
-      flex: 0 0 112px;
-      scroll-snap-align: start;
+      flex-basis: 112px;
     }
     .person {
       cursor: pointer;
@@ -229,6 +239,38 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       }),
     );
     if (!canHover) return;
+
+    // Mouse users can drag the row sideways (trackpads scroll it natively)
+    const row = section.querySelector<HTMLElement>('.people')!;
+    let downX = 0, startLeft = 0, moved = false;
+    row.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      downX = e.clientX;
+      startLeft = row.scrollLeft;
+      moved = false;
+      const move = (ev: PointerEvent) => {
+        const dx = ev.clientX - downX;
+        if (!moved && Math.abs(dx) < 4) return;
+        if (!moved) {
+          moved = true;
+          row.classList.add('dragging');
+          hide();
+        }
+        row.scrollLeft = startLeft - dx;
+      };
+      const up = () => {
+        removeEventListener('pointermove', move);
+        removeEventListener('pointerup', up);
+        if (!moved) return;
+        // Let it snap to the nearest person again
+        const left = row.scrollLeft;
+        row.classList.remove('dragging');
+        row.scrollLeft = left;
+      };
+      addEventListener('pointermove', move);
+      addEventListener('pointerup', up);
+    });
+    row.addEventListener('scroll', () => hide(), { passive: true });
 
     // Hover (desktop): a card that follows the cursor, flipping near the window edges
     const OFFSET = 20;
