@@ -18,6 +18,7 @@ import DetailList from '../components/case/DetailList.astro';
 import BlockBuilder from '../components/case/BlockBuilder.astro';
 import IllustratedList from '../components/case/IllustratedList.astro';
 import { t } from '../i18n/ui';
+import { companies } from '../data/companies';
 
 export async function getStaticPaths() {
   const work = (await getCollection('work', ({ data }) => !data.draft)).sort(
@@ -34,10 +35,14 @@ const { Content, headings } = await render(entry);
 const d = entry.data;
 const title = t('en', `work.${entry.id}.title`);
 const summary = t('en', `work.${entry.id}.summary`);
+// The company's app icon sits top left; hover turns it into the back arrow
+const company = companies.find((c) => c.name === d.company);
+const icon = company ? `/images/logos/${company.logo}-icon.png` : undefined;
 ---
 
 <CaseStudy
   title={title}
+  icon={icon}
   subtitle={d.subtitle ?? summary}
   description={summary}
   headings={headings.filter((h) => h.depth === 2)}
