@@ -113,7 +113,8 @@ const hasOtherLang = altEntries.some(([l]) => l !== lang);
   </head>
   <body>
     <div class="top-controls">
-      {hasOtherLang && <LangSwitch lang={lang} alternates={alternates} />}
+      {/* The language switch lives on the homepage only; case pages keep their hreflang links */}
+      {hasOtherLang && page !== 'case' && <LangSwitch lang={lang} alternates={alternates} />}
       <ThemeToggle lang={lang} />
     </div>
     <slot />
