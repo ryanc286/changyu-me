@@ -6,6 +6,36 @@
       "source": "/credit-card-voucher",
       "destination": "/credit-card-sunset",
       "permanent": true
+    },
+    {
+      "source": "/top-up-screen-abtesting",
+      "destination": "/top-up-ab-test",
+      "permanent": true
+    },
+    {
+      "source": "/brand-new-notification-center",
+      "destination": "/notification-center",
+      "permanent": true
+    },
+    {
+      "source": "/sign-up-flow-overhaul",
+      "destination": "/sign-up-flow",
+      "permanent": true
+    },
+    {
+      "source": "/illustration-inspector-figma-plug-in",
+      "destination": "/tools/illustration-inspector",
+      "permanent": true
+    },
+    {
+      "source": "/quiz-tool",
+      "destination": "/tools/coach-match",
+      "permanent": true
+    },
+    {
+      "source": "/about",
+      "destination": "/",
+      "permanent": true
     }
   ]
 }
