@@ -2,8 +2,8 @@
 company: "PayPay"
 order: 1
 cover: /videos/illustration-inspector/cover.mp4
-subtitle: "整個設計團隊共用的插圖檢查標準"
-role: "設計和開發（搭配 AI）"
+subtitle: "整個設計團隊共用的插畫檢查標準"
+role: "設計與開發（搭配 AI）"
 timeline: "一季"
 type: "Figma 外掛"
 notion: "https://app.notion.com/p/3f7eaff6ece3813bb352fa9befd8487f"
@@ -11,62 +11,62 @@ notion: "https://app.notion.com/p/3f7eaff6ece3813bb352fa9befd8487f"
 
 {/* Synced from Notion. Edit the case there, not here. */}
 
-<Media id="hero" label="在 Figma 裡檢查插圖" video="/videos/illustration-inspector/hero.mp4" poster="/videos/illustration-inspector/hero.webp" plain />
+<Media id="hero" label="在 Figma 中檢查插畫" video="/videos/illustration-inspector/hero.mp4" poster="/videos/illustration-inspector/hero.webp" plain />
 
-PayPay 的插圖庫有一長串規範：只能用綁定 variables 的核可色、只能用扁平形狀、不能有描邊或漸層、不能變形，logo 的使用也有嚴格限制。我設計並做出一個 Figma 外掛，程式碼由 AI 撰寫，一鍵就能依照所有規範檢查插圖。
+PayPay 的插畫庫有一長串規範：只能使用綁定 variables 的核可色、只能使用扁平形狀、不得有描邊或漸層、不得變形，logo 的使用也有嚴格限制。我設計並打造了一款 Figma 外掛，程式碼由 AI 撰寫，一鍵即可依照所有規範檢查插畫。
 
-## 為什麼要做
+## 開發動機
 
-每一條規範單獨看都不難。但設計師得在工作時記住整份清單，所以標準會隨著當天誰來審、離截止日有多近而改變。
+每一條規範單獨來看都不困難，但設計師必須在工作時記住整份清單，因此檢查標準會隨著當天的審查者與截止日的遠近而有所不同。
 
-<Media id="guidelines" label="插圖規範中的一頁：該做和不該做的事" src="/images/illustration-inspector/guidelines.webp" />
+<Media id="guidelines" label="插畫規範中的一頁：建議與避免的做法" src="/images/illustration-inspector/guidelines.webp" />
 
-下半年的回顧顯示，這不只是一兩個人的問題。我對設計團隊做了問卷：每個人每季至少用一次插圖，而 83% 的人曾因為插圖庫裡找不到合適的，最後只好另外訂製插圖。插圖是每個人工作的一部分，但檢查是否符合規範，還是只能靠記憶。上半年的計畫早就把這件事列為可以嘗試 AI 的地方，所以我直接把它做出來，而不是讓它只停留在簡報上的一個想法。
+下半年的回顧顯示，這並非個別人員的問題。我對設計團隊進行了問卷調查：每位成員每季至少使用一次插畫，而 83% 的人曾因插畫庫中找不到合適的素材，最後只能另外委託製作。插畫是每個人工作的一部分，但是否符合規範，仍然只能仰賴記憶判斷。上半年的計畫已將這項工作列為可導入 AI 的領域，因此我直接將它實作出來，而不是讓它停留在簡報上的構想。
 
-## 我怎麼做的
+## 開發過程
 
-我分三步完成：先確定功能，再把規範轉成程式，最後加上深色模式和日文，推出給團隊使用。
+我分三個階段完成：先確定功能，再將規範轉換為程式邏輯，最後加入深色模式與日文介面，推出給團隊使用。
 
-**先定功能，再做視覺。** 在設計任何介面之前，我先確定了全部六項檢查，所以設計可以保持穩定。
+**先確定功能，再設計視覺。** 在設計任何介面之前，我先確定了全部六項檢查，讓設計得以保持穩定。
 
-**把規範變成數學。** 規範只寫「保持比例」，沒有說怎麼偵測變形。我和 AI 一個 frame 一個 frame 地把這類規範轉成幾何計算。
+**將規範轉換為數學。** 規範只寫「保持比例」，並未說明如何偵測變形。我與 AI 逐一分析 frame，將這類規範轉換為幾何計算。
 
-**五個方向，選出一個。** AI 產生了五個介面方向。我用真實的檢查結果測試，再把最好的部分結合起來。
+**從五個方向收斂為一個。** AI 產生了五種介面方向。我以真實的檢查結果進行測試，再整合各方向的優點。
 
-<Media id="directions" label="探索結果頁的介面方向" src="/images/illustration-inspector/directions.webp" />
+<Media id="directions" label="結果頁的介面方向探索" src="/images/illustration-inspector/directions.webp" />
 
-**知道什麼不要做。** 需要外掛看不到的情境才能判斷的檢查，我都拿掉了。**六項可靠的檢查，勝過十項不準的檢查。**
+**判斷哪些功能不該做。** 需要外掛無法取得的脈絡才能判斷的檢查項目，我都予以刪除。**六項可靠的檢查，勝過十項不準確的檢查。**
 
-## 它能做什麼
+## 主要功能
 
-選取一個 frame，按下 Inspect。外掛會檢查六件事：顏色、描邊、漸層、變形、扁平形狀和 logo 使用。每個問題都會連到造成問題的圖層，所以修正時只要點那個圖層，不用再回去翻規範。
+選取一個 frame，點擊 Inspect，外掛便會檢查六個項目：顏色、描邊、漸層、變形、扁平形狀與 logo 使用。每個問題都會連結到對應的圖層，修正時只需點擊該圖層，不必再回頭查閱規範。
 
-我不是受過訓練的工程師，程式碼是 AI 寫的。產品上的判斷由我決定：什麼算失敗、問題怎麼呈現在畫面上，以及什麼時候規範本身有問題、需要修改。
+我並非受過正規訓練的工程師，程式碼由 AI 撰寫。產品層面的判斷則由我負責：什麼情況算是不合格、問題如何呈現在畫面上，以及何時規範本身有誤、需要調整。
 
 ## 細節
 
-<MediaRow layout="split" progress items={[{"id":"demo-before-after","label":"用 Apply All 修正不在色票裡的顏色","video":"/videos/illustration-inspector/demo-before-after.mp4","poster":"/videos/illustration-inspector/demo-before-after.webp","title":"最接近的顏色。","text":"不在色票裡的顏色，會建議最接近的核可色。也可以自己選別的，或用 Apply All 一次全部修正。"},{"id":"demo-logo","label":"檢查 PayPay 的 logo","video":"/videos/illustration-inspector/demo-logo.mp4","poster":"/videos/illustration-inspector/demo-logo.webp","title":"Logo 檢查。","text":"PayPay 的 logo 有自己的顏色和形狀規範，所以外掛也會檢查 logo。"},{"id":"demo-theme","label":"切換語言和主題","video":"/videos/illustration-inspector/demo-theme.mp4","poster":"/videos/illustration-inspector/demo-theme.webp","title":"配合團隊需求。","text":"一鍵切換日文和英文，或深色和淺色模式。"}]} />
+<MediaRow layout="split" progress items={[{"id":"demo-before-after","label":"以 Apply All 修正不在色票中的顏色","video":"/videos/illustration-inspector/demo-before-after.mp4","poster":"/videos/illustration-inspector/demo-before-after.webp","title":"建議最接近的顏色。","text":"對於不在色票中的顏色，外掛會建議最接近的核可色。使用者也可以自行選擇其他顏色，或透過 Apply All 一次全部修正。"},{"id":"demo-logo","label":"檢查 PayPay logo","video":"/videos/illustration-inspector/demo-logo.mp4","poster":"/videos/illustration-inspector/demo-logo.webp","title":"Logo 檢查。","text":"PayPay 的 logo 有專屬的顏色與形狀規範，因此外掛也會檢查 logo。"},{"id":"demo-theme","label":"切換語言與主題","video":"/videos/illustration-inspector/demo-theme.mp4","poster":"/videos/illustration-inspector/demo-theme.webp","title":"符合團隊需求。","text":"可一鍵切換日文與英文，或深色與淺色模式。"}]} />
 
 ## 成果
 
-因為還在初期，目前還沒有正式的指標。但現在整個設計團隊都在用，不只是我。原本各自手動、標準不一的檢查，變成一套共用的標準；設計師拿到的回饋也會指出確切的圖層，而不是模糊的「不符合品牌」。
+由於仍在初期階段，目前還沒有正式的指標。但現在整個設計團隊都在使用，而不只是我自己。原本各自手動、標準不一的檢查，已整合為一套共用的標準；設計師收到的回饋也能指出確切的圖層，而不是模糊的「不符合品牌」。
 
-它也讓插圖團隊輕鬆許多。以前他們要先完整檢查一遍規範，才能開始討論插圖有沒有傳達對的意思。現在這部分大多已經完成，他們可以把時間花在插圖想表達的意圖上。
+它也大幅減輕了插畫團隊的負擔。過去他們必須先完整檢查一遍規範，才能開始討論插畫是否傳達了正確的訊息。如今這部分大多已自動完成，他們可以將時間專注在插畫想表達的意圖上。
 
 <Media id="published" label="發布給 PayPay 設計團隊的 Illustration Inspector" src="/images/illustration-inspector/published.webp" />
 
-幾年前，我不會相信自己不會寫程式，也能做出一個 Figma 外掛。
+幾年前，我很難想像自己在不會寫程式的情況下，也能開發出一款 Figma 外掛。
 
-## 接下來
+## 下一步
 
-- 找幾位設計師做時間研究，衡量它省下多少準備時間
-- 在比較不確定的檢查上加上信心標籤：扁平形狀和變形
-- 加上匯出功能，讓設計營運團隊看到整個團隊的趨勢
+- 邀請幾位設計師進行時間研究，衡量它節省了多少準備時間
+- 為較不確定的檢查項目加上信心標籤：扁平形狀與變形
+- 加入匯出功能，讓設計營運團隊掌握整個團隊的趨勢
 
 ## 回顧
 
-做這個工具改變了我身為設計師對 AI 的看法。重點不是讓 AI 做視覺，而是它給了我足夠的開發能力，讓我把注意力放在真正需要設計判斷的地方：什麼算失敗、修正應該是什麼感覺，以及什麼時候規範在紙上是對的，實際上卻行不通。
+開發這款工具，改變了我身為設計師對 AI 的看法。重點不在於讓 AI 產出視覺，而在於它賦予我足夠的開發能力，讓我能將心力集中在真正需要設計判斷的地方：什麼情況算是不合格、修正應該帶來什麼樣的感受，以及何時規範在紙上合理，實務上卻行不通。
 
-幾個和 AI 合作的小技巧：
+與 AI 協作的幾個建議：
 
-<TipCards items={[{"icon":"plan","title":"先規劃再寫程式","text":"碰任何介面之前，先確定完整的功能清單。"},{"icon":"image","title":"用給的，不要用說的","text":"給 AI 一張截圖，而不是一段文字描述。"},{"icon":"code","title":"重複的工作做成可重用","text":"做過兩次的事，就整理成固定的模式。"},{"icon":"ask","title":"先問再做","text":"讓 AI 先問清楚問題，而不是自己猜。"}]} />
+<TipCards items={[{"icon":"plan","title":"先規劃，再寫程式","text":"在動手做介面之前，先確定完整的功能清單。"},{"icon":"image","title":"以圖示意，而非文字描述","text":"提供 AI 一張截圖，而不是一段文字說明。"},{"icon":"code","title":"將重複的工作模組化","text":"做過兩次的事，就整理成可重複使用的模式。"},{"icon":"ask","title":"先釐清，再動手","text":"讓 AI 先提出問題釐清需求，而不是自行猜測。"}]} />

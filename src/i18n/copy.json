@@ -4,28 +4,28 @@
     "section": "首頁 · 開頭",
     "note": "首頁最上方的大標",
     "en": "Hi, I'm Yu. I design products that make complex things feel simple.",
-    "zh-tw": "嗨，我是 Yu。我設計產品，讓複雜的事情用起來很簡單。"
+    "zh-tw": "嗨，我是 Yu。我設計產品，讓複雜的事情變得簡單易用。"
   },
   {
     "key": "home.intro",
     "section": "首頁 · 開頭",
     "note": "標題下第一段",
     "en": "I care about systems thinking and asking the right questions. I use quick AI prototypes to test ideas early, and turn messy problems into products people trust.",
-    "zh-tw": "我重視系統思考，也重視問對問題。我常用 AI 快速做原型，及早驗證想法，把複雜混亂的問題做成讓人信任的產品。"
+    "zh-tw": "我重視系統思考，也重視提出對的問題。我習慣用 AI 快速製作原型、及早驗證想法，把複雜的問題轉化為值得信賴的產品。"
   },
   {
     "key": "home.previously",
     "section": "首頁 · 開頭",
     "note": "標題下第二段。{PAYPAY}、{CAROUSELL} 會變成有 hover 卡片的連結，請保留這兩個記號",
     "en": "At {PAYPAY} in Tokyo, I make paying and managing money easy for 65M+ users, even when the rules behind it are not. Before that, I worked on growth and engagement at {CAROUSELL} in Taiwan and Singapore.",
-    "zh-tw": "在東京的 {PAYPAY}，我讓超過 6,500 萬名使用者付款和理財都很輕鬆，就算背後的規則一點也不簡單。在這之前，我在 {CAROUSELL} 負責成長和使用者互動，橫跨台灣和新加坡市場。"
+    "zh-tw": "在東京的 {PAYPAY}，我為超過 6,500 萬名使用者設計付款與理財體驗，即使背後的規範相當複雜，使用起來依然輕鬆。在此之前，我在 {CAROUSELL} 負責台灣與新加坡市場的成長與使用者互動。"
   },
   {
     "key": "home.outside",
     "section": "首頁 · 開頭",
     "note": "標題下第三段。{AAPD} 會變成有 hover 卡片的連結，請保留這個記號",
     "en": "Outside work, I mentor designers at {AAPD} and build small tools with code and AI.",
-    "zh-tw": "工作之外，我在 {AAPD} 擔任設計導師，也用程式和 AI 做一些小工具。"
+    "zh-tw": "工作之餘，我在 {AAPD} 擔任設計導師，也運用程式與 AI 開發小工具。"
   },
   {
     "key": "section.work",
@@ -39,7 +39,7 @@
     "section": "首頁 · 作品",
     "note": "PayPay 名稱下的一段話",
     "en": "I lead design for how money gets in and out of the wallet, from top-ups to ATMs to card payments.",
-    "zh-tw": "我主導錢怎麼進出錢包的設計，從儲值、ATM 到信用卡付款。"
+    "zh-tw": "我主導 PayPay 錢包資金進出的設計，涵蓋儲值、ATM 與信用卡付款。"
   },
   {
     "key": "work.credit-card-sunset.title",
@@ -53,14 +53,14 @@
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的一句話",
     "en": "Moving card users to a new way to pay, with vouchers as the bridge",
-    "zh-tw": "外部信用卡停用後，用 voucher 帶使用者順利換到新的付款方式"
+    "zh-tw": "外部信用卡停用後，以儲值券引導使用者順利轉換付款方式"
   },
   {
     "key": "work.credit-card-sunset.result",
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的成果數字，留空就不顯示",
     "en": "About 30% of card users moved to vouchers",
-    "zh-tw": "約 30% 的信用卡使用者改用 voucher"
+    "zh-tw": "約 30% 的信用卡使用者已改用儲值券"
   },
   {
     "key": "work.top-up-ab-test.title",
@@ -74,7 +74,7 @@
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的一句話",
     "en": "Getting users to top up more at once, so fees drop",
-    "zh-tw": "讓使用者一次多儲值一點，省下手續費"
+    "zh-tw": "引導使用者單次儲值更高金額，降低手續費成本"
   },
   {
     "key": "work.top-up-ab-test.result",
@@ -95,7 +95,7 @@
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的一句話",
     "en": "Cash in and out at the ATM with just the app",
-    "zh-tw": "只要用 App，就能在 ATM 存提款"
+    "zh-tw": "只需 App，即可在 ATM 存提款"
   },
   {
     "key": "work.cardless-atm.result",
@@ -109,7 +109,7 @@
     "section": "首頁 · 作品",
     "note": "Carousell 名稱下的一段話",
     "en": "I designed sign-up and notifications, plus the marketing tools and design system behind them.",
-    "zh-tw": "我設計了註冊流程和通知，也打造了背後的行銷工具和設計系統。"
+    "zh-tw": "我設計了註冊流程與通知中心，也打造了背後的行銷工具與設計系統。"
   },
   {
     "key": "work.sign-up-flow.title",
@@ -123,7 +123,7 @@
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的一句話",
     "en": "Making sign-up shorter, so more new users finish and stay",
-    "zh-tw": "縮短註冊流程，讓更多新使用者完成註冊、留下來"
+    "zh-tw": "簡化註冊流程，讓更多新使用者完成註冊並持續使用"
   },
   {
     "key": "work.sign-up-flow.result",
@@ -144,7 +144,7 @@
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的一句話",
     "en": "Putting order updates first, so people know what to do next",
-    "zh-tw": "把訂單更新放在最前面，讓使用者知道下一步該做什麼"
+    "zh-tw": "將訂單更新放在最前面，讓使用者清楚下一步"
   },
   {
     "key": "work.notification-center.result",
@@ -165,7 +165,7 @@
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的一句話",
     "en": "Self-serve tools so the marketing team can launch campaigns without engineers",
-    "zh-tw": "讓行銷團隊不用找工程師，就能自己上架活動"
+    "zh-tw": "讓行銷團隊不需要工程師協助，也能自行上架活動"
   },
   {
     "key": "work.internal-tool.result",
@@ -186,7 +186,7 @@
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的一句話",
     "en": "Rebuilding components and docs so designers and engineers speak the same language",
-    "zh-tw": "重建元件和文件，讓設計師和工程師說同一種語言"
+    "zh-tw": "重建元件與文件，讓設計師與工程師使用共同的語言"
   },
   {
     "key": "work.design-system-revamp.result",
@@ -200,7 +200,7 @@
     "section": "首頁 · 工具",
     "note": "工具區塊的小標",
     "en": "Tools I build",
-    "zh-tw": "我做的工具"
+    "zh-tw": "我開發的工具"
   },
   {
     "key": "tools.illustration-inspector.title",
@@ -221,7 +221,7 @@
     "section": "首頁 · 工具",
     "note": "工具頁上的一句話說明",
     "en": "A Figma plugin that checks illustrations against PayPay's library rules and points to the exact layer to fix.",
-    "zh-tw": "一個 Figma 外掛，依照 PayPay 插畫庫的規範檢查插畫，並直接指出要修正的圖層。"
+    "zh-tw": "一款 Figma 外掛，依照 PayPay 插畫庫的規範檢查插畫，並直接標示需要修正的圖層。"
   },
   {
     "key": "tools.coach-match.title",
@@ -235,14 +235,14 @@
     "section": "首頁 · 工具",
     "note": "名稱右邊的類型",
     "en": "AI-built web tool",
-    "zh-tw": "用 AI 打造的網頁工具"
+    "zh-tw": "以 AI 打造的網頁工具"
   },
   {
     "key": "tools.coach-match.summary",
     "section": "首頁 · 工具",
     "note": "工具頁上的一句話說明",
     "en": "A quiz that matches product builders with the right career coach. Built with AI-generated code, Google Sheets, and Apps Script.",
-    "zh-tw": "幫產品人配對合適職涯教練的小測驗，用 AI 寫的程式碼、Google Sheets 和 Apps Script 做成。"
+    "zh-tw": "協助產品人找到合適職涯教練的配對測驗，以 AI 撰寫程式，搭配 Google Sheets 與 Apps Script 建置。"
   },
   {
     "key": "tools.vocab-translator.title",
@@ -263,21 +263,21 @@
     "section": "首頁 · 工具",
     "note": "工具頁上的一句話說明",
     "en": "Saves words I select on any page straight into Notion, so I can study them later.",
-    "zh-tw": "把我在任何網頁上選取的單字直接存進 Notion，方便之後複習。"
+    "zh-tw": "將任何網頁上選取的單字直接存入 Notion，方便日後複習。"
   },
   {
     "key": "section.testimonials",
     "section": "首頁 · 推薦",
     "note": "推薦區的標題",
     "en": "What people I've worked with say",
-    "zh-tw": "合作過的人怎麼說"
+    "zh-tw": "合作夥伴的推薦"
   },
   {
     "key": "testimonials.1.quote",
     "section": "首頁 · 推薦",
     "note": "Kazuya 的推薦語，空一行就是分段",
     "en": "Ryan was a key team member during my time at PayPay, where he consistently delivered high-quality designs across multiple projects. He also contributed to Design Ops by improving QA processes and accessibility.",
-    "zh-tw": "Ryan 是我在 PayPay 時團隊裡的關鍵成員，在多個專案中持續交出高品質的設計。他也投入 Design Ops，改善 QA 流程和無障礙設計。"
+    "zh-tw": "Ryan 是我在 PayPay 團隊中的關鍵成員，在多個專案中持續交出高品質的設計。他也積極投入 Design Ops，改善 QA 流程與無障礙設計。"
   },
   {
     "key": "testimonials.1.by",
@@ -291,7 +291,7 @@
     "section": "首頁 · 推薦",
     "note": "Simon Lin 的推薦語，空一行就是分段",
     "en": "Ryan is my team member at AAPD, where we teach Figma and UI design. He began as a teaching assistant and quickly advanced to an instructor role, demonstrating strong learning ability, attention to detail, and clear communication.",
-    "zh-tw": "Ryan 是我在 AAPD 的團隊夥伴，我們一起教 Figma 和 UI 設計。他從助教做起，很快就成為講師，展現出很強的學習能力、對細節的用心和清楚的溝通。"
+    "zh-tw": "Ryan 是我在 AAPD 的夥伴，我們一起教授 Figma 與 UI 設計。他從助教做起，很快便成為講師，展現出優秀的學習能力、對細節的重視，以及清楚的溝通。"
   },
   {
     "key": "testimonials.2.by",
@@ -305,7 +305,7 @@
     "section": "首頁 · 推薦",
     "note": "Keith Oh 的推薦語，空一行就是分段",
     "en": "Ryan was a valued team member who independently led several challenging projects with unclear requirements. He brought clarity through thorough research and tackled problems with patience and a methodical approach.",
-    "zh-tw": "Ryan 是很受重視的團隊成員，獨立帶領了好幾個需求不明確、很有挑戰的專案。他透過扎實的研究釐清方向，用耐心和有條理的方式解決問題。"
+    "zh-tw": "Ryan 是備受重視的團隊成員，獨立帶領多個需求不明確、極具挑戰的專案。他透過扎實的研究釐清方向，以耐心且有條理的方式解決問題。"
   },
   {
     "key": "testimonials.3.by",
@@ -319,7 +319,7 @@
     "section": "首頁 · 推薦",
     "note": "Belissa 的推薦語，空一行就是分段",
     "en": "Ryan was a former colleague at Carousell, and I was always impressed by his ability to balance user needs with business goals to deliver practical, thoughtful designs.",
-    "zh-tw": "Ryan 是我在 Carousell 的前同事，他總能在使用者需求和商業目標之間取得平衡，做出實用又周到的設計，這點一直讓我很佩服。"
+    "zh-tw": "Ryan 是我在 Carousell 的前同事，他總能在使用者需求與商業目標之間取得平衡，做出實用且周到的設計，這一點一直令我佩服。"
   },
   {
     "key": "testimonials.4.by",
@@ -333,7 +333,7 @@
     "section": "首頁 · 推薦",
     "note": "Tom Lee 的推薦語，空一行就是分段",
     "en": "When design and development misaligned, he calmly found practical solutions with the team. His suggestions for bug fixes and optimizations boosted both product quality and team efficiency.",
-    "zh-tw": "當設計和開發對不上時，他會冷靜地和團隊一起找出務實的解法。他對修正 bug 和改善體驗的建議，提升了產品品質，也讓團隊更有效率。"
+    "zh-tw": "當設計與開發出現落差時，他會冷靜地與團隊一起找出務實的解法。他對修正 bug 與改善體驗的建議，提升了產品品質，也讓團隊運作更有效率。"
   },
   {
     "key": "testimonials.5.by",
@@ -354,7 +354,7 @@
     "section": "hover 卡片",
     "note": "滑到 Carousell 名稱時卡片裡的說明",
     "en": "Marketplace app across Southeast Asia and Taiwan",
-    "zh-tw": "東南亞和台灣的二手買賣平台，在台灣叫「旋轉拍賣」"
+    "zh-tw": "東南亞與台灣的二手買賣平台，在台灣稱為「旋轉拍賣」"
   },
   {
     "key": "org.aapd",
@@ -417,6 +417,6 @@
     "section": "搜尋引擎與分享",
     "note": "Google 搜尋結果和分享預覽的描述，約 150 字元內",
     "en": "Senior Product Designer making complex things clear. Fintech at PayPay, growth at Carousell.",
-    "zh-tw": "資深產品設計師，擅長把複雜的事情變清楚。在 PayPay 做金融科技，在 Carousell 做成長。"
+    "zh-tw": "資深產品設計師，擅長將複雜的事物化繁為簡。在 PayPay 投入金融科技，在 Carousell 專注於成長。"
   }
 ]

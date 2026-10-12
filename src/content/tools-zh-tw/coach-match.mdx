@@ -2,7 +2,7 @@
 company: "AAPD"
 order: 2
 cover: /videos/coach-match/cover.mp4
-subtitle: "用 AI 在 18 小時內做出的教練配對測驗"
+subtitle: "以 AI 在 18 小時內完成的教練配對測驗"
 role: "專案負責人、產品設計師"
 timeline: "18 小時，每天一小時"
 type: "網頁應用程式"
@@ -13,36 +13,36 @@ notion: "https://app.notion.com/p/3f7eaff6ece381bb8c3ff4a09eda9327"
 
 <Media id="hero" label="Coach Match 配對測驗" video="/videos/coach-match/hero.mp4" poster="/videos/coach-match/hero.webp" plain />
 
-AAPD 是台灣的產品人學習平台，推出了職涯教練陪跑計畫：由 24 位教練提供一對一的指導。但大家很難決定要選哪一位，而第三方的測驗工具又有廣告和各種限制。所以我做了一個配對測驗，程式碼全部由 AI 撰寫。每天花一小時，總共 18 小時就上線了。
+AAPD 是台灣的產品人教育平台，推出了職涯教練陪跑計畫，由 24 位教練提供一對一指導。然而學員很難決定該選擇哪一位教練，而第三方測驗工具又有廣告與各種限制。因此我打造了一個配對測驗，程式碼全部由 AI 撰寫。我每天投入一小時，總計 18 小時便完成上線。
 
 <CompareSlider wide before={[{"id":"before","label":"第三方測驗工具","src":"/images/coach-match/before.webp"}]} after={[{"id":"after","label":"為 AAPD 打造的版本","src":"/images/coach-match/after.webp"}]} />
 
 ## 找到可行的工作流程
 
-我把舊的工具和背景資訊交給 Claude Code。第一版可以用，但看起來不像 AAPD。只靠 prompt 修正要來回太多次，所以我調整了工作流程：
+我將舊工具與背景資訊提供給 Claude Code。第一版雖然可以運作，但看起來不像 AAPD 的風格。只靠 prompt 修正需要反覆溝通太多次，因此我調整了工作流程：
 
-- 讓 AI 讀 AAPD 的網站，當作風格參考。
-- 讓 AI 在 Figma 裡產生畫面，我再手動調整。
-- 小修改用 prompt 處理。比較大的版面或視覺調整，先在 Figma 設計好，再轉成程式碼。
+- 讓 AI 參考 AAPD 的網站作為風格依據。
+- 讓 AI 在 Figma 中產生畫面，再由我手動調整。
+- 小幅修改透過 prompt 處理；較大的版面或視覺調整，則先在 Figma 中設計，再轉換為程式碼。
 
-<MediaRow items={[{"id":"figma-brand","label":"AI 從網站擷取 AAPD 的顏色和風格","src":"/images/coach-match/figma-brand.webp"},{"id":"figma-screens","label":"在 Figma 裡設計的測驗畫面","src":"/images/coach-match/figma-screens.webp"}]} />
+<MediaRow items={[{"id":"figma-brand","label":"AI 從網站擷取 AAPD 的色彩與風格","src":"/images/coach-match/figma-brand.webp"},{"id":"figma-screens","label":"在 Figma 中設計的測驗畫面","src":"/images/coach-match/figma-screens.webp"}]} />
 
-## 選一個簡單的技術架構
+## 選擇簡單的技術架構
 
-團隊需要在沒有我的情況下也能維護。Firebase 是一個選項，但團隊裡沒有人會維護它。所以我讓它保持簡單：教練名單放在 Google Sheets，再用一段簡短的 Apps Script 把資料傳給測驗。要新增或更新教練，只要編輯試算表就好。網站本身放在 GitHub Pages，免費又好管理。
+團隊需要在我不參與的情況下也能維護。Firebase 是其中一個選項，但團隊中沒有人熟悉它的維護方式。因此我選擇簡單的做法：教練名單存放在 Google Sheets，再透過一段簡短的 Apps Script 將資料傳送給測驗。新增或更新教練時，只需要編輯試算表即可。網站本身部署在 GitHub Pages，免費且容易管理。
 
-<MediaRow items={[{"id":"stack-sheets","label":"放在 Google Sheets 的教練名單，由 Apps Script 讀取","src":"/images/coach-match/stack-sheets.webp"},{"id":"stack-github","label":"放在 GitHub Pages 上的測驗","src":"/images/coach-match/stack-github.webp"}]} />
+<MediaRow items={[{"id":"stack-sheets","label":"存放在 Google Sheets 的教練名單，由 Apps Script 讀取","src":"/images/coach-match/stack-sheets.webp"},{"id":"stack-github","label":"部署在 GitHub Pages 上的測驗","src":"/images/coach-match/stack-github.webp"}]} />
 
-## 測試和上線
+## 測試與上線
 
-上線前有五位 AAPD 團隊成員幫忙測試。整體流程很順，但發現兩個缺口：只有中文，而且沒有人在手機上檢查過。我在上線前把兩個問題都修好，並加上追蹤來衡量預約數。
+上線前，五位 AAPD 團隊成員協助進行測試。整體流程相當順暢，但也發現兩個缺口：只提供中文，而且沒有人在手機上確認過。我在上線前修正了這兩個問題，並加入追蹤機制來衡量預約數。
 
 ## 細節
 
-現在它在任何螢幕尺寸都能用，有淺色和深色模式，也支援中文和英文。另外還附上一套 token 元件庫和 markdown 指南，給下一個專案使用。
+現在它能在各種螢幕尺寸上正常使用，提供淺色與深色模式，並支援中文與英文。此外也附上一套 token 元件庫與 markdown 指南，供下一個專案使用。
 
-<MediaRow layout="split" progress items={[{"id":"detail-responsive","label":"測驗從桌機縮放到手機","video":"/videos/coach-match/detail-responsive.mp4","poster":"/videos/coach-match/detail-responsive.webp","title":"任何螢幕尺寸。","text":"版面從桌機到手機都能正常使用。"},{"id":"detail-theme","label":"在淺色和深色模式之間切換","video":"/videos/coach-match/detail-theme.mp4","poster":"/videos/coach-match/detail-theme.webp","title":"淺色和深色。","text":"一鍵切換主題。"},{"id":"detail-language","label":"在中文和英文之間切換","video":"/videos/coach-match/detail-language.mp4","poster":"/videos/coach-match/detail-language.webp","title":"中文和英文。","text":"測試時發現只有中文，所以現在整個測驗都能一鍵切換語言。"}]} />
+<MediaRow layout="split" progress items={[{"id":"detail-responsive","label":"測驗從桌機縮放到手機","video":"/videos/coach-match/detail-responsive.mp4","poster":"/videos/coach-match/detail-responsive.webp","title":"支援各種螢幕尺寸。","text":"版面從桌機到手機都能正常呈現。"},{"id":"detail-theme","label":"在淺色與深色模式之間切換","video":"/videos/coach-match/detail-theme.mp4","poster":"/videos/coach-match/detail-theme.webp","title":"淺色與深色模式。","text":"一鍵切換主題。"},{"id":"detail-language","label":"在中文與英文之間切換","video":"/videos/coach-match/detail-language.mp4","poster":"/videos/coach-match/detail-language.webp","title":"中文與英文。","text":"測試時發現只有中文，因此現在整個測驗都能一鍵切換語言。"}]} />
 
-## 我學到的事
+## 我的收穫
 
-真正的決定不在 prompt 怎麼寫，而在知道什麼時候該介入：選擇用 Figma、判斷配對邏輯、選 Google Sheets 而不是 Firebase。AI 負責執行，我負責判斷。這也讓我開始學一些基礎的程式，明顯的問題我可以自己更快修好。
+真正關鍵的決定不在於 prompt 怎麼寫，而在於判斷何時該介入：選擇使用 Figma、評估配對邏輯，以及選擇 Google Sheets 而非 Firebase。AI 負責執行，我負責判斷。這個專案也促使我學習基礎程式設計，讓我能更快自行修正明顯的問題。
