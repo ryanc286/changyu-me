@@ -3,7 +3,9 @@
 interface Props {
   label?: string;
 }
-const { label = 'Hypothesis' } = Astro.props;
+const { label = caseText(Astro.url).hypothesis } = Astro.props;
+import { caseText } from '../../i18n/case';
+const L = caseText(Astro.url);
 ---
 
 <aside class="hypothesis">

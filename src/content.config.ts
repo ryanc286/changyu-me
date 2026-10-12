@@ -37,4 +37,14 @@ const tools = defineCollection({
   }),
 });
 
-export const collections = { work, tools };
+// Chinese versions: same file names and schema, synced from the Notion pages with 語言 = 中文
+const workZh = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/work-zh-tw' }),
+  schema: work.schema,
+});
+const toolsZh = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/tools-zh-tw' }),
+  schema: tools.schema,
+});
+
+export const collections = { work, tools, workZh, toolsZh };

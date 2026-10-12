@@ -28,6 +28,8 @@ if (src && !video) {
   const file = join(process.cwd(), 'public', src.replace(/\.(webp|png|jpe?g)$/, '-zoom.json'));
   if (existsSync(file)) zoom = JSON.parse(readFileSync(file, 'utf8'));
 }
+import { caseText } from '../../i18n/case';
+const L = caseText(Astro.url);
 ---
 
 <figure class:list={['media', { 'is-video': video, plain }]} data-id={id} data-media-video={video ? '' : undefined}>
@@ -53,7 +55,7 @@ if (src && !video) {
     ) : src ? (
       <img src={src} alt={label} loading="lazy" />
     ) : (
-      <div class="placeholder" role="img" aria-label={`Image placeholder: ${label}`}>
+      <div class="placeholder" role="img" aria-label={`${L.placeholder}: ${label}`}>
         <span>{id}</span>
       </div>
     )

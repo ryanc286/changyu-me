@@ -20,11 +20,13 @@ interface Props {
 }
 const { items } = Astro.props;
 const uid = `vs-${items.map((it) => it.id).join('-')}`;
+import { caseText } from '../../i18n/case';
+const L = caseText(Astro.url);
 ---
 
 <figure class="variant-switch" data-variant-switch>
   <div class="stage">
-    <div class="list" role="tablist" aria-label="Versions">
+    <div class="list" role="tablist" aria-label={L.versions}>
       {
         items.map((it, i) => (
           <button

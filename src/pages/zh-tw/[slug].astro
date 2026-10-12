@@ -1,0 +1,13 @@
+---
+/* Chinese case studies, from src/content/work-zh-tw */
+import { getCollection } from 'astro:content';
+import CasePage from '../../components/CasePage.astro';
+
+export async function getStaticPaths() {
+  const work = await getCollection('workZh', ({ data }) => !data.draft);
+  return work.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+---
+
+<CasePage entry={entry} lang="zh-tw" kind="work" />

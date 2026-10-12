@@ -19,12 +19,14 @@ interface Props {
 const { before, after, wide = false } = Astro.props;
 // One screen on each side: both sit in the same spot, full phone frames included in the images
 const single = before.length === 1 && after.length === 1;
+import { caseText } from '../../i18n/case';
+const L = caseText(Astro.url);
 ---
 
 <figure class:list={['compare', { single, wide }]} data-compare style="--pos: 50%">
   <div class="stage">
     <div class="layer after">
-      <ol class="set" aria-label={`After: ${after.length} steps`}>
+      <ol class="set" aria-label={`${L.after}: ${L.steps(after.length)}`}>
         {
           after.map((s) => (
             <li class="phone">
@@ -33,10 +35,10 @@ const single = before.length === 1 && after.length === 1;
           ))
         }
       </ol>
-      <span class="tag tag-after">After {wide ? <em>{after[0]?.label}</em> : !single && <em>{after.length} steps</em>}</span>
+      <span class="tag tag-after">{L.after} {wide ? <em>{after[0]?.label}</em> : !single && <em>{L.steps(after.length)}</em>}</span>
     </div>
     <div class="layer before">
-      <ol class="set" aria-label={`Before: ${before.length} steps`}>
+      <ol class="set" aria-label={`${L.before}: ${L.steps(before.length)}`}>
         {
           before.map((s) => (
             <li class="phone">
@@ -45,7 +47,7 @@ const single = before.length === 1 && after.length === 1;
           ))
         }
       </ol>
-      <span class="tag tag-before">Before {wide ? <em>{before[0]?.label}</em> : !single && <em>{before.length} steps</em>}</span>
+      <span class="tag tag-before">{L.before} {wide ? <em>{before[0]?.label}</em> : !single && <em>{L.steps(before.length)}</em>}</span>
     </div>
     <div class="divider" aria-hidden="true">
       <span class="knob">
@@ -59,7 +61,7 @@ const single = before.length === 1 && after.length === 1;
       max="100"
       value="50"
       step="1"
-      aria-label={single ? 'Drag to compare the old and new screens' : 'Drag to compare the old and new flows'}
+      aria-label={single ? L.dragScreens : L.dragFlows}
     />
   </div>
 </figure>

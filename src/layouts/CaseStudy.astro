@@ -13,8 +13,12 @@
 */
 import Base from './Base.astro';
 import HomeContent from '../components/HomeContent.astro';
+import type { Lang } from '../i18n/ui';
 
 interface Props {
+  lang?: Lang;
+  /* The same page in each language, for the language switch */
+  alternates?: Partial<Record<Lang, string>>;
   title: string;
   subtitle?: string;
   description?: string;
@@ -22,25 +26,27 @@ interface Props {
   headings: { slug: string; text: string }[];
   meta: { label: string; value?: string }[];
 }
-const { title, subtitle, description, icon, headings, meta } = Astro.props;
+const { lang = 'en', alternates = {}, title, subtitle, description, icon, headings, meta } = Astro.props;
+const zh = lang === 'zh-tw';
+const home = zh ? '/zh-tw' : '/';
+const ui = zh
+  ? { intro: '前言', close: '關閉並回到首頁', back: '回到首頁', sections: '章節' }
+  : { intro: 'Intro', close: 'Close and go back to home', back: 'Back to home', sections: 'Sections' };
 const shownMeta = meta.filter((m) => m.value);
 // Section nav only when the page has sections
-const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : [];
+const nav = headings.length ? [{ slug: 'intro', text: ui.intro }, ...headings] : [];
 ---
 
-<Base title={`${title} · Chang Yu`} description={description ?? subtitle} page="case">
-  {/* The homepage you came from (English or Chinese) shows behind the card */}
+<Base lang={lang} alternates={alternates} title={`${title} · Chang Yu`} description={description ?? subtitle} page="case">
+  {/* The homepage in the same language shows behind the card */}
   <div class="backdrop" aria-hidden="true" inert>
-    <div class="backdrop-inner" data-lang="en">
-      <HomeContent lang="en" />
-    </div>
-    <div class="backdrop-inner" data-lang="zh-tw" lang="zh-Hant-TW">
-      <HomeContent lang="zh-tw" />
+    <div class="backdrop-inner">
+      <HomeContent lang={lang} />
     </div>
   </div>
 
   <div class="layer">
-    <a class="dismiss" href="/" data-home aria-label="Close and go back to home"></a>
+    <a class="dismiss" href={home} data-home aria-label={ui.close}></a>
 
     <article class="sheet">
       <div class="grab" aria-hidden="true"><span></span></div>
@@ -49,7 +55,7 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
         <div class="case-grid">
           <aside class="side">
             <header class="head">
-              <a href="/" data-home class:list={['back', { 'no-icon': !icon }]} aria-label="Back to home">
+              <a href={home} data-home class:list={['back', { 'no-icon': !icon }]} aria-label={ui.back}>
                 {icon && <img class="face face-icon" src={icon} alt="" width="32" height="32" />}
                 <span class="face face-arrow" aria-hidden="true">
                   <svg viewBox="0 0 16 16" width="16" height="16"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -61,7 +67,7 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
               </div>
             </header>
 
-            <nav class="toc" aria-label="Sections">
+            <nav class="toc" aria-label={ui.sections}>
               {nav.map((h, i) => <a href={`#${h.slug}`} data-slug={h.slug} aria-current={i === 0 ? 'true' : undefined}>{h.text}</a>)}
             </nav>
 
@@ -79,7 +85,7 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
                     <div class="meta-group">
                       <p class="meta-label">{m.label}</p>
                       <p class="meta-pills">
-                        {m.value!.split(',').map((v) => v.trim()).map((v) => <span class="pill">{v.charAt(0).toUpperCase() + v.slice(1)}</span>)}
+                        {m.value!.split(/[,、，]/).map((v) => v.trim()).map((v) => <span class="pill">{v.charAt(0).toUpperCase() + v.slice(1)}</span>)}
                       </p>
                     </div>
                   ))}
@@ -100,9 +106,8 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
 <script>
   const scroller = document.querySelector<HTMLElement>('.scroller')!;
 
-  // Close back to the homepage you came from
-  const home = document.documentElement.dataset.homeLang === 'zh-tw' ? '/zh-tw' : '/';
-  document.querySelectorAll<HTMLAnchorElement>('a[data-home]').forEach((a) => (a.href = home));
+  // Close back to the homepage in the same language
+  const home = document.documentElement.lang.startsWith('zh') ? '/zh-tw' : '/';
   const card = document.querySelector<HTMLElement>('.sheet')!;
 
   // Highlight the section in view in the left nav
@@ -173,13 +178,6 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
     position: fixed;
     inset: 0;
     overflow: hidden;
-  }
-  .backdrop-inner[data-lang='zh-tw'],
-  :global(html[data-home-lang='zh-tw']) .backdrop-inner[data-lang='en'] {
-    display: none;
-  }
-  :global(html[data-home-lang='zh-tw']) .backdrop-inner[data-lang='zh-tw'] {
-    display: block;
   }
   .backdrop-inner {
     transform: translateY(calc(var(--home-y, 0) * -1px));

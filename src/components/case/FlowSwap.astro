@@ -29,19 +29,21 @@ const beforeDelays = before.map((s, i) => ({
   in: 280 + i * 55,
 }));
 const afterDelays = after.map((_, i) => ({ in: 560 + i * 90, out: i * 40 }));
+import { caseText } from '../../i18n/case';
+const L = caseText(Astro.url);
 ---
 
 <figure class="flow-swap" data-flow-swap data-state="before">
-  <div class="toggle" role="group" aria-label="Compare the sign-up flows">
+  <div class="toggle" role="group" aria-label={L.compareFlows}>
     <button type="button" data-show="before" aria-pressed="true">
-      Before <span>{before.length} steps</span>
+      {L.before} <span>{L.steps(before.length)}</span>
     </button>
     <button type="button" data-show="after" aria-pressed="false">
-      After <span>{after.length} steps</span>
+      {L.after} <span>{L.steps(after.length)}</span>
     </button>
   </div>
   <div class="stage">
-    <ol class="set before" aria-label={`Before: ${before.length} steps`}>
+    <ol class="set before" aria-label={`${L.before}: ${L.steps(before.length)}`}>
       {
         before.map((s, i) => (
           <li
@@ -53,7 +55,7 @@ const afterDelays = after.map((_, i) => ({ in: 560 + i * 90, out: i * 40 }));
         ))
       }
     </ol>
-    <ol class="set after" aria-label={`After: ${after.length} steps`} aria-hidden="true">
+    <ol class="set after" aria-label={`${L.after}: ${L.steps(after.length)}`} aria-hidden="true">
       {
         after.map((s, i) => (
           <li class="phone" style={`--in:${afterDelays[i].in}ms;--out:${afterDelays[i].out}ms`}>

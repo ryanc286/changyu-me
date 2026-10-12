@@ -1,0 +1,78 @@
+---
+company: Carousell
+order: 7
+cover: /images/design-system-revamp/cover.webp
+subtitle: "元件覆蓋率 +32%、設計交接時間縮短 11%"
+role: "設計系統"
+timeline: "2023 年 4–9 月"
+type: "設計系統"
+notion: "https://app.notion.com/p/3f7eaff6ece3815d87f3e89e36e58180"
+---
+
+{/* Synced from Notion. Edit the case there, not here. */}
+
+<Media id="hero" label="改版後設計系統裡的元件" src="/images/design-system-revamp/hero.webp" />
+
+Carousell 的設計系統已經跑掉了。元件很難重複使用，文件過時，設計師和工程師對同一個東西有不同的叫法。我主導了這次改版：建立清楚的更新流程、重新整理 Figma 元件庫，並寫好連結設計和程式碼的文件。
+
+## 現況
+
+設計系統也是一個產品，它的使用者是設計師和工程師。所以我從他們開始：對工程師做痛點問卷，也和設計師辦了一場工作坊。很多設計師會把元件 detach 後自己修改，因為原本的元件不夠彈性。就算是資深設計師，也很難找到需要的東西。
+
+<IllustratedList items={[{"id":"pain-consistency","label":"被不一致的元件搞混","src":"/images/design-system-revamp/pain-consistency.webp","title":"缺乏一致性。","text":"沒有清楚的規範，元件用的是 Figma 的舊功能，也沒有流程讓系統保持更新。"},{"id":"pain-find","label":"辛苦找對的元件","src":"/images/design-system-revamp/pain-find.webp","title":"很難找到東西。","text":"設計和程式碼之間沒有連結，元件很難用名稱搜尋，也看不出改了什麼。"},{"id":"pain-communication","label":"在分散的管道裡錯過更新","src":"/images/design-system-revamp/pain-communication.webp","title":"溝通不順。","text":"同一個東西有不同名稱，溝通管道分散，也沒有結構化的回饋。"}]} />
+
+## 先用按鈕試做
+
+在全面改動之前，我先用每個平台都會用到的按鈕來測試這套做法。我邀請一位工程師一起參與，比較正式環境裡的按鈕和設計系統裡的按鈕。
+
+<Media id="audit" label="盤點時找到的按鈕和 chip 變體" src="/images/design-system-revamp/audit.webp" />
+
+這次試做把所有問題集中呈現出來：
+
+- **過時。** 沒有 auto layout 也沒有 properties，按鈕無法依照設計師的需求調整。
+- **缺少文件。** 使用說明又舊又不完整。
+- **沒有單一的標準來源。** 設計師各自做自己的版本，跟工程師做出來的落差越來越大。
+
+## 向其他團隊學習
+
+我也研究了其他公司怎麼經營設計系統，並讀了他們團隊分享的文章。
+
+<Media id="other-systems" label="其他團隊的設計系統：Material 3、iOS、Polaris 和 Microsoft Teams" src="/images/design-system-revamp/other-systems.webp" />
+
+加上這次試做，我們整理出每個元件都要做的三項改變：
+
+- **用 Figma 最新的功能重建。** Auto layout、properties 和 variants，當時還很新，現在已經是標準做法。
+- **文件放在 Figma 裡。** 放在元件旁邊，而不是另外一個 Notion 頁面，所有東西都在同一個地方。
+- **連結到程式碼。** 每個元件都告訴工程師對應的程式碼在哪裡，讓設計和開發保持同步。
+
+我向團隊和高階主管報告了按鈕的試做成果。回饋很正面，所以我們用同樣的方式處理其他所有元件。
+
+## 推動落地
+
+這樣的改版沒辦法一個人完成。我負責主導，並建立團隊的工作方式：
+
+<MediaRow items={[{"id":"rollout-owners","label":"負責人和進度追蹤試算表","src":"/images/design-system-revamp/rollout-owners.webp","title":"清楚的負責人。","text":"用一份試算表依照哪個團隊最常用，替每個元件指定負責人，並追蹤進度。"},{"id":"rollout-handbook","label":"更新元件的操作手冊","src":"/images/design-system-revamp/rollout-handbook.webp","title":"一本操作手冊。","text":"一步一步說明怎麼更新設計系統，讓每個人用同樣的方式工作。"},{"id":"rollout-update","label":"Slack 上的每週更新","src":"/images/design-system-revamp/rollout-update.webp","title":"每週更新。","text":"在 Slack 發一則更新，讓設計師、工程師和利害關係人都掌握進度。"}]} />
+
+## 元件庫的樣子
+
+現在每個元件都用同樣的版面：左邊是文件，右邊是變體，還有註解告訴工程師對應的程式碼。
+
+<Media id="library" label="改版前後的按鈕頁面" src="/images/design-system-revamp/library.webp" />
+
+Properties 和 variants 讓每個元件保持彈性，設計師不用再 detach。每個元件也列出它在 Android 和 iOS 上的程式碼名稱。
+
+<MediaRow items={[{"id":"library-properties","label":"透過 properties 調整按鈕的尺寸、類型和文字","src":"/images/design-system-revamp/library-properties.webp"},{"id":"library-code","label":"在 Figma 裡顯示按鈕的 Android 和 iOS 程式碼名稱","src":"/images/design-system-revamp/library-code.webp"}]} />
+
+## 成果
+
+<Stats items={[{"value":"+32%","label":"設計檔裡的元件覆蓋率"},{"value":"−11%","label":"設計交接給開發的時間"}]} />
+
+工程師也告訴我們，元件庫變得更好找，而設計和程式碼對得上，開發也變快了。
+
+## 接下來
+
+離開 Carousell 前，我把基礎打好了。之後的計畫是：先做語意化的色彩 token，再來是字型樣式、間距和陰影，全部用 Figma variables 和 modes 管理。
+
+## 回顧
+
+設計師也是使用者。及早問他們的意見，而不是自己悶著頭做，影響了每一個決定。設計系統也是團隊合作：信任大家、給他們清楚的負責範圍，比任何一個元件都重要。而且沒有一套適用所有人的設計系統，最好的那一套是符合團隊現況、建立在既有基礎上的。

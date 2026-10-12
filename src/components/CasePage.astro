@@ -1,0 +1,70 @@
+---
+/*
+  One case study or tool page, in either language.
+  Used by src/pages/[slug].astro, tools/[slug].astro and their /zh-tw copies.
+*/
+import { getEntry, render } from 'astro:content';
+import CaseStudy from '../layouts/CaseStudy.astro';
+import Media from './case/Media.astro';
+import Stats from './case/Stats.astro';
+import Hypothesis from './case/Hypothesis.astro';
+import MediaRow from './case/MediaRow.astro';
+import Annotated from './case/Annotated.astro';
+import VideoRow from './case/VideoRow.astro';
+import StepCompare from './case/StepCompare.astro';
+import FlowSwap from './case/FlowSwap.astro';
+import CompareSlider from './case/CompareSlider.astro';
+import VariantSwitch from './case/VariantSwitch.astro';
+import FlowSteps from './case/FlowSteps.astro';
+import TipCards from './case/TipCards.astro';
+import ClickMap from './case/ClickMap.astro';
+import DetailList from './case/DetailList.astro';
+import BlockBuilder from './case/BlockBuilder.astro';
+import IllustratedList from './case/IllustratedList.astro';
+import { t, type Lang } from '../i18n/ui';
+import { companies } from '../data/companies';
+
+interface Props {
+  entry: any;
+  lang: Lang;
+  kind: 'work' | 'tools';
+}
+const { entry, lang, kind } = Astro.props;
+const { Content, headings } = await render(entry);
+const d = entry.data;
+const zh = lang === 'zh-tw';
+const title = t(lang, `${kind}.${entry.id}.title`);
+const summary = t(lang, `${kind}.${entry.id}.summary`);
+
+// The same page in the other language, when it exists
+const enPath = kind === 'work' ? `/${entry.id}` : `/tools/${entry.id}`;
+const zhEntry = await getEntry(kind === 'work' ? 'workZh' : 'toolsZh', entry.id);
+const alternates = zhEntry ? { en: enPath, 'zh-tw': `/zh-tw${enPath}` } : {};
+
+// The company's app icon sits top left; hover turns it into the back arrow
+const company = companies.find((c) => c.name === d.company);
+const icon = kind === 'work' && company ? `/images/logos/${company.logo}-icon.png` : undefined;
+
+const labels = zh
+  ? { role: '角色', company: '公司', timeline: '時間', type: '類型' }
+  : { role: 'Role', company: 'Company', timeline: 'Timeline', type: 'Type' };
+const type = d.type ?? (kind === 'tools' ? t(lang, `tools.${entry.id}.type`) : undefined);
+---
+
+<CaseStudy
+  lang={lang}
+  alternates={alternates}
+  title={title}
+  icon={icon}
+  subtitle={d.subtitle ?? summary}
+  description={summary}
+  headings={headings.filter((h) => h.depth === 2)}
+  meta={[
+    { label: labels.role, value: d.role },
+    { label: labels.company, value: d.company },
+    { label: labels.timeline, value: d.timeline },
+    { label: labels.type, value: type },
+  ]}
+>
+  <Content components={{ Media, MediaRow, Annotated, VideoRow, StepCompare, FlowSwap, CompareSlider, VariantSwitch, FlowSteps, TipCards, ClickMap, DetailList, BlockBuilder, IllustratedList, Stats, Hypothesis }} />
+</CaseStudy>

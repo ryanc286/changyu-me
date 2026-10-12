@@ -1,0 +1,48 @@
+---
+company: "Personal"
+order: 3
+cover: /videos/vocab-translator/cover.mp4
+subtitle: "把選取的英文或日文翻成中文，存進 Notion，之後再複習"
+role: "設計和開發（搭配 AI）"
+timeline: "2026 年 6 月"
+type: "Chrome 擴充功能"
+notion: "https://app.notion.com/p/3f7eaff6ece381d787b3c4366000769a"
+---
+
+{/* Synced from Notion. Edit the case there, not here. */}
+
+<Media id="hero" label="翻譯網頁上的單字，並存進 Notion" video="/videos/vocab-translator/hero.mp4" poster="/videos/vocab-translator/hero.webp" />
+
+我在網路上讀英文或日文時，常常遇到想之後再學的單字。把它們複製到筆記裡會打斷閱讀，所以我做了一個瀏覽器擴充功能：選取文字、按下快捷鍵，就會翻成中文並存進 Notion，之後再複習。
+
+## 先規劃，再動手
+
+我請 AI 在規劃確定之前不要寫任何程式，每個決定我都確認過才往下走。有三個選擇決定了這個工具的樣子：
+
+- **從 Mac 捷徑改成擴充功能。** 我一開始用 macOS 捷徑，後來改成瀏覽器擴充功能，才能分享給其他人。
+- **用 DeepL 翻譯。** 翻得比較自然，也支援繁體中文。
+- **用 Notion 當單字本。** 每個人填入自己的 API 金鑰，大家的單字各自分開，也不會有人幫別人付翻譯費。
+
+## 怎麼運作
+
+在網頁上選取任何文字，按下 Ctrl+Y。卡片會顯示原文、發音和翻譯。可以存進 Notion，或點旁邊任何地方關掉。
+
+<Media id="card" label="卡片：原文、發音和翻譯" video="/videos/vocab-translator/card.mp4" poster="/videos/vocab-translator/card.webp" progress />
+
+## 細節
+
+<MediaRow layout="split" items={[{"id":"detail-duplicate","label":"已經存過的單字，按鈕變成停用","src":"/images/vocab-translator/detail-duplicate.webp","title":"不會重複。","text":"如果單字已經存過，按鈕會停用並顯示已儲存。比對時會忽略大小寫和多餘的空格。"},{"id":"detail-pronunciation","label":"英文的 IPA 音標和日文的平假名，加上播放按鈕","src":"/images/vocab-translator/detail-pronunciation.webp","title":"聽得到也看得懂。","text":"英文顯示 IPA 音標，日文顯示平假名，還有一個播放按鈕，用瀏覽器內建的語音唸出來。"}]} />
+
+## 一些小狀況
+
+- **快捷鍵已經被占用。** Cmd+Y 會打開 Chrome 的瀏覽紀錄，所以擴充功能一直收不到。我把它改成 Ctrl+Y。
+- **按鈕被某些網站蓋住。** 在有自訂游標的網站上，播放按鈕上面多了一層看不見的圖層。我讓卡片上的按鈕優先接收點擊。
+
+## 接下來
+
+- 上架到 Chrome 和 Edge 的商店。還需要一個圖示和一個隱私權頁面。
+- 做成桌面 App，讓它在瀏覽器以外的文字也能用，例如 PDF 和 email。
+
+## 我學到的事
+
+身為自己的使用者，我最在意的是不要打斷閱讀。幾乎每個決定都回到這一點：用快捷鍵而不是選單，以及一鍵就能關掉的卡片。

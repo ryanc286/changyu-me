@@ -1,0 +1,88 @@
+---
+company: Carousell
+order: 5
+cover: /images/notification-center/cover.webp
+subtitle: "點擊率 +20%、訂單完成率 +11%"
+role: "端到端設計、使用者研究"
+timeline: "2022 年 12 月–2023 年 7 月"
+type: "改版"
+notion: "https://app.notion.com/p/3f7eaff6ece381b5b804e5702f751411"
+---
+
+{/* Synced from Notion. Edit the case there, not here. */}
+
+<Media id="hero" label="新的動態頁" src="/images/notification-center/hero.webp" />
+
+動態頁是 Carousell 最常被使用的畫面之一，80% 的每日活躍使用者會打開它，查看帳號和訂單的狀況。但重要的訂單更新被埋在行銷橫幅和促銷訊息底下，大家也不知道下一步該做什麼。我重新設計了這個頁面，幫助大家處理真正重要的事，完成更多訂單。
+
+## 盤點現況
+
+我看了六個月內各區塊的點擊占比，也檢視了資訊架構。有三個問題特別明顯：
+
+- **行銷占了版面，卻沒有點擊。** 橫幅、公司消息和促銷的點擊很少，卻占了畫面的一大塊。
+- **沒有清楚的層級。** 每個區塊看起來都一樣重要，沒有東西引導視線。
+- **重要的更新很難找。** 大家真正會用的帳號和商品更新，被擠到頁面下方。
+
+<ClickMap id="old-activity" label="動態頁各區塊的點擊占比，六個月" src="/images/notification-center/old-activity.webp" items={[{"title":"行銷橫幅","value":"2.4%"},{"title":"Carousell 消息和已儲存的搜尋","value":"12.5%"},{"title":"行銷訊息","value":"2.8%"},{"title":"帳號和商品動態","value":"82%","highlight":true},{"title":"其他","value":"0.3%"}]} />
+
+## 向其他產品學習
+
+我研究了其他產品怎麼處理通知，有三種做法一再出現：**分類**、**視覺層級**，以及**已讀和未讀標記**。
+
+## 轉折點
+
+我把這些做法變成概念設計，但概念越做越多，團隊討論也來來回回，一直沒有明確的方向。競品只能告訴我們別人怎麼做，沒辦法告訴我們使用者需要什麼。所以我停下來不再做概念，改提議做使用者訪談。
+
+<Media id="early-concepts" label="越做越多的早期概念" src="/images/notification-center/early-concepts.webp" />
+
+## 使用者訪談
+
+我訪談了 5 個人，涵蓋四個主要族群：買家、賣家、兩者都有的人，以及專業賣家。每場訪談分成兩部分：卡片分類，接著是概念測試。
+
+<MediaRow items={[{"id":"interview-session","label":"受訪者操作舊的動態頁","src":"/images/notification-center/interview-session.webp"},{"id":"interview-participant","label":"一場遠端訪談","src":"/images/notification-center/interview-participant.webp"}]} />
+
+**卡片分類。** 每個人把真實的通知分成他們覺得合理的群組，一邊分一邊說出想法。有兩種分法一再出現：依主題（買、賣、促銷）和依緊急程度。
+
+<Media id="research" label="卡片分類的結果，依主題和緊急程度分組" src="/images/notification-center/research.webp" />
+
+**概念測試。** 接著他們試用三個概念。A 把通知收在分類 icon 後面，B 用單一列表、上方加上篩選，C 則混合了分類 icon 和單一列表。B 最符合大家分類通知的方式，用起來也最順。
+
+<Media id="concepts" label="概念 A、B 和 C" src="/images/notification-center/concepts.webp" />
+
+根據研究結果，我依照大家對通知的想法定下幾個原則：他們怎麼分類、怎麼看待每種通知，以及哪些通知他們通常會忽略。這些原則決定了後來的設計。
+
+## 最終設計
+
+舊的動態頁以行銷為主。新的「更新」頁把需要處理的事放在最前面，並提供待辦、動態、客服和促銷的篩選。拖曳中間的線比較前後差異。
+
+<CompareSlider before={[{"id":"old-activity","label":"舊的動態頁","src":"/images/notification-center/old-activity.webp"}]} after={[{"id":"new-updates","label":"新的更新頁","src":"/images/notification-center/new-updates.webp"}]} />
+
+## 更多細節
+
+<DetailList items={[{"id":"detail-urgent","label":"緊急的放最上面，加上倒數計時","src":"/images/notification-center/detail-urgent.webp","title":"緊急的放最上面。","text":"通知依主題和緊急程度分組，緊急的會有倒數計時和明確的按鈕。"},{"id":"detail-timeline","label":"一筆訂單一條時間軸","src":"/images/notification-center/detail-timeline.webp","title":"一筆訂單一條時間軸。","text":"同一筆訂單的更新疊成一個可以展開的項目，不會漏掉，列表也不會太長。"},{"id":"detail-bundled","label":"按讚合併成一則","src":"/images/notification-center/detail-bundled.webp","title":"小事打包在一起。","text":"同一類、不太重要的更新，例如商品被按讚，會合併成一則。"},{"id":"detail-marketing","label":"行銷變成一則通知","src":"/images/notification-center/detail-marketing.webp","title":"行銷變成通知。","text":"橫幅改成通知的樣式，更容易快速瀏覽，活動也一樣會被看到。"}]} />
+
+## 讓行銷團隊一起參與
+
+在高流量頁面上改動行銷版位，是整個專案風險最高的部分，因為那些位置屬於行銷團隊。我沒有跟他們爭論意見，而是拿出舊橫幅六個月的點擊數據。為了確保新形式不是降級，通知樣式的版位可以放圖片、文字或影片，活動的呈現方式一樣多元。行銷團隊同意了，我們也一起辦了工作坊，決定活動通知的運作方式。
+
+## 響應式網頁設計
+
+網頁版原本沒有動態頁。我設計了響應式版本，讓大家在任何螢幕上都能看到一樣的更新。
+
+<Media id="web" label="桌機網頁版的更新頁（含快速預覽面板）和手機網頁版" src="/images/notification-center/web.webp" />
+
+## 讓所有人達成共識
+
+這次改動牽涉到很多團隊，所以我在技術部門的全員大會上，向整個技術部門包含 C-level 主管報告設計，並回答大家的問題。
+
+<Media id="town-hall" label="技術部門全員大會的簡報" src="/images/notification-center/town-hall.webp" />
+
+## 成果
+
+<Stats items={[{"value":"+20%","label":"訂單更新的點擊率"},{"value":"+11%","label":"訂單完成率"}]} />
+
+## 回顧
+
+先找證據，再探索。我在了解自己的使用者之前，花了太多時間做來自競品研究的概念。競品能給靈感，但不能當證據。五場訪談，幾天內就解決了討論好幾週的問題。
+
+一個畫面也要服務很多不同的人。對偶爾買東西的買家有幫助的版面，可能會拖慢有幾十筆訂單的賣家。及早點出這些取捨，並回頭看過去的研究，讓我們不用重做已經試過的想法。

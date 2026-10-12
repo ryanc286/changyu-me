@@ -1,0 +1,13 @@
+---
+/* Chinese tool pages, from src/content/tools-zh-tw */
+import { getCollection } from 'astro:content';
+import CasePage from '../../../components/CasePage.astro';
+
+export async function getStaticPaths() {
+  const tools = await getCollection('toolsZh', ({ data }) => !data.link);
+  return tools.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+---
+
+<CasePage entry={entry} lang="zh-tw" kind="tools" />

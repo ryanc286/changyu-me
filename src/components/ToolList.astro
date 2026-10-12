@@ -8,6 +8,9 @@ interface Props {
 const { lang } = Astro.props;
 
 const items = (await getCollection('tools')).sort((a, b) => a.data.order - b.data.order);
+// Chinese homepage links to the Chinese page when there is one
+const zhIds = new Set(lang === 'zh-tw' ? (await getCollection('toolsZh')).map((e) => e.id) : []);
+const href = (id: string) => (zhIds.has(id) ? `/zh-tw/tools/${id}` : `/tools/${id}`);
 ---
 
 <section aria-labelledby="tools-title">
@@ -17,7 +20,7 @@ const items = (await getCollection('tools')).sort((a, b) => a.data.order - b.dat
       items.map(({ id, data }) => (
         <li>
           <a
-            href={data.link ?? `/tools/${id}`}
+            href={data.link ?? href(id)}
             class="row"
             data-preview-link
             data-cover={data.cover}

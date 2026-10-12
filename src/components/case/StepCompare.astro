@@ -16,11 +16,13 @@ interface Props {
   after: Step[];
 }
 const { before, after } = Astro.props;
+import { caseText } from '../../i18n/case';
+const L = caseText(Astro.url);
 ---
 
 <figure class="step-compare">
   <div class="col">
-    <p class="head">Before <span>{before.length} steps</span></p>
+    <p class="head">{L.before} <span>{L.steps(before.length)}</span></p>
     <ol>
       {
         before.map((s, i) => (
@@ -37,7 +39,7 @@ const { before, after } = Astro.props;
     <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
   </div>
   <div class="col">
-    <p class="head">After <span>{after.length} steps</span></p>
+    <p class="head">{L.after} <span>{L.steps(after.length)}</span></p>
     <ol class="after">
       {
         after.map((s, i) => (

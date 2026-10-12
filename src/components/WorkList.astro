@@ -10,6 +10,9 @@ const { lang } = Astro.props;
 const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
 );
+// Chinese homepage links to the Chinese case when there is one
+const zhIds = new Set(lang === 'zh-tw' ? (await getCollection('workZh')).map((e) => e.id) : []);
+const href = (id: string) => (zhIds.has(id) ? `/zh-tw/${id}` : `/${id}`);
 const groups = [...companies]
   .sort((a, b) => a.order - b.order)
   .map((c) => ({ company: c, cases: items.filter((i) => i.data.company === c.name) }))
@@ -36,7 +39,7 @@ const groups = [...companies]
               return (
                 <li>
                   <a
-                    href={`/${id}`}
+                    href={href(id)}
                     class="project"
                     data-preview-link
                     data-cover={data.cover}

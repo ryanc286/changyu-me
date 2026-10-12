@@ -1,0 +1,74 @@
+---
+company: Carousell
+order: 4
+cover: /images/sign-up-flow/cover.webp
+subtitle: "註冊完成率 +22%、新使用者 +13%"
+role: "端到端設計、使用者研究"
+timeline: "2022 年 7–10 月"
+type: "成長"
+notion: "https://app.notion.com/p/3f7eaff6ece3816dbd56d2332a06b241"
+---
+
+{/* Synced from Notion. Edit the case there, not here. */}
+
+<Media id="hero" label="新的三步驟註冊" src="/images/sign-up-flow/hero.webp" />
+
+Carousell 是一個二手買賣平台，市場橫跨東南亞、台灣和香港。到了 2022 年，只有 60% 的新使用者完成註冊，每十個人就有四個在開始之前就離開了。我主導了註冊流程的改版，減少阻力，也給大家一個留下來的理由。
+
+## 大家在哪裡流失
+
+六個月的漏斗數據顯示，流失最多的不是建立帳號，而是建立帳號之後的個人化步驟：選興趣、追蹤賣家、設定動態。我們要求大家對一個還沒用過的產品做選擇。
+
+<Media id="funnel" label="舊的註冊漏斗，以及每一步的流失" src="/images/sign-up-flow/funnel.webp" />
+
+我訪談了 8 位使用者，涵蓋三個族群：新手、偶爾使用的人和活躍賣家。同一件事一再出現：大家還沒決定要怎麼用之前，App 就一直把他們推向賣家的身分。有一個人說：「我覺得好像非得賣點什麼不可。」
+
+<Media id="interviews" label="把訪談筆記對應到每個註冊步驟" src="/images/sign-up-flow/interviews.webp" />
+
+- **太多、太早。** 大家還沒看到 Carousell 有什麼，就得先做選擇。這些步驟沒有錯，只是放錯了地方。
+- **錯誤的第一印象。** 以賣家為主的選項讓買家覺得被冷落。一個流程想同時服務買家、偶爾賣東西的人和商家，結果哪個都不合適。
+- **畫面不清楚。** 舊的介面樣式和含糊的說明讓人猶豫。
+
+我研究的優秀二手買賣 App 都反過來做：先讓大家快速體驗到有用的地方，之後再問偏好。
+
+<MediaRow items={[{"id":"comp-grab","label":"Grab 的註冊流程","src":"/images/sign-up-flow/comp-grab.webp"},{"id":"comp-depop","label":"Depop 的註冊流程","src":"/images/sign-up-flow/comp-depop.webp"}]} />
+
+<MediaRow items={[{"id":"comp-gojek","label":"Gojek 的註冊流程","src":"/images/sign-up-flow/comp-gojek.webp"},{"id":"comp-asos","label":"ASOS 的註冊流程","src":"/images/sign-up-flow/comp-asos.webp"}]} />
+
+<Hypothesis>先讓大家看到產品，之後再問問題，就會有更多人完成註冊。</Hypothesis>
+
+## 最好的解法只能先等等
+
+為了決定要解決什麼，我和 PM、研究員辦了一場工作坊。最後我們聚焦在一個問題：怎麼讓註冊流程符合每個人來的目的？
+
+最有力的想法是個人化的開始：讓大家選擇自己是買家、偶爾賣東西的人還是商家，各自走不同的流程。它直接解決了錯誤的第一印象，但需要大量的後端工作，而時程已經很緊了。
+
+所以我和 PM 做了一個決定：現在就推出一個明顯更好的註冊流程，而不是之後才推出完美的版本。我們把專案拆成兩階段。第一階段做影響最大、成本最低的改動，個人化的開始移到第二階段。
+
+## 上線的內容
+
+<Media id="final-flow" label="新的註冊流程，一個畫面接一個畫面" src="/images/sign-up-flow/final-flow.webp" />
+
+- **個人化移到註冊之後。** 選興趣、追蹤賣家和設定動態都移到註冊完成、大家看過產品之後。
+- **更輕量的個人化。** 只問性別和年齡。推薦內容會自己調整，不用請大家自己設定。
+- **新的設計系統。** 換掉舊元件、重寫說明，每個畫面的層級也更清楚。
+
+<CompareSlider before={[{"id":"before-1","label":"探索","src":"/images/sign-up-flow/before-1.webp"},{"id":"before-2","label":"註冊","src":"/images/sign-up-flow/before-2.webp"},{"id":"before-3","label":"開啟通知","src":"/images/sign-up-flow/before-3.webp"},{"id":"before-4","label":"賣掉你的手機","src":"/images/sign-up-flow/before-4.webp","gone":true},{"id":"before-5","label":"選擇興趣","src":"/images/sign-up-flow/before-5.webp","gone":true},{"id":"before-6","label":"追蹤賣家","src":"/images/sign-up-flow/before-6.webp","gone":true},{"id":"before-7","label":"首頁","src":"/images/sign-up-flow/before-7.webp"}]} after={[{"id":"after-1","label":"註冊方式","src":"/images/sign-up-flow/after-1.webp"},{"id":"after-2","label":"建立帳號","src":"/images/sign-up-flow/after-2.webp"},{"id":"after-3","label":"簡短的個人資料","src":"/images/sign-up-flow/after-3.webp"},{"id":"after-4","label":"開啟通知","src":"/images/sign-up-flow/after-4.webp"},{"id":"after-5","label":"首頁","src":"/images/sign-up-flow/after-5.webp"}]} />
+
+在網頁版，我把日期選擇器、下拉選單和權限提示這些原生元件，改用網頁的設計模式重做，讓兩個版本用起來一樣。
+
+<Media id="web" label="網頁版的註冊，桌機和手機" src="/images/sign-up-flow/web.webp" />
+
+## 成果
+
+第一階段如期上線。
+
+<Stats items={[{"value":"+22%","label":"註冊完成率"},{"value":"+13%","label":"新使用者"}]} />
+
+## 如果重來一次
+
+逼我們拆分工作的截止日，也讓我們看清楚什麼最重要。就算沒有個人化的開始，第一階段也拿到了大部分的成效。
+
+但第二階段一直沒有上線。沒有範圍、沒有日期的第二階段，只是一個好意。下次我會在第一階段上線前，就先規劃好第二階段。
+
+我也會改看別的指標。完成註冊不是真正的目標，使用產品才是。我會先定義哪個第一週的行為最能預測使用者會不會留下來，再把註冊流程設計成引導大家去做那件事。

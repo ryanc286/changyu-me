@@ -27,11 +27,13 @@ interface Props {
 }
 const { steps } = Astro.props;
 const uid = `fs-${steps[0]?.id ?? 'flow'}`;
+import { caseText } from '../../i18n/case';
+const L = caseText(Astro.url);
 ---
 
 <figure class="flow-steps" data-flow-steps>
   <div class="stage">
-    <div class="bar" role="tablist" aria-label="Steps in the flow">
+    <div class="bar" role="tablist" aria-label={L.flowSteps}>
       {
         steps.map((s, i) => (
           <>

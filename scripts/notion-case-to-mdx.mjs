@@ -48,9 +48,11 @@
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
   - Headings, paragraphs, lists, bold            -> plain Markdown
   Writes to src/content/work/<slug>.mdx, or src/content/tools/<slug>.mdx for tools.
+  Pages with 語言 = 中文 are the Chinese version of the same Slug and go to
+  src/content/work-zh-tw/ or src/content/tools-zh-tw/.
   Keeps company (cases), order, cover and link from the existing file. 狀態 = 草稿 is not synced.
 */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 
 const raw = readFileSync(process.argv[2], 'utf8');
 const props = JSON.parse(raw.match(/<properties>\s*([\s\S]*?)\s*<\/properties>/)[1]);
@@ -66,14 +68,19 @@ if (props['狀態'] === '草稿') {
 const workFile = new URL(`../src/content/work/${slug}.mdx`, import.meta.url);
 const toolFile = new URL(`../src/content/tools/${slug}.mdx`, import.meta.url);
 const isTool = !existsSync(workFile) && existsSync(toolFile);
-const file = isTool ? toolFile : workFile;
-if (!existsSync(file)) throw new Error(`No case or tool file for "${slug}". Add it to the site first.`);
+const enFile = isTool ? toolFile : workFile;
+if (!existsSync(enFile)) throw new Error(`No case or tool file for "${slug}". Add it to the site first.`);
+// 語言 = 中文: the Chinese version, written to work-zh-tw/ or tools-zh-tw/
+const zh = props['語言'] === '中文';
+const file = zh ? new URL(`../src/content/${isTool ? 'tools' : 'work'}-zh-tw/${slug}.mdx`, import.meta.url) : enFile;
+mkdirSync(new URL('.', file), { recursive: true });
 
-// Keep structural fields from the current file
-const current = readFileSync(file, 'utf8');
+// Keep structural fields from the English file
+const current = existsSync(file) ? readFileSync(file, 'utf8') : '';
+const enCurrent = readFileSync(enFile, 'utf8');
 const keep = {};
 for (const k of ['company', 'order', 'cover', 'draft', 'link']) {
-  const m = current.match(new RegExp(`^${k}: (.*)$`, 'm'));
+  const m = enCurrent.match(new RegExp(`^${k}: (.*)$`, 'm'));
   if (m) keep[k] = m[1];
 }
 
@@ -371,4 +378,4 @@ const front = [
 const next = `${front}\n\n{/* Synced from Notion. Edit the case there, not here. */}\n\n${body}\n`;
 const changed = next !== current;
 writeFileSync(file, next);
-console.log(`${slug}: ${changed ? 'updated' : 'no changes'} (${blocks.length} blocks)`);
+console.log(`${slug}${zh ? ' (中文)' : ''}: ${changed ? 'updated' : 'no changes'} (${blocks.length} blocks)`);

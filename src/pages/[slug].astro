@@ -1,57 +1,12 @@
 ---
-import { getCollection, render } from 'astro:content';
-import CaseStudy from '../layouts/CaseStudy.astro';
-import Media from '../components/case/Media.astro';
-import Stats from '../components/case/Stats.astro';
-import Hypothesis from '../components/case/Hypothesis.astro';
-import MediaRow from '../components/case/MediaRow.astro';
-import Annotated from '../components/case/Annotated.astro';
-import VideoRow from '../components/case/VideoRow.astro';
-import StepCompare from '../components/case/StepCompare.astro';
-import FlowSwap from '../components/case/FlowSwap.astro';
-import CompareSlider from '../components/case/CompareSlider.astro';
-import VariantSwitch from '../components/case/VariantSwitch.astro';
-import FlowSteps from '../components/case/FlowSteps.astro';
-import TipCards from '../components/case/TipCards.astro';
-import ClickMap from '../components/case/ClickMap.astro';
-import DetailList from '../components/case/DetailList.astro';
-import BlockBuilder from '../components/case/BlockBuilder.astro';
-import IllustratedList from '../components/case/IllustratedList.astro';
-import { t } from '../i18n/ui';
-import { companies } from '../data/companies';
+import { getCollection } from 'astro:content';
+import CasePage from '../components/CasePage.astro';
 
 export async function getStaticPaths() {
-  const work = (await getCollection('work', ({ data }) => !data.draft)).sort(
-    (a, b) => a.data.order - b.data.order,
-  );
-  return work.map((entry) => ({
-    params: { slug: entry.id },
-    props: { entry },
-  }));
+  const work = await getCollection('work', ({ data }) => !data.draft);
+  return work.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
-
 const { entry } = Astro.props;
-const { Content, headings } = await render(entry);
-const d = entry.data;
-const title = t('en', `work.${entry.id}.title`);
-const summary = t('en', `work.${entry.id}.summary`);
-// The company's app icon sits top left; hover turns it into the back arrow
-const company = companies.find((c) => c.name === d.company);
-const icon = company ? `/images/logos/${company.logo}-icon.png` : undefined;
 ---
 
-<CaseStudy
-  title={title}
-  icon={icon}
-  subtitle={d.subtitle ?? summary}
-  description={summary}
-  headings={headings.filter((h) => h.depth === 2)}
-  meta={[
-    { label: 'Role', value: d.role },
-    { label: 'Company', value: d.company },
-    { label: 'Timeline', value: d.timeline },
-    { label: 'Type', value: d.type },
-  ]}
->
-  <Content components={{ Media, MediaRow, Annotated, VideoRow, StepCompare, FlowSwap, CompareSlider, VariantSwitch, FlowSteps, TipCards, ClickMap, DetailList, BlockBuilder, IllustratedList, Stats, Hypothesis }} />
-</CaseStudy>
+<CasePage entry={entry} lang="en" kind="work" />

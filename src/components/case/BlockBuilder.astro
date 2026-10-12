@@ -29,6 +29,8 @@ const SPOTS: [number, number][] = [
   [17, 92],
 ];
 const TILT = [-6, 5, 4, -5, -3, 6];
+import { caseText } from '../../i18n/case';
+const L = caseText(Astro.url);
 ---
 
 <div class="block-builder" data-block-builder style={`--n:${blocks.length}`}>
@@ -47,7 +49,7 @@ const TILT = [-6, 5, 4, -5, -3, 6];
           </div>
         </div>
       </div>
-      <span class="hint" aria-hidden="true">Scroll inside the phone</span>
+      <span class="hint" aria-hidden="true">{L.scrollPhone}</span>
       <div class="flyers" aria-hidden="true">
         {
           blocks.map((b, i) => (
