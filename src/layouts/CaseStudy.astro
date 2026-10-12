@@ -312,9 +312,11 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
   }
   .title h1 {
     margin: 0;
+    font-family: var(--font-serif);
     font-size: 1.375rem;
     line-height: 1.25;
-    font-weight: 600;
+    font-weight: 500;
+    letter-spacing: -0.01em;
     color: var(--color-text);
     text-wrap: balance;
   }
@@ -360,8 +362,9 @@ const nav = headings.length ? [{ slug: 'intro', text: 'Intro' }, ...headings] : 
   }
   .prose :global(h2) {
     margin: var(--space-5) 0 var(--space-2);
+    font-family: var(--font-serif);
     font-size: var(--text-base);
-    font-weight: 600;
+    font-weight: 500;
     color: var(--color-text);
     scroll-margin-top: 72px;
   }
