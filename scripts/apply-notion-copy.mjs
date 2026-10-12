@@ -15,7 +15,7 @@ const copy = JSON.parse(readFileSync(COPY, 'utf8'));
 const rows = JSON.parse(readFileSync(process.argv[2], 'utf8'));
 
 // Link markers that must stay in the text (see CopyWithLinks.astro)
-const MARKERS = { 'home.intro': 'PAYPAY', 'home.previously': 'CAROUSELL', 'home.outside': 'AAPD' };
+const MARKERS = { 'home.previously': ['PAYPAY', 'CAROUSELL'], 'home.outside': ['AAPD'] };
 
 const clean = (s) => (s ?? '').replace(/ /g, ' ').trim();
 const byKey = new Map(rows.map((r) => [clean(r.Key), r]));
@@ -38,8 +38,7 @@ for (const entry of copy) {
       entry[field] = next;
     }
   }
-  const marker = MARKERS[entry.key];
-  if (marker) {
+  for (const marker of MARKERS[entry.key] ?? []) {
     for (const f of ['en', 'zh-tw']) {
       const n = entry[f].split(`{${marker}}`).length - 1;
       if (n !== 1) errors.push(`${entry.key} [${f}] must contain {${marker}} exactly once`);

@@ -9,16 +9,16 @@
   {
     "key": "home.intro",
     "section": "首頁 · 開頭",
-    "note": "標題下第一段。{PAYPAY} 會變成有 hover 卡片的連結，請保留這個記號",
-    "en": "I care about systems thinking and asking the right questions. I use quick AI prototypes to test ideas early, and turn messy problems into products people trust. At {PAYPAY}, I make paying and managing money simple for 65M+ users, even when the rules behind it are not.",
-    "zh-tw": "我重視系統思考，也重視問對問題。我常用 AI 快速做原型，及早驗證想法，把複雜混亂的問題做成讓人信任的產品。在 {PAYPAY}，我讓超過 6,500 萬名使用者付款和理財都很簡單，就算背後的規則一點也不簡單。"
+    "note": "標題下第一段",
+    "en": "I care about systems thinking and asking the right questions. I use quick AI prototypes to test ideas early, and turn messy problems into products people trust.",
+    "zh-tw": "我重視系統思考，也重視問對問題。我常用 AI 快速做原型，及早驗證想法，把複雜混亂的問題做成讓人信任的產品。"
   },
   {
     "key": "home.previously",
     "section": "首頁 · 開頭",
-    "note": "標題下第二段。{CAROUSELL} 會變成有 hover 卡片的連結，請保留這個記號",
-    "en": "Previously, I worked on growth and engagement at {CAROUSELL} across Taiwan and Singapore, where I rebuilt sign-up and the notification center.",
-    "zh-tw": "在這之前，我在 {CAROUSELL} 負責成長和使用者互動，橫跨台灣和新加坡市場，重新設計了註冊流程和通知中心。"
+    "note": "標題下第二段。{PAYPAY}、{CAROUSELL} 會變成有 hover 卡片的連結，請保留這兩個記號",
+    "en": "At {PAYPAY}, I make paying and managing money simple for 65M+ users, even when the rules behind it are not. Previously, I worked on growth and engagement at {CAROUSELL} across Taiwan and Singapore, where I rebuilt sign-up and the notification center.",
+    "zh-tw": "在 {PAYPAY}，我讓超過 6,500 萬名使用者付款和理財都很簡單，就算背後的規則一點也不簡單。在這之前，我在 {CAROUSELL} 負責成長和使用者互動，橫跨台灣和新加坡市場，重新設計了註冊流程和通知中心。"
   },
   {
     "key": "home.outside",
