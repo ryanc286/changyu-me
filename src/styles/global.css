@@ -87,17 +87,17 @@ img {
   }
 }
 
-/* Traditional Chinese: a bit more line height and air between characters */
+/* Traditional Chinese: no extra letter spacing, a little more line height than English */
 :lang(zh-Hant-TW) body,
 html:lang(zh-Hant-TW) {
-  --leading: 1.85;
+  --leading: 1.7;
 }
 html:lang(zh-Hant-TW) body {
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
 }
 html:lang(zh-Hant-TW) h1 {
-  line-height: 1.55;
-  letter-spacing: 0.03em;
+  line-height: 1.45;
+  letter-spacing: 0;
 }
 
 /*
