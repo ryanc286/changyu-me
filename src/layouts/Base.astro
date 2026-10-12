@@ -21,6 +21,8 @@ const description = Astro.props.description ?? t(lang, 'meta.description');
 // Clean URL (no .html, no /index) to match how Vercel serves pages
 const cleanPath = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/';
 const canonical = new URL(cleanPath, Astro.site);
+// Share image for link previews (LinkedIn, Slack...): one per language
+const ogImage = new URL(lang === 'zh-tw' ? '/og-zh-tw.png' : '/og.png', Astro.site);
 const altEntries = Object.entries(alternates) as [Lang, string][];
 const hasOtherLang = altEntries.some(([l]) => l !== lang);
 ---
@@ -100,7 +102,13 @@ const hasOtherLang = altEntries.some(([l]) => l !== lang);
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta property="og:site_name" content="Chang Yu" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
   </head>
   <body>
     <div class="top-controls">
