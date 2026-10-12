@@ -20,9 +20,9 @@
   --shadow-float: 0 8px 24px rgb(0 0 0 / 0.08);
 
   /* Type */
-  --font-sans: 'IBM Plex Sans', 'IBM Plex Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
-  /* Headings: the serif cut of Plex; Chinese falls back to Plex Sans TC */
-  --font-serif: 'IBM Plex Serif', 'IBM Plex Sans TC', 'PingFang TC', 'Microsoft JhengHei', Georgia, serif;
+  /* Body text in Inter, headings in IBM Plex Sans; Chinese uses Plex Sans TC in both */
+  --font-sans: 'Inter Variable', 'IBM Plex Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
+  --font-heading: 'IBM Plex Sans', 'IBM Plex Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
   --text-sm: 0.875rem;   /* 14px */
   --text-base: 1rem;     /* 16px */

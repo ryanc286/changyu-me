@@ -1,7 +1,7 @@
 @import '@fontsource/ibm-plex-sans/400.css';
 @import '@fontsource/ibm-plex-sans/500.css';
 @import '@fontsource/ibm-plex-sans/600.css';
-@import '@fontsource/ibm-plex-serif/500.css';
+@import '@fontsource-variable/inter';
 @import '@fontsource/ibm-plex-mono/400.css';
 @import './plex-sans-tc.css';
 @import './tokens.css';
@@ -26,6 +26,11 @@ body {
   font-size: var(--text-base);
   line-height: var(--leading);
   -webkit-font-smoothing: antialiased;
+}
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
 }
 
 a {
