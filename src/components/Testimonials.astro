@@ -65,7 +65,8 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       {/* Phones: a half sheet with the chosen person's words */}
       <dialog class="tsheet" aria-labelledby="tsheet-name">
         <div class="scrim" data-close />
-        <div class="panel">
+        {/* Focus lands on the sheet itself, not the close button, so no ring flashes on open */}
+        <div class="panel" tabindex="-1" autofocus>
           <div class="drag">
             <div class="grab" aria-hidden="true"><span /></div>
             <div class="who">
@@ -244,7 +245,8 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       border: 0;
       background: none;
       color: inherit;
-      overflow: hidden;
+      /* clip, not hidden: focusing inside must never scroll the sheet into place before it slides */
+      overflow: clip;
     }
     .tsheet::backdrop {
       background: transparent;
@@ -254,7 +256,8 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       inset: 0;
       background: rgb(0 0 0 / 0.32);
       opacity: 0;
-      transition: opacity 300ms var(--ease-out);
+      /* Closing is quicker than opening, like iOS sheets */
+      transition: opacity 220ms ease;
     }
     .panel {
       --sheet-bg: var(--color-bg);
@@ -266,8 +269,10 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       border-radius: 24px 24px 0 0;
       background: var(--sheet-bg);
       box-shadow: 0 -6px 28px rgb(0 0 0 / 0.18);
+      outline: none;
       transform: translateY(100%);
-      transition: transform 300ms var(--ease-out);
+      /* Closing: picks up speed as it leaves */
+      transition: transform 240ms cubic-bezier(0.4, 0, 1, 1);
     }
     :global(:root[data-theme='dark']) .scrim {
       background: rgb(0 0 0 / 0.55);
@@ -276,11 +281,43 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       --sheet-bg: #1a1a19;
       box-shadow: 0 -6px 28px rgb(0 0 0 / 0.6), inset 1px 1px 0 0 rgb(255 255 255 / 0.06);
     }
+    /* Opening: the iOS sheet curve, fast out and a long soft settle */
     .tsheet.in .scrim {
       opacity: 1;
+      transition: opacity 360ms ease;
     }
     .tsheet.in .panel {
       transform: none;
+      transition: transform 480ms cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    /* The words follow the sheet up a moment later */
+    .who,
+    .quote {
+      opacity: 0;
+      translate: 0 10px;
+      transition:
+        opacity 160ms ease,
+        translate 160ms ease;
+    }
+    .tsheet.in .who,
+    .tsheet.in .quote {
+      opacity: 1;
+      translate: 0 0;
+      transition:
+        opacity 320ms ease 80ms,
+        translate 480ms cubic-bezier(0.32, 0.72, 0, 1) 80ms;
+    }
+    .tsheet.in .quote {
+      transition-delay: 130ms;
+    }
+    /* Tapping a person gives a small press */
+    .person {
+      transition:
+        background-color var(--duration) var(--ease-out),
+        scale 160ms var(--ease-out);
+    }
+    .person:active {
+      scale: 0.96;
     }
     /* The top part is the drag area: pull down to close */
     .drag {
@@ -355,8 +392,17 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     .photo img,
     .float,
     .scrim,
-    .panel {
-      transition: none;
+    .panel,
+    .tsheet .who,
+    .tsheet .quote {
+      transition: none !important;
+    }
+    .who,
+    .quote {
+      translate: none;
+    }
+    .person:active {
+      scale: none;
     }
   }
 </style>
@@ -390,7 +436,8 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       panel.style.transform = '';
       sheet.showModal();
       document.documentElement.classList.add('sheet-open');
-      requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.add('in')));
+      panel.getBoundingClientRect(); // start from below the screen
+      sheet.classList.add('in');
     };
     const close = () => {
       if (closing || !sheet.open) return;
@@ -406,7 +453,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
         closing = false;
       };
       if (reduce) done();
-      else setTimeout(done, 300);
+      else setTimeout(done, 260);
     };
     people.forEach((p) =>
       p.addEventListener('click', () => {
