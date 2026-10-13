@@ -1,5 +1,6 @@
 ---
 import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { t, defaultLang, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
 const { lang = defaultLang } = Astro.props;
 const EMAIL = 'ryanchyy@gmail.com';
 // The resume link shows up once public/resume.pdf is added
-const hasResume = existsSync(new URL('../../public/resume.pdf', import.meta.url));
+const hasResume = existsSync(join(process.cwd(), 'public', 'resume.pdf'));
 ---
 
 <footer>
@@ -20,7 +21,7 @@ const hasResume = existsSync(new URL('../../public/resume.pdf', import.meta.url)
       hasResume && (
         <>
           <span aria-hidden="true">/</span>
-          <a href="/resume.pdf">{t(lang, 'footer.resume')}</a>
+          <a href="/resume.pdf" target="_blank" rel="noopener">{t(lang, 'footer.resume')}</a>
         </>
       )
     }

@@ -7,12 +7,16 @@ import Testimonials from './Testimonials.astro';
 import CopyWithLinks from './CopyWithLinks.astro';
 import HoverPreview from './HoverPreview.astro';
 import HandTitle from './HandTitle.astro';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { t, type Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
+// Resume link near the top, for people who come looking for it first
+const hasResume = existsSync(join(process.cwd(), 'public', 'resume.pdf'));
 ---
 
 <main class="container stack">
@@ -21,6 +25,16 @@ const { lang } = Astro.props;
       <p><CopyWithLinks lang={lang} text={t(lang, 'home.intro')} /></p>
       <p><CopyWithLinks lang={lang} text={t(lang, 'home.previously')} /></p>
       <p><CopyWithLinks lang={lang} text={t(lang, 'home.outside')} /></p>
+      {
+        hasResume && (
+          <p class="resume">
+            <a href="/resume.pdf" target="_blank" rel="noopener">
+              {t(lang, 'footer.resume')}
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </a>
+          </p>
+        )
+      }
     </section>
 
     <WorkList lang={lang} />
@@ -55,6 +69,19 @@ const { lang } = Astro.props;
   p {
     margin: 0;
     color: var(--color-text-body);
+  }
+  .resume a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+  .resume svg {
+    transition: translate var(--duration) var(--ease-out);
+  }
+  .resume a:hover svg {
+    translate: 2px -2px;
   }
   @media (max-width: 520px) {
     .stack {
