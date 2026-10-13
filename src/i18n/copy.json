@@ -371,6 +371,13 @@
     "zh-tw": "封面"
   },
   {
+    "key": "footer.email",
+    "section": "介面文字",
+    "note": "頁尾的 Email 連結文字（點了會複製信箱）",
+    "en": "Email",
+    "zh-tw": "電子郵件"
+  },
+  {
     "key": "footer.resume",
     "section": "介面文字",
     "note": "底部連結",

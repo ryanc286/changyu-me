@@ -16,7 +16,7 @@ const hasResume = existsSync(join(process.cwd(), 'public', 'resume.pdf'));
   <nav aria-label={t(lang, 'footer.nav')}>
     <a href="https://www.linkedin.com/in/yu-chang-556222196/" target="_blank" rel="noopener">LinkedIn</a>
     <span aria-hidden="true">/</span>
-    <button type="button" class="copy" data-copy-email={EMAIL} title={EMAIL}>Email</button>
+    <button type="button" class="copy" data-copy-email={EMAIL} title={EMAIL}>{t(lang, 'footer.email')}</button>
     {
       hasResume && (
         <>
