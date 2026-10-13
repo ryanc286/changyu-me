@@ -180,6 +180,13 @@ for (const [word, kind] of [
     animation-duration: 380ms;
     animation-delay: 1200ms;
   }
+  /* When the page rises in, wait for the headline to settle before drawing */
+  :global(html.reveal.draw-title) .mark path {
+    animation-delay: 750ms;
+  }
+  :global(html.reveal.draw-title) .line path {
+    animation-delay: 1500ms;
+  }
   @keyframes draw {
     to {
       stroke-dashoffset: 0;

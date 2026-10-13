@@ -15,6 +15,22 @@ interface Props {
 const { lang } = Astro.props;
 ---
 
+<script is:inline>
+  /* First homepage view in a visit: content rises into place. Set before anything paints. */
+  (() => {
+    const html = document.documentElement;
+    if (html.dataset.page === 'case' || !('IntersectionObserver' in window)) return;
+    try {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (sessionStorage.getItem('homeRevealed')) return;
+      sessionStorage.setItem('homeRevealed', '1');
+    } catch {
+      return;
+    }
+    html.classList.add('reveal');
+  })();
+</script>
+
 <main class="container stack">
     <section class="intro">
       <h1><HandTitle lang={lang} /></h1>
@@ -30,7 +46,42 @@ const { lang } = Astro.props;
     <HoverPreview lang={lang} />
   </main>
 
+<script>
+  // Reveal each block as it comes into view; blocks that arrive together go one after another
+  if (document.documentElement.classList.contains('reveal')) {
+    const blocks = document.querySelectorAll<HTMLElement>(
+      'main.stack > .intro > *, main.stack > section:not(.intro), main.stack > footer',
+    );
+    const io = new IntersectionObserver(
+      (entries) => {
+        let i = 0;
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const el = e.target as HTMLElement;
+          el.style.transitionDelay = `${i++ * 90}ms`;
+          el.classList.add('in');
+          io.unobserve(el);
+          // Back to normal once settled, so nothing keeps a transform (fixed children stay fixed)
+          el.addEventListener('transitionend', () => el.style.removeProperty('transition-delay'), { once: true });
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px' },
+    );
+    blocks.forEach((b) => io.observe(b));
+  }
+</script>
+
 <style>
+  /* Rise into place: hidden until marked in, then a soft slide up */
+  :global(html.reveal main.stack > .intro > *, html.reveal main.stack > section:not(.intro), html.reveal main.stack > footer) {
+    transition:
+      opacity 600ms ease,
+      translate 800ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  :global(html.reveal main.stack > .intro > :not(.in), html.reveal main.stack > section:not(.intro, .in), html.reveal main.stack > footer:not(.in)) {
+    opacity: 0;
+    translate: 0 24px;
+  }
   .stack {
     display: flex;
     flex-direction: column;
