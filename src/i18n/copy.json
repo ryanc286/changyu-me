@@ -11,7 +11,7 @@
     "section": "首頁 · 開頭",
     "note": "標題下第一段",
     "en": "I start with the right questions and look at how the whole system fits together. Then I test ideas early with quick AI prototypes, so what ships is something people trust.",
-    "zh-tw": "我會先釐清對的問題，並引入系統性思考。並運用 AI 製作原型，及早驗證想法，確保最終推出的產品能真正讓使用者信任使用。"
+    "zh-tw": "我會先釐清對的問題，並引入系統性思考。接著運用 AI 製作原型，及早驗證想法，確保最終推出的產品能真正讓使用者信任使用。"
   },
   {
     "key": "home.previously",
@@ -144,7 +144,7 @@
     "section": "首頁 · 作品",
     "note": "hover 預覽裡的一句話",
     "en": "Turning a promo-heavy feed into a clear view of order updates, so more orders get completed",
-    "zh-tw": "把充滿促銷訊息的動態頁，變成易於追蹤訂單資訊，提高訂單完成率"
+    "zh-tw": "把充滿促銷訊息的動態頁，變成易於追蹤訂單的頁面，提高訂單完成率"
   },
   {
     "key": "work.notification-center.result",
