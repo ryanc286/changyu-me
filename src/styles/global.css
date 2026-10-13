@@ -16,6 +16,8 @@ html {
   /* Same width with or without a scrollbar, so case studies line up with the homepage behind them */
   scrollbar-gutter: stable;
   -webkit-text-size-adjust: 100%;
+  /* Never let anything push the page sideways on phones */
+  overflow-x: clip;
 }
 
 body {
