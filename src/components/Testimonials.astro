@@ -107,7 +107,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     width: 100%;
     padding: 16px 6px;
     border: 0;
-    border-radius: var(--radius);
+    border-radius: 14px;
     background: none;
     color: inherit;
     font: inherit;
@@ -205,9 +205,13 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     .person.on .photo img {
       filter: none;
     }
+    /* The chosen person's words, in the same tone as their highlighted card */
     .picked {
       display: block;
-      margin: 12px 0 0;
+      margin: 8px 0 0;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: var(--color-surface);
       color: var(--color-text-body);
     }
     .float {
