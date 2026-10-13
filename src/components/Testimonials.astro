@@ -1,7 +1,7 @@
 ---
 /*
   "What people I've worked with say": five people in a row (photo, name, title, company).
-  Wider screens: click someone and their words open below the row; the chosen card stays highlighted.
+  Wider screens: click someone and their words open below the row, with a notch pointing at them.
   Phones (600px and under): tap someone to read their words in a half sheet.
   Text lives in copy.json (testimonials.<n>.quote, testimonials.<n>.by = "Name, Title · Company"),
   synced with Notion. Photos: public/images/people/person-<n>.webp.
@@ -89,6 +89,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       <div class="expand" id="people-quote">
         <div class="expand-inner">
           <div class="bubble">
+            <span class="notch" aria-hidden="true" />
             <p class="bubble-quote" aria-live="polite" />
           </div>
         </div>
@@ -176,19 +177,38 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     display: none;
   }
 
-  /* Wider screens: the words open below the row in a plain panel */
+  /* Wider screens: the words open below the row, a notch points at who said them */
   .expand {
     height: 0;
     overflow: hidden;
     transition: height 300ms var(--ease-out);
   }
   .expand-inner {
+    /* Room for the notch above the bubble */
     padding-top: 12px;
   }
   .bubble {
+    position: relative;
     padding: 20px 24px;
     border-radius: 14px;
     background: var(--color-surface);
+  }
+  .notch {
+    position: absolute;
+    top: -7px;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px 0 0 0;
+    background: var(--color-surface);
+    translate: calc(var(--x, 0px) - 8px) 0;
+    rotate: 45deg;
+    transition:
+      translate 300ms var(--ease-out),
+      opacity 150ms ease;
+  }
+  .notch.off {
+    opacity: 0;
   }
   .bubble-quote {
     max-width: 68ch;
@@ -202,7 +222,6 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
   .person {
     cursor: pointer;
   }
-  /* The chosen person stays highlighted while their words are open */
   .person.on {
     background: var(--color-surface);
   }
@@ -390,6 +409,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
   @media (prefers-reduced-motion: reduce) {
     .photo img,
     .expand,
+    .notch,
     .bubble-quote,
     .scrim,
     .panel,
@@ -497,6 +517,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     const expand = section.querySelector<HTMLElement>('.expand')!;
     const inner = expand.querySelector<HTMLElement>('.expand-inner')!;
     const bubble = expand.querySelector<HTMLElement>('.bubble')!;
+    const notch = expand.querySelector<HTMLElement>('.notch')!;
     const words = expand.querySelector<HTMLElement>('.bubble-quote')!;
     let current: HTMLElement | null = null;
     let swapTimer = 0;
@@ -506,6 +527,15 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
         o.classList.toggle('on', o === p);
         o.setAttribute('aria-expanded', String(o === p));
       });
+    };
+    // Point the notch at the chosen person; hide it when they scroll out of the row
+    const aimNotch = () => {
+      if (!current) return;
+      const c = current.getBoundingClientRect();
+      const r = row.getBoundingClientRect();
+      const mid = c.left + c.width / 2;
+      notch.style.setProperty('--x', `${mid - bubble.getBoundingClientRect().left}px`);
+      notch.classList.toggle('off', mid < r.left + 12 || mid > r.right - 12);
     };
     const fit = () => {
       expand.style.height = `${inner.offsetHeight}px`;
@@ -520,13 +550,18 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       const wasOpen = !!current;
       select(p);
       if (!wasOpen) {
-        // Open: set the words, then grow
+        // Open: set the words, place the notch without sliding, then grow
         words.textContent = p.dataset.quote ?? '';
         words.classList.remove('swap');
+        notch.style.transition = 'none';
+        aimNotch();
+        notch.getBoundingClientRect();
+        notch.style.transition = '';
         fit();
         return;
       }
-      // Switch: the words fade out and back in, the height follows
+      // Switch: the notch slides over, the words fade out and back in, the height follows
+      aimNotch();
       words.classList.add('swap');
       swapTimer = window.setTimeout(
         () => {
@@ -544,6 +579,15 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
         p.focus();
       }
     });
+    row.addEventListener(
+      'scroll',
+      () => {
+        notch.style.transition = 'none';
+        aimNotch();
+        requestAnimationFrame(() => (notch.style.transition = ''));
+      },
+      { passive: true },
+    );
     addEventListener('resize', () => {
       if (!current) return;
       if (phone.matches) {
@@ -551,6 +595,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
         select(null);
         return;
       }
+      aimNotch();
       fit();
     });
 
