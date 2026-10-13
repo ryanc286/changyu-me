@@ -10,8 +10,8 @@
     "key": "home.intro",
     "section": "首頁 · 開頭",
     "note": "標題下第一段",
-    "en": "I care about systems thinking and asking the right questions. I use quick AI prototypes to test ideas early, and turn messy problems into products people trust.",
-    "zh-tw": "我重視系統思考，也重視提出對的問題。我習慣用 AI 快速製作原型、及早驗證想法，把複雜的問題轉化為值得信賴的產品。"
+    "en": "I start with the right questions and look at how the whole system fits together. Then I test ideas early with quick AI prototypes, so what ships is something people trust.",
+    "zh-tw": "我會先提出對的問題，並從整體系統的角度思考。接著用 AI 快速製作原型，及早驗證想法，讓最後上線的產品值得使用者信賴。"
   },
   {
     "key": "home.previously",
