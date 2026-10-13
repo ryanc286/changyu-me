@@ -3,7 +3,7 @@
     "key": "home.title",
     "section": "首頁 · 開頭",
     "note": "首頁最上方的大標",
-    "en": "Hi, I'm Yu. I design products that make complex things feel simple.",
+    "en": "Hi, I'm Ryan. I design products that make complex things feel simple.",
     "zh-tw": "嗨，我是張彧。我擅長梳理複雜的問題然後轉換成簡單易用的設計。"
   },
   {
@@ -416,8 +416,8 @@
     "key": "meta.title",
     "section": "搜尋引擎與分享",
     "note": "瀏覽器分頁標題、Google 搜尋結果標題",
-    "en": "Chang Yu · Product Designer",
-    "zh-tw": "Chang Yu · 產品設計師"
+    "en": "Ryan Chang · Product Designer",
+    "zh-tw": "張彧 Ryan Chang · 產品設計師"
   },
   {
     "key": "meta.description",
