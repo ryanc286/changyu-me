@@ -1,7 +1,7 @@
 ---
 /*
   "What people I've worked with say": five people in a row (photo, name, title, company).
-  Wider screens: click someone and their words open below the row; their card and the words join into one tab-and-panel shape.
+  Wider screens: click someone and their words open below the row; the chosen card stays highlighted.
   Phones (600px and under): tap someone to read their words in a half sheet.
   Text lives in copy.json (testimonials.<n>.quote, testimonials.<n>.by = "Name, Title · Company"),
   synced with Notion. Photos: public/images/people/person-<n>.webp.
@@ -85,9 +85,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
           <p class="quote" />
         </div>
       </dialog>
-      {/* Wider screens: the chosen person's words open below the row.
-          The tab is drawn behind the chosen card and runs into the panel, so the two read as one shape. */}
-      <span class="tab" aria-hidden="true" />
+      {/* Wider screens: the chosen person's words open below the row */}
       <div class="expand" id="people-quote">
         <div class="expand-inner">
           <div class="bubble">
@@ -178,71 +176,19 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     display: none;
   }
 
-  /* Wider screens: the words open below the row as a panel joined to the chosen card */
-  [data-people] {
-    position: relative;
-  }
-  .people {
-    position: relative;
-    z-index: 1;
-  }
+  /* Wider screens: the words open below the row in a plain panel */
   .expand {
     height: 0;
     overflow: hidden;
     transition: height 300ms var(--ease-out);
   }
   .expand-inner {
-    /* The gap the tab bridges between the row and the panel */
     padding-top: 12px;
   }
   .bubble {
     padding: 20px 24px;
-    border-radius: var(--tl, 14px) var(--tr, 14px) 14px 14px;
+    border-radius: 14px;
     background: var(--color-surface);
-  }
-  /* The tab sits behind the chosen card and reaches 2px into the panel, so no hairline can show where they meet */
-  .tab {
-    position: absolute;
-    z-index: 0;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
-    border-radius: 14px 14px 0 0;
-    background: var(--color-surface);
-    opacity: 0;
-    pointer-events: none;
-    transition:
-      opacity 150ms ease,
-      left 300ms var(--ease-out),
-      width 300ms var(--ease-out);
-  }
-  .tab.show {
-    opacity: 1;
-  }
-  .tab.still {
-    transition: opacity 150ms ease;
-  }
-  /* Soft inside corners where the tab meets the panel; also run 2px into the panel */
-  .tab::before,
-  .tab::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    width: 12px;
-    height: 14px;
-  }
-  .tab::before {
-    left: -12px;
-    background: radial-gradient(circle at 0 0, transparent 12px, var(--color-surface) 12.5px);
-  }
-  .tab::after {
-    right: -12px;
-    background: radial-gradient(circle at 100% 0, transparent 12px, var(--color-surface) 12.5px);
-  }
-  .tab.flush-l::before,
-  .tab.flush-r::after {
-    display: none;
   }
   .bubble-quote {
     max-width: 68ch;
@@ -256,9 +202,9 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
   .person {
     cursor: pointer;
   }
-  /* The tab behind the card gives it its color */
+  /* The chosen person stays highlighted while their words are open */
   .person.on {
-    background: none;
+    background: var(--color-surface);
   }
   .person.on .photo img {
     filter: none;
@@ -271,7 +217,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       background: color-mix(in srgb, var(--color-surface) 60%, transparent);
     }
     .person.on:hover {
-      background: none;
+      background: var(--color-surface);
     }
   }
 
@@ -437,18 +383,13 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     :global(html.sheet-open) {
       overflow: hidden;
     }
-    .expand,
-    .tab {
+    .expand {
       display: none;
-    }
-    .person.on {
-      background: var(--color-surface);
     }
   }
   @media (prefers-reduced-motion: reduce) {
     .photo img,
     .expand,
-    .tab,
     .bubble-quote,
     .scrim,
     .panel,
@@ -556,7 +497,6 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     const expand = section.querySelector<HTMLElement>('.expand')!;
     const inner = expand.querySelector<HTMLElement>('.expand-inner')!;
     const bubble = expand.querySelector<HTMLElement>('.bubble')!;
-    const tab = section.querySelector<HTMLElement>('.tab')!;
     const words = expand.querySelector<HTMLElement>('.bubble-quote')!;
     let current: HTMLElement | null = null;
     let swapTimer = 0;
@@ -567,37 +507,6 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
         o.setAttribute('aria-expanded', String(o === p));
       });
     };
-    // Draw the tab behind the chosen card, down into the panel; square the panel corner when they line up
-    const placeTab = () => {
-      if (!current) {
-        tab.classList.remove('show');
-        return;
-      }
-      const sec = section.getBoundingClientRect();
-      const c = current.getBoundingClientRect();
-      const r = row.getBoundingClientRect();
-      const bb = bubble.getBoundingClientRect();
-      const left = Math.max(c.left, r.left);
-      const right = Math.min(c.right, r.right);
-      if (right - left < 28) {
-        tab.classList.remove('show');
-        bubble.style.setProperty('--tl', '14px');
-        bubble.style.setProperty('--tr', '14px');
-        return;
-      }
-      tab.style.left = `${left - sec.left}px`;
-      tab.style.width = `${right - left}px`;
-      tab.style.top = `${c.top - sec.top}px`;
-      tab.style.height = `${bb.top - c.top + 2}px`;
-      const flushL = left - bb.left < 14;
-      const flushR = bb.right - right < 14;
-      tab.classList.toggle('flush-l', flushL);
-      tab.classList.toggle('flush-r', flushR);
-      // A square corner where the tab sits at the panel's edge; round otherwise
-      bubble.style.setProperty('--tl', flushL ? '0px' : '14px');
-      bubble.style.setProperty('--tr', flushR ? '0px' : '14px');
-      tab.classList.add('show');
-    };
     const fit = () => {
       expand.style.height = `${inner.offsetHeight}px`;
     };
@@ -606,24 +515,18 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       if (current === p) {
         expand.style.height = '0px';
         select(null);
-        placeTab();
         return;
       }
       const wasOpen = !!current;
       select(p);
       if (!wasOpen) {
-        // Open: set the words, place the tab without sliding, then grow
+        // Open: set the words, then grow
         words.textContent = p.dataset.quote ?? '';
         words.classList.remove('swap');
-        tab.classList.add('still');
-        placeTab();
-        tab.getBoundingClientRect();
-        tab.classList.remove('still');
         fit();
         return;
       }
-      // Switch: the tab slides over, the words fade out and back in, the height follows
-      placeTab();
+      // Switch: the words fade out and back in, the height follows
       words.classList.add('swap');
       swapTimer = window.setTimeout(
         () => {
@@ -641,27 +544,14 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
         p.focus();
       }
     });
-    row.addEventListener(
-      'scroll',
-      () => {
-        tab.classList.add('still');
-        placeTab();
-        requestAnimationFrame(() => tab.classList.remove('still'));
-      },
-      { passive: true },
-    );
     addEventListener('resize', () => {
       if (!current) return;
       if (phone.matches) {
         expand.style.height = '0px';
         select(null);
-        placeTab();
         return;
       }
-      tab.classList.add('still');
-      placeTab();
       fit();
-      requestAnimationFrame(() => tab.classList.remove('still'));
     });
 
     if (!canHover) return;
