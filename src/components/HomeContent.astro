@@ -6,6 +6,7 @@ import Footer from './Footer.astro';
 import Testimonials from './Testimonials.astro';
 import CopyWithLinks from './CopyWithLinks.astro';
 import HoverPreview from './HoverPreview.astro';
+import HandTitle from './HandTitle.astro';
 import { t, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -16,7 +17,7 @@ const { lang } = Astro.props;
 
 <main class="container stack">
     <section class="intro">
-      <h1>{t(lang, 'home.title')}</h1>
+      <h1><HandTitle lang={lang} /></h1>
       <p><CopyWithLinks lang={lang} text={t(lang, 'home.intro')} /></p>
       <p><CopyWithLinks lang={lang} text={t(lang, 'home.previously')} /></p>
       <p><CopyWithLinks lang={lang} text={t(lang, 'home.outside')} /></p>
