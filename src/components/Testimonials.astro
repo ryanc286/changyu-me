@@ -2,7 +2,7 @@
 /*
   "What people I've worked with say": five people in a row (photo, name, title, company).
   Hover or focus one to see what they said in a small floating card that follows the cursor.
-  On phones the row scrolls sideways; tap someone to show their words below.
+  On phones the row scrolls sideways; tap someone to read their words in a half sheet.
   Text lives in copy.json (testimonials.<n>.quote, testimonials.<n>.by = "Name, Title · Company"),
   synced with Notion. Photos: public/images/people/person-<n>.webp.
 */
@@ -14,6 +14,7 @@ interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
+const closeLabel = lang === 'zh-tw' ? '關閉' : 'Close';
 
 const items: { quote: string; name: string; title: string; company: string; photo?: string }[] = [];
 for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
@@ -42,8 +43,11 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
           <li>
             <button
               type="button"
-              class:list={['person', { on: i === 0 }]}
+              class="person"
               data-quote={it.quote}
+              data-name={it.name}
+              data-role={[it.title, it.company].filter(Boolean).join(' · ')}
+              data-photo={it.photo}
               aria-describedby={`quote-${i}`}
             >
               <span class="photo">{it.photo && <img src={it.photo} alt="" loading="lazy" />}</span>
@@ -58,10 +62,26 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
           </li>
         ))}
       </ul>
-      {/* Phones: the chosen person's words */}
-      <p class="picked" aria-live="polite">
-        {items[0].quote}
-      </p>
+      {/* Phones: a half sheet with the chosen person's words */}
+      <dialog class="tsheet" aria-labelledby="tsheet-name">
+        <div class="scrim" data-close />
+        <div class="panel">
+          <div class="drag">
+            <div class="grab" aria-hidden="true"><span /></div>
+            <div class="who">
+              <span class="photo"><img alt="" /></span>
+              <span>
+                <span class="name" id="tsheet-name" />
+                <span class="role" />
+              </span>
+            </div>
+            <button type="button" class="close" aria-label={closeLabel} data-close>
+              <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+            </button>
+          </div>
+          <p class="quote" />
+        </div>
+      </dialog>
       {/* Desktop: floating card that follows the cursor */}
       <div class="float" aria-hidden="true">
         <p class="float-quote" />
@@ -88,6 +108,8 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     display: none;
   }
   .people li {
+    /* Keeps each hidden screen reader quote inside the row, so it can't widen the page */
+    position: relative;
     flex: 0 0 calc((100% - 4 * var(--gap)) / 4.5);
     margin: 0;
     scroll-snap-align: start;
@@ -143,7 +165,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     line-height: 1.35;
     color: var(--color-text-muted);
   }
-  .picked {
+  .tsheet {
     display: none;
   }
 
@@ -200,24 +222,130 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     .person {
       cursor: pointer;
     }
-    /* The chosen person and their words form one shape, like a tab and its panel */
+    /* The person whose words are open */
     .person.on {
       background: var(--color-surface);
-      border-radius: 14px 14px 0 0;
     }
     .person.on .photo img {
       filter: none;
     }
-    /* The chosen person's words, in the same tone as their highlighted card */
-    /* Tucks 1px under the tab so phones never show a hairline where they meet */
-    .picked {
-      position: relative;
+
+    /* Half sheet: same look as the case study sheet on phones */
+    .tsheet[open] {
       display: block;
-      margin: -1px 0 0;
-      padding: 16px;
-      border-radius: var(--tl, 14px) var(--tr, 14px) 14px 14px;
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      overflow: hidden;
+    }
+    .tsheet::backdrop {
+      background: transparent;
+    }
+    .scrim {
+      position: absolute;
+      inset: 0;
+      background: rgb(0 0 0 / 0.32);
+      opacity: 0;
+      transition: opacity 300ms var(--ease-out);
+    }
+    .panel {
+      --sheet-bg: var(--color-bg);
+      position: absolute;
+      inset: auto 0 0;
+      display: flex;
+      flex-direction: column;
+      max-height: 60dvh;
+      border-radius: 24px 24px 0 0;
+      background: var(--sheet-bg);
+      box-shadow: 0 -6px 28px rgb(0 0 0 / 0.18);
+      transform: translateY(100%);
+      transition: transform 300ms var(--ease-out);
+    }
+    :global(:root[data-theme='dark']) .scrim {
+      background: rgb(0 0 0 / 0.55);
+    }
+    :global(:root[data-theme='dark']) .panel {
+      --sheet-bg: #1a1a19;
+      box-shadow: 0 -6px 28px rgb(0 0 0 / 0.6), inset 1px 1px 0 0 rgb(255 255 255 / 0.06);
+    }
+    .tsheet.in .scrim {
+      opacity: 1;
+    }
+    .tsheet.in .panel {
+      transform: none;
+    }
+    /* The top part is the drag area: pull down to close */
+    .drag {
+      position: relative;
+      flex: none;
+      padding: 28px 56px 0 20px;
+      touch-action: none;
+    }
+    .grab {
+      position: absolute;
+      inset: 0 0 auto;
+      display: flex;
+      justify-content: center;
+      padding-top: 8px;
+    }
+    .grab span {
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--color-line-strong);
+    }
+    .who {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+    }
+    .who .photo {
+      flex: none;
+      width: 48px;
+      height: 48px;
+      margin: 0;
+    }
+    .who .photo img {
+      filter: none;
+    }
+    .who .name,
+    .who .role {
+      display: block;
+    }
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 16px;
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
       background: var(--color-surface);
+      color: var(--color-text-muted);
+      cursor: pointer;
+    }
+    .quote {
+      margin: 0;
+      padding: 16px 20px calc(24px + env(safe-area-inset-bottom));
+      overflow-y: auto;
+      overscroll-behavior: contain;
       color: var(--color-text-body);
+      line-height: var(--leading, 1.6);
+    }
+    :global(html.sheet-open) {
+      overflow: hidden;
     }
     .float {
       display: none;
@@ -225,7 +353,9 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
   }
   @media (prefers-reduced-motion: reduce) {
     .photo img,
-    .float {
+    .float,
+    .scrim,
+    .panel {
       transition: none;
     }
   }
@@ -234,33 +364,89 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
 <script>
   document.querySelectorAll<HTMLElement>('[data-people]').forEach((section) => {
     const people = [...section.querySelectorAll<HTMLButtonElement>('.person')];
-    const picked = section.querySelector<HTMLElement>('.picked')!;
     const card = section.querySelector<HTMLElement>('.float')!;
     const text = card.querySelector<HTMLElement>('.float-quote')!;
     const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Tap (phones): show this person's words below the row
     const row = section.querySelector<HTMLElement>('.people')!;
-    // Square the panel's top corner when the chosen card touches that edge, so they join cleanly
-    const joinCorners = () => {
-      const on = section.querySelector<HTMLElement>('.person.on');
-      if (!on) return;
-      const a = on.getBoundingClientRect();
-      const b = picked.getBoundingClientRect();
-      picked.style.setProperty('--tl', a.left - b.left < 14 ? '0px' : '14px');
-      picked.style.setProperty('--tr', b.right - a.right < 14 ? '0px' : '14px');
+
+    // Tap (phones): open a half sheet with this person's words
+    const sheet = section.querySelector<HTMLDialogElement>('.tsheet')!;
+    const panel = sheet.querySelector<HTMLElement>('.panel')!;
+    const drag = sheet.querySelector<HTMLElement>('.drag')!;
+    const img = sheet.querySelector<HTMLImageElement>('.photo img')!;
+    const phone = matchMedia('(hover: none), (max-width: 600px)');
+    let closing = false;
+    const open = (p: HTMLElement) => {
+      people.forEach((o) => o.classList.toggle('on', o === p));
+      sheet.querySelector('.name')!.textContent = p.dataset.name ?? '';
+      sheet.querySelector('.role')!.textContent = p.dataset.role ?? '';
+      sheet.querySelector('.quote')!.textContent = p.dataset.quote ?? '';
+      sheet.querySelector<HTMLElement>('.quote')!.scrollTop = 0;
+      if (p.dataset.photo) img.src = p.dataset.photo;
+      img.hidden = !p.dataset.photo;
+      closing = false;
+      panel.style.transform = '';
+      sheet.showModal();
+      document.documentElement.classList.add('sheet-open');
+      requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.add('in')));
+    };
+    const close = () => {
+      if (closing || !sheet.open) return;
+      closing = true;
+      sheet.classList.remove('in');
+      panel.style.transition = '';
+      panel.style.transform = '';
+      const done = () => {
+        if (!closing) return;
+        sheet.close();
+        document.documentElement.classList.remove('sheet-open');
+        people.forEach((o) => o.classList.remove('on'));
+        closing = false;
+      };
+      if (reduce) done();
+      else setTimeout(done, 300);
     };
     people.forEach((p) =>
       p.addEventListener('click', () => {
-        people.forEach((o) => o.classList.toggle('on', o === p));
-        picked.textContent = p.dataset.quote ?? '';
-        joinCorners();
+        if (phone.matches) open(p);
       }),
     );
-    row.addEventListener('scroll', joinCorners, { passive: true });
-    addEventListener('resize', joinCorners);
-    joinCorners();
+    sheet.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
+    sheet.addEventListener('cancel', (e) => {
+      e.preventDefault();
+      close();
+    });
+
+    // Pull the top part down to close; a short fast flick works too
+    let startY = 0, dy = 0, lastY = 0, lastT = 0, speed = 0;
+    const onMove = (e: PointerEvent) => {
+      dy = Math.max(0, e.clientY - startY);
+      const now = performance.now();
+      speed = (e.clientY - lastY) / Math.max(1, now - lastT);
+      lastY = e.clientY;
+      lastT = now;
+      panel.style.transform = `translateY(${dy}px)`;
+    };
+    const onUp = () => {
+      removeEventListener('pointermove', onMove);
+      removeEventListener('pointerup', onUp);
+      removeEventListener('pointercancel', onUp);
+      panel.style.transition = '';
+      if (dy > 80 || (dy > 10 && speed > 0.5)) close();
+      else panel.style.transform = '';
+    };
+    drag.addEventListener('pointerdown', (e) => {
+      if ((e.target as HTMLElement).closest('.close')) return;
+      startY = lastY = e.clientY;
+      lastT = performance.now();
+      dy = speed = 0;
+      panel.style.transition = 'none';
+      addEventListener('pointermove', onMove);
+      addEventListener('pointerup', onUp);
+      addEventListener('pointercancel', onUp);
+    });
     if (!canHover) return;
 
     // Mouse users can drag the row sideways (trackpads scroll it natively)
