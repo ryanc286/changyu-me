@@ -195,12 +195,15 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     }
     .people li {
       flex-basis: 112px;
+      display: flex;
     }
     .person {
       cursor: pointer;
     }
+    /* The chosen person and their words form one shape, like a tab and its panel */
     .person.on {
       background: var(--color-surface);
+      border-radius: 14px 14px 0 0;
     }
     .person.on .photo img {
       filter: none;
@@ -208,9 +211,9 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     /* The chosen person's words, in the same tone as their highlighted card */
     .picked {
       display: block;
-      margin: 8px 0 0;
-      padding: 14px 16px;
-      border-radius: 14px;
+      margin: 0;
+      padding: 16px;
+      border-radius: var(--tl, 14px) var(--tr, 14px) 14px 14px;
       background: var(--color-surface);
       color: var(--color-text-body);
     }
@@ -236,16 +239,29 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Tap (phones): show this person's words below the row
+    const row = section.querySelector<HTMLElement>('.people')!;
+    // Square the panel's top corner when the chosen card touches that edge, so they join cleanly
+    const joinCorners = () => {
+      const on = section.querySelector<HTMLElement>('.person.on');
+      if (!on) return;
+      const a = on.getBoundingClientRect();
+      const b = picked.getBoundingClientRect();
+      picked.style.setProperty('--tl', a.left - b.left < 14 ? '0px' : '14px');
+      picked.style.setProperty('--tr', b.right - a.right < 14 ? '0px' : '14px');
+    };
     people.forEach((p) =>
       p.addEventListener('click', () => {
         people.forEach((o) => o.classList.toggle('on', o === p));
         picked.textContent = p.dataset.quote ?? '';
+        joinCorners();
       }),
     );
+    row.addEventListener('scroll', joinCorners, { passive: true });
+    addEventListener('resize', joinCorners);
+    joinCorners();
     if (!canHover) return;
 
     // Mouse users can drag the row sideways (trackpads scroll it natively)
-    const row = section.querySelector<HTMLElement>('.people')!;
     let downX = 0, startLeft = 0, moved = false;
     row.addEventListener('pointerdown', (e) => {
       if (e.pointerType !== 'mouse' || e.button !== 0) return;
