@@ -209,9 +209,11 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       filter: none;
     }
     /* The chosen person's words, in the same tone as their highlighted card */
+    /* Tucks 1px under the tab so phones never show a hairline where they meet */
     .picked {
+      position: relative;
       display: block;
-      margin: 0;
+      margin: -1px 0 0;
       padding: 16px;
       border-radius: var(--tl, 14px) var(--tr, 14px) 14px 14px;
       background: var(--color-surface);
