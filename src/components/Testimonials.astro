@@ -1,8 +1,8 @@
 ---
 /*
   "What people I've worked with say": five people in a row (photo, name, title, company).
-  Hover or focus one to see what they said in a small floating card that follows the cursor.
-  On phones the row scrolls sideways; tap someone to read their words in a half sheet.
+  Wider screens: click someone and their words open below the row, with a notch pointing at them.
+  Phones (600px and under): tap someone to read their words in a half sheet.
   Text lives in copy.json (testimonials.<n>.quote, testimonials.<n>.by = "Name, Title · Company"),
   synced with Notion. Photos: public/images/people/person-<n>.webp.
 */
@@ -49,6 +49,8 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
               data-role={[it.title, it.company].filter(Boolean).join(' · ')}
               data-photo={it.photo}
               aria-describedby={`quote-${i}`}
+              aria-expanded="false"
+              aria-controls="people-quote"
             >
               <span class="photo">{it.photo && <img src={it.photo} alt="" loading="lazy" />}</span>
               <span class="name">{it.name}</span>
@@ -83,9 +85,14 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
           <p class="quote" />
         </div>
       </dialog>
-      {/* Desktop: floating card that follows the cursor */}
-      <div class="float" aria-hidden="true">
-        <p class="float-quote" />
+      {/* Wider screens: the chosen person's words open below the row */}
+      <div class="expand" id="people-quote">
+        <div class="expand-inner">
+          <div class="bubble">
+            <span class="notch" aria-hidden="true" />
+            <p class="bubble-quote" aria-live="polite" />
+          </div>
+        </div>
       </div>
     </section>
   )
@@ -170,49 +177,71 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     display: none;
   }
 
-  /* The floating quote card, same look as the homepage preview card */
-  .float {
-    position: fixed;
-    top: 0;
+  /* Wider screens: the words open below the row, a notch points at who said them */
+  .expand {
+    height: 0;
+    overflow: hidden;
+    transition: height 300ms var(--ease-out);
+  }
+  .expand-inner {
+    /* Room for the notch above the bubble */
+    padding-top: 12px;
+  }
+  .bubble {
+    position: relative;
+    padding: 20px 24px;
+    border-radius: 14px;
+    background: var(--color-surface);
+  }
+  .notch {
+    position: absolute;
+    top: -7px;
     left: 0;
-    z-index: 10;
-    width: 300px;
-    padding: 14px 16px;
-    border-radius: 12px;
-    background: var(--color-bg);
-    border: 1px solid var(--color-line-strong);
-    box-shadow: var(--shadow-float);
-    pointer-events: none;
-    opacity: 0;
-    scale: 0.96;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px 0 0 0;
+    background: var(--color-surface);
+    translate: calc(var(--x, 0px) - 8px) 0;
+    rotate: 45deg;
     transition:
-      opacity var(--duration) var(--ease-out),
-      scale var(--duration) var(--ease-out);
+      translate 300ms var(--ease-out),
+      opacity 150ms ease;
   }
-  .float.is-visible {
-    opacity: 1;
-    scale: 1;
+  .notch.off {
+    opacity: 0;
   }
-  .float-quote {
+  .bubble-quote {
+    max-width: 68ch;
     margin: 0;
-    font-size: var(--text-sm);
-    line-height: 1.55;
     color: var(--color-text-body);
+    transition: opacity 150ms ease;
+  }
+  .bubble-quote.swap {
+    opacity: 0;
+  }
+  .person {
+    cursor: pointer;
+  }
+  .person.on {
+    background: var(--color-surface);
+  }
+  .person.on .photo img {
+    filter: none;
   }
 
+  /* Pointing at someone hints they can be clicked */
   @media (hover: hover) and (pointer: fine) {
     .person:hover,
     .person:focus-visible {
-      background: var(--color-surface);
+      background: color-mix(in srgb, var(--color-surface) 60%, transparent);
     }
-    .person:hover .photo img,
-    .person:focus-visible .photo img {
-      filter: none;
+    .person.on:hover {
+      background: var(--color-surface);
     }
   }
 
-  /* Phones and touch: a sideways row, tap to read */
-  @media (hover: none), (max-width: 600px) {
+  /* Phones: a sideways row, tap to read in a half sheet */
+  @media (max-width: 600px) {
     .people {
       --gap: 4px;
     }
@@ -220,17 +249,6 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       flex-basis: 112px;
       display: flex;
     }
-    .person {
-      cursor: pointer;
-    }
-    /* The person whose words are open */
-    .person.on {
-      background: var(--color-surface);
-    }
-    .person.on .photo img {
-      filter: none;
-    }
-
     /* Half sheet: same look as the case study sheet on phones */
     .tsheet[open] {
       display: block;
@@ -384,13 +402,15 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     :global(html.sheet-open) {
       overflow: hidden;
     }
-    .float {
+    .expand {
       display: none;
     }
   }
   @media (prefers-reduced-motion: reduce) {
     .photo img,
-    .float,
+    .expand,
+    .notch,
+    .bubble-quote,
     .scrim,
     .panel,
     .tsheet .who,
@@ -410,8 +430,6 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
 <script>
   document.querySelectorAll<HTMLElement>('[data-people]').forEach((section) => {
     const people = [...section.querySelectorAll<HTMLButtonElement>('.person')];
-    const card = section.querySelector<HTMLElement>('.float')!;
-    const text = card.querySelector<HTMLElement>('.float-quote')!;
     const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -422,7 +440,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     const panel = sheet.querySelector<HTMLElement>('.panel')!;
     const drag = sheet.querySelector<HTMLElement>('.drag')!;
     const img = sheet.querySelector<HTMLImageElement>('.photo img')!;
-    const phone = matchMedia('(hover: none), (max-width: 600px)');
+    const phone = matchMedia('(max-width: 600px)');
     let closing = false;
     const open = (p: HTMLElement) => {
       people.forEach((o) => o.classList.toggle('on', o === p));
@@ -458,6 +476,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     people.forEach((p) =>
       p.addEventListener('click', () => {
         if (phone.matches) open(p);
+        else toggle(p);
       }),
     );
     sheet.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
@@ -494,6 +513,92 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       addEventListener('pointerup', onUp);
       addEventListener('pointercancel', onUp);
     });
+    // Wider screens: click to open their words below the row; click again or Esc to close
+    const expand = section.querySelector<HTMLElement>('.expand')!;
+    const inner = expand.querySelector<HTMLElement>('.expand-inner')!;
+    const bubble = expand.querySelector<HTMLElement>('.bubble')!;
+    const notch = expand.querySelector<HTMLElement>('.notch')!;
+    const words = expand.querySelector<HTMLElement>('.bubble-quote')!;
+    let current: HTMLElement | null = null;
+    let swapTimer = 0;
+    const select = (p: HTMLElement | null) => {
+      current = p;
+      people.forEach((o) => {
+        o.classList.toggle('on', o === p);
+        o.setAttribute('aria-expanded', String(o === p));
+      });
+    };
+    // Point the notch at the chosen person; hide it when they scroll out of the row
+    const aimNotch = () => {
+      if (!current) return;
+      const c = current.getBoundingClientRect();
+      const r = row.getBoundingClientRect();
+      const mid = c.left + c.width / 2;
+      notch.style.setProperty('--x', `${mid - bubble.getBoundingClientRect().left}px`);
+      notch.classList.toggle('off', mid < r.left + 12 || mid > r.right - 12);
+    };
+    const fit = () => {
+      expand.style.height = `${inner.offsetHeight}px`;
+    };
+    const toggle = (p: HTMLElement) => {
+      clearTimeout(swapTimer);
+      if (current === p) {
+        expand.style.height = '0px';
+        select(null);
+        return;
+      }
+      const wasOpen = !!current;
+      select(p);
+      if (!wasOpen) {
+        // Open: set the words, place the notch without sliding, then grow
+        words.textContent = p.dataset.quote ?? '';
+        words.classList.remove('swap');
+        notch.style.transition = 'none';
+        aimNotch();
+        notch.getBoundingClientRect();
+        notch.style.transition = '';
+        fit();
+        return;
+      }
+      // Switch: the notch slides over, the words fade out and back in, the height follows
+      aimNotch();
+      words.classList.add('swap');
+      swapTimer = window.setTimeout(
+        () => {
+          words.textContent = p.dataset.quote ?? '';
+          words.classList.remove('swap');
+          fit();
+        },
+        reduce ? 0 : 150,
+      );
+    };
+    addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && current && !phone.matches) {
+        const p = current;
+        toggle(p);
+        p.focus();
+      }
+    });
+    row.addEventListener(
+      'scroll',
+      () => {
+        notch.style.transition = 'none';
+        aimNotch();
+        requestAnimationFrame(() => (notch.style.transition = ''));
+      },
+      { passive: true },
+    );
+    addEventListener('resize', () => {
+      if (!current) return;
+      if (phone.matches) {
+        expand.style.height = '0px';
+        select(null);
+        return;
+      }
+      aimNotch();
+      fit();
+    });
+
     if (!canHover) return;
 
     // Mouse users can drag the row sideways (trackpads scroll it natively)
@@ -509,7 +614,6 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
         if (!moved) {
           moved = true;
           row.classList.add('dragging');
-          hide();
         }
         row.scrollLeft = startLeft - dx;
       };
@@ -525,52 +629,5 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       addEventListener('pointermove', move);
       addEventListener('pointerup', up);
     });
-    row.addEventListener('scroll', () => hide(), { passive: true });
-
-    // Hover (desktop): a card that follows the cursor, flipping near the window edges
-    const OFFSET = 20;
-    const EDGE = 16;
-    let tx = 0, ty = 0, x = 0, y = 0, frame = 0;
-    const place = () => {
-      const k = reduce ? 1 : 0.18;
-      x += (tx - x) * k;
-      y += (ty - y) * k;
-      card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      frame = Math.abs(tx - x) > 0.5 || Math.abs(ty - y) > 0.5 ? requestAnimationFrame(place) : 0;
-    };
-    const aim = (px: number, py: number) => {
-      const w = card.offsetWidth;
-      const h = card.offsetHeight;
-      tx = px + OFFSET + w < innerWidth - EDGE ? px + OFFSET : px - OFFSET - w;
-      ty = py + OFFSET + h < innerHeight - EDGE ? py + OFFSET : py - OFFSET - h;
-      tx = Math.max(EDGE, tx);
-      ty = Math.max(EDGE, ty);
-      if (!frame) frame = requestAnimationFrame(place);
-    };
-    const show = (p: HTMLElement, px: number, py: number) => {
-      const fresh = !card.classList.contains('is-visible');
-      text.textContent = p.dataset.quote ?? '';
-      aim(px, py);
-      if (fresh) {
-        x = tx;
-        y = ty;
-        card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      }
-      card.classList.add('is-visible');
-    };
-    const hide = () => card.classList.remove('is-visible');
-
-    people.forEach((p) => {
-      p.addEventListener('pointerenter', (e) => show(p, e.clientX, e.clientY));
-      p.addEventListener('pointermove', (e) => aim(e.clientX, e.clientY));
-      p.addEventListener('pointerleave', hide);
-      p.addEventListener('focus', () => {
-        if (!p.matches(':focus-visible')) return;
-        const r = p.getBoundingClientRect();
-        show(p, r.left, r.bottom);
-      });
-      p.addEventListener('blur', hide);
-    });
-    (section.closest('.scroller') ?? window).addEventListener('scroll', hide, { passive: true });
   });
 </script>
