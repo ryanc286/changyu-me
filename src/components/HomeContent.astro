@@ -34,8 +34,8 @@ const { lang } = Astro.props;
   .stack {
     display: flex;
     flex-direction: column;
-    /* 48px between sections: clearly separate, still one page */
-    gap: 48px;
+    /* 64px between sections: each one starts clearly, still one page */
+    gap: 64px;
     /* Generous top space so the intro reads as the start of the page */
     padding-top: 160px;
     padding-bottom: 80px;
@@ -58,7 +58,7 @@ const { lang } = Astro.props;
   }
   @media (max-width: 520px) {
     .stack {
-      gap: 32px;
+      gap: 48px;
       padding-top: 96px;
       padding-bottom: 48px;
     }
