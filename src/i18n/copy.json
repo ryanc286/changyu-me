@@ -10,8 +10,8 @@
     "key": "home.intro",
     "section": "首頁 · 開頭",
     "note": "標題下第一段",
-    "en": "I start with the right questions and look at how the whole system fits together. Then I test ideas early with quick AI prototypes, so what ships is something people trust.",
-    "zh-tw": "我會先釐清對的問題，並引入系統性思考。接著運用 AI 製作原型，及早驗證想法，確保最終推出的產品能真正讓使用者信任使用。"
+    "en": "I start every design by asking the right questions and mapping how the whole system fits together. Then I build quick AI prototypes to test ideas early, before the team commits.",
+    "zh-tw": "每次設計，我會先提出對的問題，釐清整個系統如何運作。接著用 AI 快速做出原型，在團隊投入開發前及早驗證想法。"
   },
   {
     "key": "home.previously",
