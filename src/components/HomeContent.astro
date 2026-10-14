@@ -47,22 +47,17 @@ const { lang } = Astro.props;
   </main>
 
 <script>
-  // Reveal each block as it comes into view; blocks that arrive together go one after another
+  // Reveal each block as it comes into view; blocks that arrive together rise at the same time
   if (document.documentElement.classList.contains('reveal')) {
     const blocks = document.querySelectorAll<HTMLElement>(
       'main.stack > .intro > *, main.stack > section:not(.intro), main.stack > footer',
     );
     const io = new IntersectionObserver(
       (entries) => {
-        let i = 0;
         for (const e of entries) {
           if (!e.isIntersecting) continue;
-          const el = e.target as HTMLElement;
-          el.style.transitionDelay = `${i++ * 90}ms`;
-          el.classList.add('in');
-          io.unobserve(el);
-          // Back to normal once settled, so nothing keeps a transform (fixed children stay fixed)
-          el.addEventListener('transitionend', () => el.style.removeProperty('transition-delay'), { once: true });
+          e.target.classList.add('in');
+          io.unobserve(e.target);
         }
       },
       { rootMargin: '0px 0px -8% 0px' },
