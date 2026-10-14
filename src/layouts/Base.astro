@@ -97,7 +97,9 @@ const hasOtherLang = altEntries.some(([l]) => l !== lang);
         ))
     }
     {hasOtherLang && alternates.en && <link rel="alternate" hreflang="x-default" href={new URL(alternates.en, Astro.site)} />}
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon.png" sizes="96x96" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content={languages[lang].ogLocale} />
     <meta property="og:title" content={title} />
