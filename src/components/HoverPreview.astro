@@ -61,7 +61,7 @@ const { lang } = Astro.props;
     height: 100%;
     object-fit: cover;
   }
-  /* Video covers (tools): the clip fills the card edge to edge, at its own shape so nothing is cropped */
+  /* Video covers (tools): the clip fills the card edge to edge; every tool card shares one 2:1 shape, cropping where needed */
   .preview-media video {
     display: none;
     position: absolute;
@@ -71,7 +71,7 @@ const { lang } = Astro.props;
     object-fit: cover;
   }
   .preview.is-video .preview-media {
-    aspect-ratio: var(--ratio, 3 / 2);
+    aspect-ratio: 2 / 1;
     background: none;
   }
   .preview.is-video .preview-media video {
@@ -167,8 +167,6 @@ const { lang } = Astro.props;
       if (!frame) frame = requestAnimationFrame(place);
     };
 
-    // Each clip's own width / height, so the card fits it without cropping
-    const ratios = new Map<string, string>();
     const fill = (link: HTMLAnchorElement) => {
       const { cover, title = '', summary = '', result = '' } = link.dataset;
       titleEl.textContent = title;
@@ -176,7 +174,6 @@ const { lang } = Astro.props;
       resultEl.textContent = result;
       const isVideo = !!cover && cover.endsWith('.mp4');
       preview.classList.toggle('is-video', isVideo);
-      if (isVideo && ratios.has(cover!)) preview.style.setProperty('--ratio', ratios.get(cover!)!);
       if (vid) {
         if (isVideo) {
           if (!vid.src.endsWith(cover!)) {
@@ -238,12 +235,8 @@ const { lang } = Astro.props;
         if (seen.has(src)) return;
         seen.add(src);
         if (src.endsWith('.mp4')) {
-          // Warm the cache so the clip starts right away on first hover,
-          // and learn its shape from the first frame (<name>.webp) so the card is sized right before it plays
+          // Warm the cache so the clip starts right away on first hover
           fetch(src).catch(() => {});
-          const first = new Image();
-          first.onload = () => ratios.set(src, `${first.naturalWidth} / ${first.naturalHeight}`);
-          first.src = src.replace(/\.mp4$/, '.webp');
           return;
         }
         const im = new Image();
