@@ -7,10 +7,10 @@
 
 // Strokes radiate from the bottom-right corner (24, 24), each a little different, like a quick pen flick
 const strokes = [
-  { angle: 192, from: 6.5, to: 15.5 },
-  { angle: 227, from: 7.5, to: 18 },
-  { angle: 263, from: 7, to: 19 },
-  { angle: 300, from: 7.5, to: 15.5 },
+  { angle: 192, from: 6.5, to: 12 },
+  { angle: 227, from: 7.5, to: 14 },
+  { angle: 263, from: 7, to: 14.5 },
+  { angle: 300, from: 7.5, to: 12.5 },
 ];
 const paths = strokes.map(({ angle, from, to }) => {
   const r = (angle * Math.PI) / 180;
