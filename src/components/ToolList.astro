@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import Burst from './Burst.astro';
 import { t, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -14,7 +15,7 @@ const href = (id: string) => (zhIds.has(id) ? `/zh-tw/tools/${id}` : `/tools/${i
 ---
 
 <section aria-labelledby="tools-title">
-  <h2 id="tools-title" class="section-title">{t(lang, 'section.tools')}</h2>
+  <h2 id="tools-title" class="section-title"><Burst />{t(lang, 'section.tools')}</h2>
   <ul class="list">
     {
       items.map(({ id, data }) => (

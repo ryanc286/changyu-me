@@ -8,6 +8,7 @@
 */
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
+import Burst from './Burst.astro';
 import { t, tOpt, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -36,6 +37,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
   items.length > 0 && (
     <section aria-labelledby="testimonials-title" data-people>
       <h2 id="testimonials-title" class="section-title">
+        <Burst />
         {t(lang, 'section.testimonials')}
       </h2>
       <ul class="people">

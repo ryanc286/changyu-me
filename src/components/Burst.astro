@@ -1,0 +1,86 @@
+---
+/*
+  A few hand-drawn strokes bursting from the top-left of a section heading.
+  Same pen as the headline's loop and underline. Goes inside the heading, before the text.
+  On the first homepage view of a visit (html.draw-title), the strokes draw in when the heading scrolls into view.
+*/
+
+// Strokes radiate from the bottom-right corner (24, 24), each a little different, like a quick pen flick
+const strokes = [
+  { angle: 200, from: 5, to: 15 },
+  { angle: 230, from: 6, to: 17 },
+  { angle: 262, from: 5.5, to: 18 },
+  { angle: 295, from: 6, to: 14.5 },
+];
+const paths = strokes.map(({ angle, from, to }) => {
+  const r = (angle * Math.PI) / 180;
+  const p = (d: number) => `${(24 + Math.cos(r) * d).toFixed(1)} ${(24 + Math.sin(r) * d).toFixed(1)}`;
+  return `M${p(to)} L${p(from)}`;
+});
+---
+
+<svg class="burst" viewBox="0 0 24 24" aria-hidden="true">
+  {paths.map((d, i) => <path d={d} pathLength="1" style={`--i:${i}`} />)}
+</svg>
+
+<style>
+  .burst {
+    position: absolute;
+    left: -1.3em;
+    top: -1.15em;
+    width: 1.45em;
+    height: 1.45em;
+    overflow: visible;
+    pointer-events: none;
+    fill: none;
+    stroke: var(--color-text-muted);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+  .burst path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  /* First view: hidden until the heading comes into view, then drawn one flick after another */
+  :global(html.draw-title) .burst path {
+    stroke-dashoffset: 1;
+  }
+  :global(html.draw-title) .burst.go path {
+    animation: burst-draw 180ms cubic-bezier(0.55, 0.1, 0.35, 1) forwards;
+    animation-delay: calc(250ms + var(--i) * 70ms);
+  }
+  @keyframes burst-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @media (max-width: 520px) {
+    .burst {
+      left: -1.05em;
+      top: -0.95em;
+      width: 1.2em;
+      height: 1.2em;
+      stroke-width: 1.8;
+    }
+  }
+</style>
+
+<script>
+  // Draw each burst once, when its heading scrolls into view
+  const bursts = document.querySelectorAll('.burst');
+  if (document.documentElement.classList.contains('draw-title') && !('IntersectionObserver' in window)) {
+    bursts.forEach((b) => b.classList.add('go'));
+  } else if (document.documentElement.classList.contains('draw-title')) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          e.target.classList.add('go');
+          io.unobserve(e.target);
+        }
+      },
+      { rootMargin: '0px 0px -10% 0px' },
+    );
+    bursts.forEach((b) => io.observe(b));
+  }
+</script>

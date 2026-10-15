@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import { companies } from '../data/companies';
+import Burst from './Burst.astro';
 import { t, tOpt, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -20,7 +21,7 @@ const groups = [...companies]
 ---
 
 <section id="work" aria-labelledby="work-title">
-  <h2 id="work-title" class="section-title">{t(lang, 'section.work')}</h2>
+  <h2 id="work-title" class="section-title"><Burst />{t(lang, 'section.work')}</h2>
 
   <div class="groups">
     {

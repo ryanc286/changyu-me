@@ -80,6 +80,8 @@ img {
 /* Section labels sit quieter than the content under them */
 /* Section headings (Work, Tools I build...): a step above company names, so the page scans by section */
 .section-title {
+  /* Holds the hand-drawn burst at its top-left */
+  position: relative;
   margin: 0 0 var(--space-3);
   font-size: 1.125rem;
   line-height: 1.3;
