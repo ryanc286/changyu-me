@@ -67,24 +67,41 @@ const paths = strokes.map(({ angle, from, to }) => {
 </style>
 
 <script>
-  // Draw each burst once, when its heading scrolls into view
-  const bursts = document.querySelectorAll('.burst');
-  if (document.documentElement.classList.contains('draw-title') && !('IntersectionObserver' in window)) {
-    bursts.forEach((b) => b.classList.add('go'));
-  } else if (document.documentElement.classList.contains('draw-title')) {
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (!e.isIntersecting) continue;
-          // Let the heading finish rising in first; on the first screen, also wait for the headline's loop and underline
-          const el = e.target as SVGElement;
-          el.style.setProperty('--wait', `${Math.max(900, 2000 - performance.now())}ms`);
-          el.classList.add('go');
-          io.unobserve(e.target);
-        }
-      },
-      { rootMargin: '0px 0px -10% 0px' },
-    );
-    bursts.forEach((b) => io.observe(b));
+  // Draw each burst once, when its heading scrolls into view, and never before the headline's loop and underline finish
+  const html = document.documentElement;
+  const bursts = document.querySelectorAll<SVGElement>('.burst');
+  if (html.classList.contains('draw-title')) {
+    // The headline is done when its underline (the last mark) finishes drawing; a fallback covers a missed event
+    const underline = document.querySelector('.mark .line path');
+    const headlineDone = new Promise<void>((resolve) => {
+      if (!underline) return resolve();
+      underline.addEventListener('animationend', () => resolve(), { once: true });
+      setTimeout(resolve, 4000);
+    });
+    let settled = false;
+    headlineDone.then(() => (settled = true));
+    // wait: a heading that just came into view still needs a moment to finish rising in;
+    // one that waited for the headline is already in place, so it follows right after
+    const start = (el: SVGElement, wait: number) => {
+      el.style.setProperty('--wait', `${wait}ms`);
+      el.classList.add('go');
+    };
+    if (!('IntersectionObserver' in window)) {
+      headlineDone.then(() => bursts.forEach((b) => start(b, 200)));
+    } else {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            const el = e.target as SVGElement;
+            io.unobserve(el);
+            if (settled) start(el, 900);
+            else headlineDone.then(() => start(el, 200));
+          }
+        },
+        { rootMargin: '0px 0px -10% 0px' },
+      );
+      bursts.forEach((b) => io.observe(b));
+    }
   }
 </script>
