@@ -7,10 +7,10 @@
 
 // Strokes radiate from the bottom-right corner (24, 24), each a little different, like a quick pen flick
 const strokes = [
-  { angle: 200, from: 5, to: 15 },
-  { angle: 230, from: 6, to: 17 },
-  { angle: 262, from: 5.5, to: 18 },
-  { angle: 295, from: 6, to: 14.5 },
+  { angle: 192, from: 6.5, to: 15.5 },
+  { angle: 227, from: 7.5, to: 18 },
+  { angle: 263, from: 7, to: 19 },
+  { angle: 300, from: 7.5, to: 15.5 },
 ];
 const paths = strokes.map(({ angle, from, to }) => {
   const r = (angle * Math.PI) / 180;
@@ -26,15 +26,15 @@ const paths = strokes.map(({ angle, from, to }) => {
 <style>
   .burst {
     position: absolute;
-    left: -1.3em;
-    top: -1.15em;
-    width: 1.45em;
-    height: 1.45em;
+    left: -1.55em;
+    top: -1.4em;
+    width: 1.75em;
+    height: 1.75em;
     overflow: visible;
     pointer-events: none;
     fill: none;
     stroke: var(--color-text-muted);
-    stroke-width: 1.6;
+    stroke-width: 1.4;
     stroke-linecap: round;
   }
   .burst path {
@@ -47,7 +47,8 @@ const paths = strokes.map(({ angle, from, to }) => {
   }
   :global(html.draw-title) .burst.go path {
     animation: burst-draw 180ms cubic-bezier(0.55, 0.1, 0.35, 1) forwards;
-    animation-delay: calc(250ms + var(--i) * 70ms);
+    /* Waits for the heading to finish rising in (and, on the first screen, for the headline marks) */
+    animation-delay: calc(var(--wait, 900ms) + var(--i) * 70ms);
   }
   @keyframes burst-draw {
     to {
@@ -56,11 +57,11 @@ const paths = strokes.map(({ angle, from, to }) => {
   }
   @media (max-width: 520px) {
     .burst {
-      left: -1.05em;
-      top: -0.95em;
-      width: 1.2em;
-      height: 1.2em;
-      stroke-width: 1.8;
+      left: -1.15em;
+      top: -1.1em;
+      width: 1.35em;
+      height: 1.35em;
+      stroke-width: 1.7;
     }
   }
 </style>
@@ -75,7 +76,10 @@ const paths = strokes.map(({ angle, from, to }) => {
       (entries) => {
         for (const e of entries) {
           if (!e.isIntersecting) continue;
-          e.target.classList.add('go');
+          // Let the heading finish rising in first; on the first screen, also wait for the headline's loop and underline
+          const el = e.target as SVGElement;
+          el.style.setProperty('--wait', `${Math.max(900, 2000 - performance.now())}ms`);
+          el.classList.add('go');
           io.unobserve(e.target);
         }
       },
