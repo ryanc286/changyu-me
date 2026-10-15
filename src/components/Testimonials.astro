@@ -91,6 +91,9 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
           <div class="bubble">
             <span class="notch" aria-hidden="true" />
             <p class="bubble-quote" aria-live="polite" />
+            <button type="button" class="bubble-close" aria-label={closeLabel}>
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+            </button>
           </div>
         </div>
       </div>
@@ -189,7 +192,8 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
   }
   .bubble {
     position: relative;
-    padding: 20px 24px;
+    /* Extra room on the right for the close button */
+    padding: 20px 56px 20px 24px;
     border-radius: 14px;
     background: var(--color-surface);
   }
@@ -209,6 +213,30 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
   }
   .notch.off {
     opacity: 0;
+  }
+  /* Close, top right of the open quote */
+  .bubble-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition:
+      background-color var(--duration) var(--ease-out),
+      color var(--duration) var(--ease-out);
+  }
+  .bubble-close:hover,
+  .bubble-close:focus-visible {
+    background: var(--color-bg);
+    color: var(--color-text);
   }
   .bubble-quote {
     max-width: 68ch;
@@ -572,6 +600,13 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
         reduce ? 0 : 150,
       );
     };
+    // The close button (and Esc) closes the open quote and hands focus back to the person
+    expand.querySelector('.bubble-close')!.addEventListener('click', () => {
+      if (!current) return;
+      const p = current;
+      toggle(p);
+      p.focus({ preventScroll: true });
+    });
     addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && current && !phone.matches) {
         const p = current;
