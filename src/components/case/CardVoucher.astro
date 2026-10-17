@@ -2,7 +2,7 @@
 /*
   A credit card steps back and a voucher takes over, on a loop.
   For the Credit Card Sunset case. From a ✨ callout in Notion: "card-to-voucher: label".
-  Drawn in code (light gray lines on the gray-blue gradient), plays only while on screen.
+  Drawn in code (light gray lines on a soft circle, on the gray-blue gradient), plays only while on screen.
   With reduced motion it just shows the end state: the card with the voucher in front.
 */
 interface Props {
@@ -15,37 +15,23 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
 <figure class="card-voucher" data-card-voucher>
   <svg viewBox="0 0 1000 1000" role="img" aria-label={label}>
     <defs>
-      <clipPath id={`${uid}-clip`}>
-        <path class="voucher-shape" />
-      </clipPath>
-      <linearGradient id={`${uid}-shine`} x1="0" x2="1" y1="0" y2="0">
-        <stop offset="0" stop-color="#fff" stop-opacity="0" />
-        <stop offset="0.5" stop-color="#fff" stop-opacity="0.55" />
-        <stop offset="1" stop-color="#fff" stop-opacity="0" />
+      <linearGradient id={`${uid}-disc`} x1="0.15" y1="0" x2="0.85" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.26" />
+        <stop offset="1" stop-color="#fff" stop-opacity="0.04" />
       </linearGradient>
     </defs>
-    <g class="card-g">
-      <g class="lines">
-        <path class="card" pathLength="1" />
-        <line class="stripe" />
-      </g>
-      <line class="accent" />
+    <!-- A soft gradient circle behind the icons -->
+    <circle cx="500" cy="500" r="500" fill={`url(#${uid}-disc)`} />
+    <!-- Icons a little smaller than the circle, so they sit well inside it -->
+    <g transform="translate(500 500) scale(0.74) translate(-500 -500)">
+    <g class="main">
+      <path class="card" pathLength="1" />
+      <line class="stripe" />
+      <path class="voucher" pathLength="1" />
     </g>
-    <g class="voucher-g">
-      <g clip-path={`url(#${uid}-clip)`}>
-        <rect class="shine" x="-180" y="420" width="180" height="460" fill={`url(#${uid}-shine)`} />
-      </g>
-      <g class="lines">
-        <path class="voucher" pathLength="1" />
-      </g>
-      <rect class="perf perf-1" x="688" y="560" width="40" height="75" rx="5" />
-      <rect class="perf perf-2" x="688" y="652" width="40" height="75" rx="5" />
-    </g>
-    <!-- Hand-drawn burst off the voucher's top-right corner, same pen as the headline -->
-    <g class="burst">
-      <path d="M935 420 L975 370" pathLength="1" />
-      <path d="M955 470 L1020 455" pathLength="1" />
-      <path d="M880 395 L885 330" pathLength="1" />
+    <line class="accent" />
+    <rect class="perf perf-1" x="688" y="560" width="40" height="75" rx="5" />
+    <rect class="perf perf-2" x="688" y="652" width="40" height="75" rx="5" />
     </g>
   </svg>
 </figure>
@@ -63,13 +49,13 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
       radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
       linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
   }
-  /* About 72% of the stage's height (the stage is 16:10) */
+  /* The circle is about 83% of the stage's height (the stage is 16:10) */
   svg {
-    width: 45%;
+    width: 52%;
     height: auto;
     overflow: visible;
   }
-  .lines {
+  .main {
     fill: none;
     /* Opacity on the group, so overlapping lines don't look brighter */
     stroke: #fff;
@@ -92,15 +78,8 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
     stroke-linecap: butt;
   }
   .card,
-  .voucher,
-  .burst path {
+  .voucher {
     stroke-dasharray: 1 2;
-  }
-  .burst {
-    fill: none;
-    stroke: rgb(255 255 255 / 0.7);
-    stroke-width: 18;
-    stroke-linecap: round;
   }
 </style>
 
@@ -163,16 +142,10 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
     const accent = fig.querySelector<SVGLineElement>('.accent')!;
     const voucher = fig.querySelector<SVGPathElement>('.voucher')!;
     const perfs = [...fig.querySelectorAll<SVGRectElement>('.perf')];
-    const voucherG = fig.querySelector<SVGGElement>('.voucher-g')!;
-    const shine = fig.querySelector<SVGRectElement>('.shine')!;
-    const burst = [...fig.querySelectorAll<SVGPathElement>('.burst path')];
-    fig.querySelectorAll('.voucher, .voucher-shape').forEach((el) => el.setAttribute('d', VOUCHER));
+    voucher.setAttribute('d', VOUCHER);
 
     // m: 0 = only the card, 1 = card stepped back; v: voucher drawn; p1, p2: tear marks; fade: voucher fading out
-    // Extras: shine (0 to 1 across the voucher), burst (drawn, then out)
-    type Extra = { shine: number; burst: number; burstOut: number };
-    const done: Extra = { shine: 0, burst: 1, burstOut: 0 };
-    const draw = (m: number, v: number, p1: number, p2: number, fade = 1, x: Extra = done) => {
+    const draw = (m: number, v: number, p1: number, p2: number, fade = 1) => {
       const k = Object.fromEntries(Object.keys(A).map((key) => [key, lerp(A[key as keyof typeof A], B[key as keyof typeof B], m)]));
       const sx = lerp(k.x1 - R, GAP_X, m);
       card.setAttribute('d', cardPath(k.x0, k.y0, k.x1, k.y1, sx));
@@ -189,24 +162,15 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
       accent.setAttribute('y2', String(k.ay));
       accent.style.strokeWidth = String(k.aw);
       voucher.style.strokeDasharray = `${v} 2`;
-      // The whole voucher (lines, shine, tear marks) fades together
-      voucherG.style.opacity = String(v > 0 ? fade : 0);
-      shine.setAttribute('x', String(lerp(180, 1000, x.shine)));
-      shine.style.opacity = x.shine > 0 && x.shine < 1 ? '1' : '0';
-      burst.forEach((b, i) => {
-        const d = clamp(x.burst * 3 - i);
-        b.style.strokeDasharray = `${d} 2`;
-        // Hidden until it starts drawing, or the round cap leaves a dot
-        b.style.opacity = d > 0 ? String((1 - x.burstOut) * fade) : '0';
-      });
+      voucher.style.opacity = String(v > 0 ? fade : 0);
       [p1, p2].forEach((p, i) => {
-        perfs[i].style.opacity = String(p);
+        perfs[i].style.opacity = String(p * fade);
         perfs[i].style.transform = `scale(${lerp(0.4, 1, p)})`;
       });
     };
 
     if (reduce) {
-      draw(1, 1, 1, 1, 1, { ...done, burst: 0 });
+      draw(1, 1, 1, 1);
       return;
     }
 
@@ -217,11 +181,7 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
       const m = span(s, 0.6, 1.2) * (1 - back);
       const v = span(s, 1.0, 1.8);
       const fade = 1 - span(s, 4.4, 4.8);
-      draw(m, v, span(s, 1.8, 2.1), span(s, 2.0, 2.3), fade, {
-        shine: clamp((s - 2.3) / 0.7),
-        burst: span(s, 2.4, 2.75),
-        burstOut: span(s, 3.4, 3.8),
-      });
+      draw(m, v, span(s, 1.8, 2.1), span(s, 2.0, 2.3), fade);
     };
     frame(0);
 
