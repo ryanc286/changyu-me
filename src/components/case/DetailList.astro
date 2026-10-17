@@ -45,7 +45,7 @@ const { items } = Astro.props;
 
 <style>
   .detail-list {
-    --h: clamp(400px, 60vh, 560px);
+    --h: clamp(480px, 76vh, 720px);
     /* Scroll room: one frame height per detail, plus the heading that rides along */
     height: calc(var(--h) * var(--n) + var(--head, 0px));
     margin: var(--space-5) 0;
@@ -106,8 +106,8 @@ const { items } = Astro.props;
   }
   .shot img {
     display: block;
-    /* About 14% of space above and below the phone */
-    height: 72%;
+    /* About 13% of space above and below the phone */
+    height: 74%;
     width: auto;
     filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.3));
   }
