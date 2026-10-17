@@ -1,0 +1,201 @@
+---
+/*
+  A credit card steps back and a voucher takes over, on a loop.
+  For the Credit Card Sunset case. From a ✨ callout in Notion: "card-to-voucher: label".
+  Drawn in code (light gray lines on the gray-blue gradient), plays only while on screen.
+  With reduced motion it just shows the end state: the card with the voucher in front.
+*/
+interface Props {
+  label: string;
+}
+const { label } = Astro.props;
+---
+
+<figure class="card-voucher" data-card-voucher>
+  <svg viewBox="0 0 1000 1000" role="img" aria-label={label}>
+    <g class="main">
+      <path class="card" pathLength="1" />
+      <line class="stripe" />
+      <path class="voucher" pathLength="1" />
+    </g>
+    <line class="accent" />
+    <rect class="perf perf-1" x="688" y="560" width="40" height="75" rx="5" />
+    <rect class="perf perf-2" x="688" y="652" width="40" height="75" rx="5" />
+  </svg>
+</figure>
+
+<style>
+  .card-voucher {
+    display: grid;
+    place-items: center;
+    margin: var(--space-5) 0;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    overflow: hidden;
+    /* Same gray-blue as the other images in this case */
+    background:
+      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
+      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
+  }
+  /* About 72% of the stage's height (the stage is 16:10) */
+  svg {
+    width: 45%;
+    height: auto;
+    overflow: visible;
+  }
+  .main {
+    fill: none;
+    /* Opacity on the group, so overlapping lines don't look brighter */
+    stroke: #fff;
+    opacity: 0.9;
+    stroke-width: 52;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* The light blue parts of the icon become a softer gray */
+  .accent {
+    stroke: rgb(255 255 255 / 0.5);
+    stroke-linecap: round;
+  }
+  .perf {
+    fill: rgb(255 255 255 / 0.5);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .stripe {
+    stroke-linecap: butt;
+  }
+  .card,
+  .voucher {
+    stroke-dasharray: 1 2;
+  }
+</style>
+
+<script>
+  // Two keyframes taken from the two icons (1000 × 1000, stroke centerlines)
+  const A = { x0: 109, y0: 234, x1: 891, y1: 766, stripe: 396.5, stripeW: 83, ax0: 250, ax1: 375, ay: 522, aw: 52 };
+  const B = { x0: 109, y0: 193, x1: 640, y1: 599, stripe: 317, stripeW: 52, ax0: 186, ax1: 271, ay: 395, aw: 40 };
+  const R = 56; // corner radius
+  // In the second icon the card's outline stops short: the bottom edge at x 275, the right edge at y 395
+  const GAP_X = 275;
+  const GAP_Y = 395;
+
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+  const clamp = (t: number) => Math.min(1, Math.max(0, t));
+  const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+  const span = (t: number, from: number, to: number) => ease(clamp((t - from) / (to - from)));
+
+  // Card outline: starts on the bottom edge, goes left and around, ends back at the start
+  function cardPath(x0: number, y0: number, x1: number, y1: number, sx: number) {
+    return [
+      `M${sx} ${y1}`,
+      `H${x0 + R}`,
+      `A${R} ${R} 0 0 1 ${x0} ${y1 - R}`,
+      `V${y0 + R}`,
+      `A${R} ${R} 0 0 1 ${x0 + R} ${y0}`,
+      `H${x1 - R}`,
+      `A${R} ${R} 0 0 1 ${x1} ${y0 + R}`,
+      `V${y1 - R}`,
+      `A${R} ${R} 0 0 1 ${x1 - R} ${y1}`,
+      `H${sx}`,
+    ].join(' ');
+  }
+  // How much of that outline the gap takes: from the right edge at GAP_Y, round the corner, to the start
+  function gapShare(x0: number, y0: number, x1: number, y1: number, sx: number) {
+    const w = x1 - x0 - 2 * R;
+    const h = y1 - y0 - 2 * R;
+    const total = 2 * w + 2 * h + 2 * Math.PI * R;
+    const gap = Math.max(0, y1 - R - GAP_Y) + (Math.PI * R) / 2 + Math.max(0, x1 - R - sx);
+    return gap / total;
+  }
+
+  // Voucher: a ticket with a notch at the top and bottom, drawn from its top-left
+  const VOUCHER = [
+    'M359 540',
+    'V540',
+    `A${R} ${R} 0 0 1 415 484`,
+    'H676 L708 524 L740 484',
+    `H835 A${R} ${R} 0 0 1 891 540`,
+    `V750 A${R} ${R} 0 0 1 835 806`,
+    'H740 L708 766 L676 806',
+    `H415 A${R} ${R} 0 0 1 359 750`,
+    'V540',
+  ].join(' ');
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-card-voucher]').forEach((fig) => {
+    const card = fig.querySelector<SVGPathElement>('.card')!;
+    const stripe = fig.querySelector<SVGLineElement>('.stripe')!;
+    const accent = fig.querySelector<SVGLineElement>('.accent')!;
+    const voucher = fig.querySelector<SVGPathElement>('.voucher')!;
+    const perfs = [...fig.querySelectorAll<SVGRectElement>('.perf')];
+    voucher.setAttribute('d', VOUCHER);
+
+    // m: 0 = only the card, 1 = card stepped back; v: voucher drawn; p1, p2: tear marks; fade: voucher fading out
+    const draw = (m: number, v: number, p1: number, p2: number, fade = 1) => {
+      const k = Object.fromEntries(Object.keys(A).map((key) => [key, lerp(A[key as keyof typeof A], B[key as keyof typeof B], m)]));
+      const sx = lerp(k.x1 - R, GAP_X, m);
+      card.setAttribute('d', cardPath(k.x0, k.y0, k.x1, k.y1, sx));
+      const show = 1 - gapShare(k.x0, k.y0, k.x1, k.y1, sx) * m;
+      card.style.strokeDasharray = `${show} 2`;
+      stripe.setAttribute('x1', String(k.x0));
+      stripe.setAttribute('x2', String(k.x1));
+      stripe.setAttribute('y1', String(k.stripe));
+      stripe.setAttribute('y2', String(k.stripe));
+      stripe.style.strokeWidth = String(k.stripeW);
+      accent.setAttribute('x1', String(k.ax0));
+      accent.setAttribute('x2', String(k.ax1));
+      accent.setAttribute('y1', String(k.ay));
+      accent.setAttribute('y2', String(k.ay));
+      accent.style.strokeWidth = String(k.aw);
+      voucher.style.strokeDasharray = `${v} 2`;
+      voucher.style.opacity = String(v > 0 ? fade : 0);
+      [p1, p2].forEach((p, i) => {
+        perfs[i].style.opacity = String(p * fade);
+        perfs[i].style.transform = `scale(${lerp(0.4, 1, p)})`;
+      });
+    };
+
+    if (reduce) {
+      draw(1, 1, 1, 1);
+      return;
+    }
+
+    // One loop, in seconds: card alone, step back, voucher drawn, tear marks, hold, fade back to the card
+    const LOOP = 6;
+    const frame = (s: number) => {
+      const back = span(s, 4.6, 5.3); // returning to the card
+      const m = span(s, 0.6, 1.2) * (1 - back);
+      const v = span(s, 1.0, 1.8);
+      const fade = 1 - span(s, 4.4, 4.8);
+      draw(m, v, span(s, 1.8, 2.1), span(s, 2.0, 2.3), fade);
+    };
+    frame(0);
+
+    let raf = 0;
+    let start = 0;
+    let paused = 0; // where in the loop we stopped, so it picks up from there
+    const tick = (now: number) => {
+      if (!start) start = now - paused * 1000;
+      const s = ((now - start) / 1000) % LOOP;
+      paused = s;
+      frame(s);
+      raf = requestAnimationFrame(tick);
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        const on = entries.some((e) => e.isIntersecting);
+        if (on && !raf) {
+          start = 0;
+          raf = requestAnimationFrame(tick);
+        } else if (!on && raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+      },
+      { root: fig.closest('.scroller'), threshold: 0.4 },
+    );
+    io.observe(fig);
+  });
+</script>

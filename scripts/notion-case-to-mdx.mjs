@@ -44,6 +44,8 @@
       Add a line "style: slider" to show it as a drag-to-compare slider instead.
       With one before and one after screen, both sit in the same spot so the line wipes one into the other.
       "style: slider wide" compares one wide image per side (e.g. a row of desktop screens).
+  - Callout with the ✨ icon, text "card-to-voucher: label" -> <CardVoucher>, the looping
+      credit card to voucher animation (Credit Card Sunset).
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
   - Headings, paragraphs, lists, bold            -> plain Markdown
@@ -119,6 +121,14 @@ for (let i = 0; i < lines.length; i++) {
       }
       blocks.push({ type: 'block', md: `<IllustratedList items={${JSON.stringify(items)}} />` });
       continue;
+    }
+    if (line.includes('✨')) {
+      // Looping animation drawn in code; only card-to-voucher for now
+      const [id, ...rest] = unescape(inner.filter(Boolean)[0] ?? '').split(':');
+      if (id.trim() === 'card-to-voucher') {
+        blocks.push({ type: 'block', md: `<CardVoucher label=${JSON.stringify(rest.join(':').trim())} />` });
+        continue;
+      }
     }
     if (line.includes('🧱')) {
       // Block builder: one "id: label" per block, in page order

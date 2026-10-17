@@ -21,6 +21,7 @@ import ClickMap from './case/ClickMap.astro';
 import DetailList from './case/DetailList.astro';
 import BlockBuilder from './case/BlockBuilder.astro';
 import IllustratedList from './case/IllustratedList.astro';
+import CardVoucher from './case/CardVoucher.astro';
 import { t, type Lang } from '../i18n/ui';
 import { companies } from '../data/companies';
 
@@ -66,5 +67,5 @@ const type = d.type ?? (kind === 'tools' ? t(lang, `tools.${entry.id}.type`) : u
     { label: labels.type, value: type },
   ]}
 >
-  <Content components={{ Media, MediaRow, Annotated, VideoRow, StepCompare, FlowSwap, CompareSlider, VariantSwitch, FlowSteps, TipCards, ClickMap, DetailList, BlockBuilder, IllustratedList, Stats, Hypothesis }} />
+  <Content components={{ Media, MediaRow, Annotated, VideoRow, StepCompare, FlowSwap, CompareSlider, VariantSwitch, FlowSteps, TipCards, ClickMap, DetailList, BlockBuilder, IllustratedList, CardVoucher, Stats, Hypothesis }} />
 </CaseStudy>
