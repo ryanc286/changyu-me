@@ -2,28 +2,17 @@
 /*
   A credit card steps back and a voucher takes over, on a loop.
   For the Credit Card Sunset case. From a ✨ callout in Notion: "card-to-voucher: label".
-  Drawn in code (light gray lines on a soft circle, on the gray-blue gradient), plays only while on screen.
+  Drawn in code (light gray lines on the gray-blue gradient), plays only while on screen.
   With reduced motion it just shows the end state: the card with the voucher in front.
 */
 interface Props {
   label: string;
 }
 const { label } = Astro.props;
-const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
 <figure class="card-voucher" data-card-voucher>
   <svg viewBox="0 0 1000 1000" role="img" aria-label={label}>
-    <defs>
-      <linearGradient id={`${uid}-disc`} x1="0.15" y1="0" x2="0.85" y2="1">
-        <stop offset="0" stop-color="#fff" stop-opacity="0.26" />
-        <stop offset="1" stop-color="#fff" stop-opacity="0.04" />
-      </linearGradient>
-    </defs>
-    <!-- A soft gradient circle behind the icons -->
-    <circle cx="500" cy="500" r="500" fill={`url(#${uid}-disc)`} />
-    <!-- Icons a little smaller than the circle, so they sit well inside it -->
-    <g transform="translate(500 500) scale(0.74) translate(-500 -500)">
     <g class="main">
       <path class="card" pathLength="1" />
       <line class="stripe" />
@@ -32,7 +21,6 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
     <line class="accent" />
     <rect class="perf perf-1" x="688" y="560" width="40" height="75" rx="5" />
     <rect class="perf perf-2" x="688" y="652" width="40" height="75" rx="5" />
-    </g>
   </svg>
 </figure>
 
@@ -49,9 +37,9 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
       radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
       linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
   }
-  /* The circle is about 83% of the stage's height (the stage is 16:10) */
+  /* About 72% of the stage's height (the stage is 16:10) */
   svg {
-    width: 52%;
+    width: 45%;
     height: auto;
     overflow: visible;
   }
