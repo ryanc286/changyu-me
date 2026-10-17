@@ -7,6 +7,8 @@
   Tag (like "Dropped") is optional.
   Images at public/images/<case slug>/<id>.webp, phone frame included.
   Cycles through once when first seen; any click stops that.
+  When a version has a known spot (SPOTS below), a hand-drawn loop circles
+  what changed on its screen, drawn again each time it is picked.
 */
 interface Item {
   id: string;
@@ -22,6 +24,49 @@ const { items } = Astro.props;
 const uid = `vs-${items.map((it) => it.id).join('-')}`;
 import { caseText } from '../../i18n/case';
 const L = caseText(Astro.url);
+
+// Where each version differs, in image pixels (images are 760 × 1535): x, y, width, height
+const IMG_W = 760;
+const IMG_H = 1535;
+const SPOTS: Record<string, [number, number, number, number]> = {
+  'concept-banner': [70, 430, 614, 214],
+  'concept-button': [72, 318, 158, 120],
+  'concept-floating': [246, 1200, 270, 112],
+};
+
+// Same pen as the homepage headline loop: a bit more than one turn, uneven, squarer than an ellipse
+function loopPath(w: number, h: number) {
+  const pts: [number, number][] = [];
+  const wob = [0.02, -0.04, 0.03, 0.05, -0.02, 0.04, -0.03, 0.02, 0.05, -0.02, 0.03, -0.04, 0.02, 0.04, 0.01, -0.03, 0.03, 0.05, 0.07];
+  const steps = 18;
+  const sq = (v: number) => Math.sign(v) * Math.abs(v) ** 0.7;
+  for (let i = 0; i <= steps; i++) {
+    const a = Math.PI * 1.2 + (i / steps) * 1.18 * Math.PI * 2;
+    const r = (1 + wob[i]) * (1 + (i / steps) * 0.05);
+    pts.push([w / 2 + sq(Math.cos(a)) * (w / 2) * r, h / 2 + sq(Math.sin(a)) * (h / 2) * r]);
+  }
+  const f = (n: number) => n.toFixed(1);
+  let d = `M${f(pts[0][0])} ${f(pts[0][1])}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] ?? pts[i];
+    const [p1, p2] = [pts[i], pts[i + 1]];
+    const p3 = pts[i + 2] ?? p2;
+    d += ` C${f(p1[0] + (p2[0] - p0[0]) / 6)} ${f(p1[1] + (p2[1] - p0[1]) / 6)} ${f(p2[0] - (p3[0] - p1[0]) / 6)} ${f(p2[1] - (p3[1] - p1[1]) / 6)} ${f(p2[0])} ${f(p2[1])}`;
+  }
+  return d;
+}
+const loops = items.map((it) => {
+  const s = SPOTS[it.id];
+  if (!s) return null;
+  const [x, y, w, h] = s;
+  return {
+    d: loopPath(w, h),
+    w,
+    h,
+    style: `left:${(x / IMG_W) * 100}%;top:${(y / IMG_H) * 100}%;width:${(w / IMG_W) * 100}%;height:${(h / IMG_H) * 100}%`,
+  };
+});
+const pad = (n: number) => String(n + 1).padStart(2, '0');
 ---
 
 <figure class="variant-switch" data-variant-switch>
@@ -38,11 +83,16 @@ const L = caseText(Astro.url);
             tabindex={i === 0 ? 0 : -1}
             class="option"
           >
+            <span class="num" aria-hidden="true">{pad(i)}</span>
             <span class="name">
               {it.title}
               {it.tag && <em class="tag">{it.tag}</em>}
             </span>
-            {it.text && <span class="text">{it.text}</span>}
+            {it.text && (
+              <span class="more">
+                <span class="text">{it.text}</span>
+              </span>
+            )}
           </button>
         ))
       }
@@ -52,6 +102,11 @@ const L = caseText(Astro.url);
         items.map((it, i) => (
           <div class:list={['screen', { on: i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
             <img src={it.src} alt={it.title} loading="lazy" draggable="false" />
+            {loops[i] && (
+              <svg class="loop" style={loops[i].style} viewBox={`0 0 ${loops[i].w} ${loops[i].h}`} aria-hidden="true">
+                <path d={loops[i].d} pathLength="1" />
+              </svg>
+            )}
           </div>
         ))
       }
@@ -69,7 +124,7 @@ const L = caseText(Astro.url);
     /* Phone is 92% of the 4:3 stage's height: 0.92 × 3/4 × 760/1535 ≈ 34.2% of its width */
     grid-template-columns: minmax(0, 1fr) 34.2%;
     align-items: center;
-    gap: 7%;
+    gap: 5%;
     aspect-ratio: 4 / 3;
     padding: 0 8% 0 7%;
     border-radius: var(--radius);
@@ -79,54 +134,92 @@ const L = caseText(Astro.url);
       linear-gradient(160deg, #6e604c 0%, #8c7b66 32%, #6a6553 62%, #3f463c 100%);
   }
 
-  /* The list of versions */
+  /* The list of versions: a thin rail on the left, the chosen one marked in white */
   .list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    max-width: 340px;
+    gap: 2px;
+    max-width: 380px;
+    border-left: 1px solid rgb(255 255 255 / 0.2);
   }
   .option {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.1em minmax(0, 1fr);
+    column-gap: 4px;
     width: 100%;
-    padding: 8px 12px;
-    border: 1px solid transparent;
-    border-radius: 10px;
+    padding: 10px 8px 10px 16px;
+    border: 0;
     background: transparent;
-    color: rgb(255 255 255 / 0.6);
+    color: rgb(255 255 255 / 0.7);
     font: inherit;
     text-align: left;
     cursor: pointer;
-    transition:
-      background 250ms var(--ease-out),
-      border-color 250ms var(--ease-out),
-      color 250ms var(--ease-out);
+    transition: color 250ms var(--ease-out);
+  }
+  /* The chosen marker sits on the rail */
+  .option::before {
+    content: '';
+    position: absolute;
+    left: -1.5px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    border-radius: 2px;
+    background: #fff;
+    scale: 1 0;
+    transition: scale 300ms var(--ease-out);
   }
   .option:hover {
-    color: rgb(255 255 255 / 0.85);
+    color: rgb(255 255 255 / 0.9);
   }
   .option[aria-selected='true'] {
-    background: rgb(255 255 255 / 0.14);
-    border-color: rgb(255 255 255 / 0.24);
     color: #fff;
+  }
+  .option[aria-selected='true']::before {
+    scale: 1 1;
   }
   .option:focus-visible {
     outline: 2px solid #fff;
-    outline-offset: 2px;
+    outline-offset: 0;
+    border-radius: 6px;
+  }
+  .num {
+    padding-top: 0.2em;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    opacity: 0.7;
   }
   .name {
     display: flex;
     align-items: center;
     gap: 6px;
     font-weight: 600;
-    font-size: 0.875rem;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  /* Only the chosen version shows its text; it opens and closes smoothly */
+  .more {
+    grid-column: 2;
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows 350ms var(--ease-out),
+      opacity 250ms var(--ease-out);
+  }
+  .option[aria-selected='true'] .more {
+    grid-template-rows: 1fr;
+    opacity: 1;
   }
   .text {
-    font-size: 0.75rem;
-    line-height: 1.4;
-    opacity: 0.85;
+    min-height: 0;
+    overflow: hidden;
+    padding-top: 4px;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: rgb(255 255 255 / 0.85);
   }
   .tag {
     padding: 1px 6px;
@@ -162,6 +255,31 @@ const L = caseText(Astro.url);
     filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.3));
     user-select: none;
   }
+  /* The pen loop around what changed: hidden until its screen is shown, then drawn */
+  .loop {
+    position: absolute;
+    overflow: visible;
+    pointer-events: none;
+    fill: none;
+    stroke: #ff4f3f;
+    stroke-width: 2.5px;
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    rotate: -2deg;
+  }
+  .loop path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  .screen.drawn .loop path {
+    animation: loop-draw 650ms cubic-bezier(0.55, 0.1, 0.35, 1) 300ms forwards;
+  }
+  @keyframes loop-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
 
   .caption {
     display: none;
@@ -191,13 +309,31 @@ const L = caseText(Astro.url);
       border-radius: 999px;
       background: rgb(0 0 0 / 0.2);
     }
+    .list {
+      border-left: 0;
+    }
     .option {
-      flex: 1;
-      align-items: center;
+      display: flex;
+      flex: 1 1 auto;
+      justify-content: center;
       min-width: 0;
-      padding: 6px 2px;
+      padding: 7px 6px;
       border-radius: 999px;
       text-align: center;
+      transition:
+        background 250ms var(--ease-out),
+        color 250ms var(--ease-out);
+    }
+    .option::before,
+    .num,
+    .more {
+      display: none;
+    }
+    .option[aria-selected='true'] {
+      background: rgb(255 255 255 / 0.2);
+    }
+    .option:focus-visible {
+      border-radius: 999px;
     }
     .name {
       font-size: 0.625rem;
@@ -205,10 +341,6 @@ const L = caseText(Astro.url);
       white-space: nowrap;
     }
     .tag {
-      display: none;
-    }
-    /* Only the chosen version's text, under the phone */
-    .text {
       display: none;
     }
     .phone {
@@ -220,8 +352,14 @@ const L = caseText(Astro.url);
   }
   @media (prefers-reduced-motion: reduce) {
     .screen,
-    .option {
+    .option,
+    .option::before,
+    .more {
       transition: none;
+    }
+    .screen.drawn .loop path {
+      animation: none;
+      stroke-dashoffset: 0;
     }
   }
 </style>
@@ -247,6 +385,12 @@ const L = caseText(Astro.url);
       });
       screens.forEach((s, k) => {
         s.classList.toggle('on', k === current);
+        // Restart the pen loop on the chosen screen
+        s.classList.remove('drawn');
+        if (k === current) {
+          void s.offsetWidth;
+          s.classList.add('drawn');
+        }
         if (k === current) s.removeAttribute('aria-hidden');
         else s.setAttribute('aria-hidden', 'true');
       });
@@ -283,11 +427,15 @@ const L = caseText(Astro.url);
     });
 
     // First time in view: go through each version once, then back to the first
-    if (reduce) return;
+    if (reduce) {
+      show(0);
+      return;
+    }
     const io = new IntersectionObserver(
       (entries) => {
         if (!entries.some((e) => e.isIntersecting)) return;
         io.disconnect();
+        if (!touched) show(current);
         const step = (i: number) => {
           if (touched) return;
           show(i);
