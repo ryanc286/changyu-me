@@ -28,6 +28,16 @@ if (src && !video) {
   const file = join(process.cwd(), 'public', src.replace(/\.(webp|png|jpe?g)$/, '-zoom.json'));
   if (existsSync(file)) zoom = JSON.parse(readFileSync(file, 'utf8'));
 }
+// Most images are 16:10. One that isn't (say, a wide funnel) keeps its own shape instead of being cropped.
+let ratio: string | undefined;
+if (src && !video && !zoom) {
+  const file = join(process.cwd(), 'public', src);
+  if (existsSync(file)) {
+    const { default: sharp } = await import('sharp');
+    const { width, height } = await sharp(file).metadata();
+    if (width && height && Math.abs(width / height - 1.6) > 0.01) ratio = `${width} / ${height}`;
+  }
+}
 import { caseText } from '../../i18n/case';
 const L = caseText(Astro.url);
 ---
@@ -53,7 +63,7 @@ const L = caseText(Astro.url);
         <img class="zoom-close" src={zoom.src} alt="" aria-hidden="true" loading="lazy" />
       </div>
     ) : src ? (
-      <img src={src} alt={label} loading="lazy" />
+      <img src={src} alt={label} loading="lazy" style={ratio ? `aspect-ratio: ${ratio}` : undefined} />
     ) : (
       <div class="placeholder" role="img" aria-label={`${L.placeholder}: ${label}`}>
         <span>{id}</span>
