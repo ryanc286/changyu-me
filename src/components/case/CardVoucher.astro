@@ -15,10 +15,6 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
 <figure class="card-voucher" data-card-voucher>
   <svg viewBox="0 0 1000 1000" role="img" aria-label={label}>
     <defs>
-      <!-- Soft shadow, so the card and the voucher read as objects with one in front -->
-      <filter id={`${uid}-shadow`} x="-30%" y="-30%" width="160%" height="170%">
-        <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#0b1020" flood-opacity="0.35" />
-      </filter>
       <clipPath id={`${uid}-clip`}>
         <path class="voucher-shape" />
       </clipPath>
@@ -28,15 +24,14 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
         <stop offset="1" stop-color="#fff" stop-opacity="0" />
       </linearGradient>
     </defs>
-    <g class="card-g" filter={`url(#${uid}-shadow)`}>
+    <g class="card-g">
       <g class="lines">
         <path class="card" pathLength="1" />
         <line class="stripe" />
       </g>
       <line class="accent" />
     </g>
-    <g class="voucher-g" filter={`url(#${uid}-shadow)`}>
-      <path class="voucher-fill voucher-shape" />
+    <g class="voucher-g">
       <g clip-path={`url(#${uid}-clip)`}>
         <rect class="shine" x="-180" y="420" width="180" height="460" fill={`url(#${uid}-shine)`} />
       </g>
@@ -82,10 +77,6 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
     stroke-width: 52;
     stroke-linecap: round;
     stroke-linejoin: round;
-  }
-  /* A light fill on the voucher, like frosted glass in front of the card */
-  .voucher-fill {
-    fill: rgb(255 255 255 / 0.18);
   }
   /* The light blue parts of the icon become a softer gray */
   .accent {
@@ -173,15 +164,14 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
     const voucher = fig.querySelector<SVGPathElement>('.voucher')!;
     const perfs = [...fig.querySelectorAll<SVGRectElement>('.perf')];
     const voucherG = fig.querySelector<SVGGElement>('.voucher-g')!;
-    const voucherFill = fig.querySelector<SVGPathElement>('.voucher-fill')!;
     const shine = fig.querySelector<SVGRectElement>('.shine')!;
     const burst = [...fig.querySelectorAll<SVGPathElement>('.burst path')];
     fig.querySelectorAll('.voucher, .voucher-shape').forEach((el) => el.setAttribute('d', VOUCHER));
 
     // m: 0 = only the card, 1 = card stepped back; v: voucher drawn; p1, p2: tear marks; fade: voucher fading out
-    // Extras: lift (voucher settles from a slight tilt), fill, shine (0 to 1 across), burst (drawn, then out)
-    type Extra = { lift: number; fill: number; shine: number; burst: number; burstOut: number };
-    const done: Extra = { lift: 1, fill: 1, shine: 0, burst: 1, burstOut: 0 };
+    // Extras: shine (0 to 1 across the voucher), burst (drawn, then out)
+    type Extra = { shine: number; burst: number; burstOut: number };
+    const done: Extra = { shine: 0, burst: 1, burstOut: 0 };
     const draw = (m: number, v: number, p1: number, p2: number, fade = 1, x: Extra = done) => {
       const k = Object.fromEntries(Object.keys(A).map((key) => [key, lerp(A[key as keyof typeof A], B[key as keyof typeof B], m)]));
       const sx = lerp(k.x1 - R, GAP_X, m);
@@ -199,10 +189,8 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
       accent.setAttribute('y2', String(k.ay));
       accent.style.strokeWidth = String(k.aw);
       voucher.style.strokeDasharray = `${v} 2`;
-      // The whole voucher (lines, fill, tear marks) fades together
+      // The whole voucher (lines, shine, tear marks) fades together
       voucherG.style.opacity = String(v > 0 ? fade : 0);
-      voucherG.setAttribute('transform', `translate(0 ${lerp(48, 0, x.lift)}) rotate(${lerp(-9, 0, x.lift)} 625 645)`);
-      voucherFill.style.opacity = String(x.fill);
       shine.setAttribute('x', String(lerp(180, 1000, x.shine)));
       shine.style.opacity = x.shine > 0 && x.shine < 1 ? '1' : '0';
       burst.forEach((b, i) => {
@@ -230,8 +218,6 @@ const uid = `cv-${Math.random().toString(36).slice(2, 8)}`;
       const v = span(s, 1.0, 1.8);
       const fade = 1 - span(s, 4.4, 4.8);
       draw(m, v, span(s, 1.8, 2.1), span(s, 2.0, 2.3), fade, {
-        lift: span(s, 1.0, 1.9),
-        fill: span(s, 1.5, 2.0),
         shine: clamp((s - 2.3) / 0.7),
         burst: span(s, 2.4, 2.75),
         burstOut: span(s, 3.4, 3.8),
