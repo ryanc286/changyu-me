@@ -54,7 +54,7 @@ const ARROWS: [string, string][] = [
                     data-summary={summary}
                     data-result={result}>
                     {/* Screen readers and keyboard users get the description too */}
-                    {title}
+                    <span class="project-title">{title}</span>
                     {/* A hand-drawn arrow, same pen as the headline; each one a little different */}
                     <svg class="arrow" viewBox="0 0 22 14" aria-hidden="true">
                       <path d={ARROWS[i % ARROWS.length][0]} />
@@ -117,6 +117,16 @@ const ARROWS: [string, string][] = [
     padding: 4px 0;
     font-weight: 500;
     text-decoration: none;
+  }
+  /* The underline sits on the title only, not under the arrow */
+  .project-title {
+    text-decoration: underline;
+    text-decoration-color: var(--color-line-strong);
+    transition: text-decoration-color var(--duration) var(--ease-out);
+  }
+  .project:hover .project-title,
+  .project:focus-visible .project-title {
+    text-decoration-color: currentColor;
   }
   .arrow {
     flex: none;
