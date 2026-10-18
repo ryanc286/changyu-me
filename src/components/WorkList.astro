@@ -18,6 +18,12 @@ const groups = [...companies]
   .sort((a, b) => a.order - b.order)
   .map((c) => ({ company: c, cases: items.filter((i) => i.data.company === c.name) }))
   .filter((g) => g.cases.length > 0);
+// Hand-drawn arrows: a slightly wavy shaft and a head, three variations
+const ARROWS: [string, string][] = [
+  ['M1 8 C 7 6.5, 13 7.5, 20 6.5', 'M14.5 2 L 20.5 6.6 L 14 11.5'],
+  ['M1 7.5 C 7 7, 13 6.5, 20 7', 'M15 2.5 L 20.5 7 L 14.5 11'],
+  ['M1 6.8 C 7 7.8, 13 6.2, 20 7', 'M14.6 2.2 L 20.4 7 L 15 11.6'],
+];
 ---
 
 <section id="work" aria-labelledby="work-title">
@@ -30,7 +36,7 @@ const groups = [...companies]
           <h3 class="company-name">{company.name}</h3>
           <p class="company-summary">{t(lang, `company.${company.key}.summary`)}</p>
           <ul class="projects">
-            {cases.map(({ id, data }) => {
+            {cases.map(({ id, data }, i) => {
               const zh = lang === 'zh-tw';
               const title = t(lang, `work.${id}.title`);
               const summary = t(lang, `work.${id}.summary`);
@@ -48,7 +54,13 @@ const groups = [...companies]
                     data-summary={summary}
                     data-result={result}>
                     {/* Screen readers and keyboard users get the description too */}
-                    {title}<span class="sr-only">
+                    {title}
+                    {/* A hand-drawn arrow, same pen as the headline; each one a little different */}
+                    <svg class="arrow" viewBox="0 0 22 14" aria-hidden="true">
+                      <path d={ARROWS[i % ARROWS.length][0]} />
+                      <path d={ARROWS[i % ARROWS.length][1]} />
+                    </svg>
+                    <span class="sr-only">
                       {zh ? '：' : ': '}
                       {summary}
                       {result && (zh ? `，${result}` : `, ${result}`)}
@@ -88,26 +100,42 @@ const groups = [...companies]
     color: var(--color-text-body);
   }
 
-  /* Projects sit in one row and wrap when there is no room */
+  /* One project per line, each with a hand-drawn arrow after it */
   .projects {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
-    flex-wrap: wrap;
-    gap: 2px var(--space-4);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
   }
   .project {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     padding: 4px 0;
     font-weight: 500;
-    text-decoration: underline;
-    text-decoration-color: var(--color-line-strong);
-    transition: text-decoration-color var(--duration) var(--ease-out);
+    text-decoration: none;
   }
-  .project:hover,
-  .project:focus-visible {
-    text-decoration-color: currentColor;
+  .arrow {
+    flex: none;
+    width: 1.2em;
+    height: 0.8em;
+    overflow: visible;
+    fill: none;
+    stroke: var(--color-text-muted);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition:
+      translate var(--duration) var(--ease-out),
+      stroke var(--duration) var(--ease-out);
+  }
+  .project:hover .arrow,
+  .project:focus-visible .arrow {
+    translate: 4px 0;
+    stroke: currentColor;
   }
 
 </style>
