@@ -25,11 +25,9 @@ I looked at six months of data on each section's share of taps and reviewed the 
 
 <ClickMap id="old-activity" label="Share of taps on the Activity tab, 6 months" src="/images/notification-center/old-activity.webp" items={[{"title":"Marketing banner","value":"2.4%"},{"title":"Carousell News & saved searches","value":"12.5%"},{"title":"Marketing messages","value":"2.8%"},{"title":"Account & listing activity","value":"82%","highlight":true},{"title":"Others","value":"0.3%"}]} />
 
-## Learning from other products
+## Why I switched to interviews
 
 I looked at how other products handle notifications. Three patterns kept coming up: **categories**, a **visual hierarchy**, and **read or unread markers**.
-
-## A turning point
 
 I turned those patterns into concepts, but the concepts kept multiplying, and team discussions went back and forth without a clear direction. Competitors showed what other products do, not what our users need. So I stopped making concepts and proposed interviews instead.
 
@@ -59,21 +57,19 @@ The old Activity tab led with marketing. The new Updates tab leads with what nee
 
 <DetailList items={[{"id": "detail-urgent", "label": "Urgent items on top, with a countdown", "src": "/images/notification-center/detail-urgent.webp", "title": "Urgent items on top.", "text": "Notifications are grouped by topic and urgency. Urgent ones get a countdown and a clear button."}, {"id": "detail-timeline", "label": "One timeline per order", "src": "/images/notification-center/detail-timeline.webp", "title": "One timeline per order.", "text": "Updates from the same order stack into one item that opens up, so nothing gets lost and the list stays short."}, {"id": "detail-bundled", "label": "Likes bundled into one", "src": "/images/notification-center/detail-bundled.webp", "title": "Small things bundled.", "text": "Low-stakes updates of the same type, like item likes, are combined into one."}, {"id": "detail-marketing", "label": "Marketing as a notification", "src": "/images/notification-center/detail-marketing.webp", "title": "Marketing as notifications.", "text": "Banners became notification-style items. They are easier to scan, and campaigns still get seen."}]} />
 
-## Bringing marketing along
+## Bringing everyone along
 
 Changing marketing placements on a high-traffic page was the riskiest part. Those spots belonged to the marketing team. Instead of trading opinions, I showed six months of tap data on the old banners. To make sure the new format wasn't a downgrade, the notification-style placement takes images, text or video, so campaigns keep their range. Marketing agreed, and a joint workshop settled how campaign notifications would work.
+
+The change touched many teams, so I presented the design at the tech town hall, to the whole tech org including C-level leaders, and took their questions.
+
+<Media id="town-hall" label="Slides from the tech town hall presentation" src="/images/notification-center/town-hall.webp" />
 
 ## Responsive web design
 
 The web had no Activity tab before. I designed a responsive version, so people see the same updates on any screen.
 
 <Media id="web" label="The Updates tab on desktop web, with a quick-view panel, and on mobile web" src="/images/notification-center/web.webp" />
-
-## Getting everyone on board
-
-The change touched many teams, so I presented the design at the tech town hall, to the whole tech org including C-level leaders, and took their questions.
-
-<Media id="town-hall" label="Slides from the tech town hall presentation" src="/images/notification-center/town-hall.webp" />
 
 ## Results
 
