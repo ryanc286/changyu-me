@@ -245,11 +245,12 @@ const points = POINTS[id] ?? [];
     .lines {
       display: none;
     }
-    .notes {
+    /* .annotated in front so the article's own list margins can't win */
+    .annotated .notes {
       display: flex;
       flex-direction: column;
       gap: 14px;
-      margin-top: 28px;
+      margin-top: 32px;
     }
     .note {
       position: static;
