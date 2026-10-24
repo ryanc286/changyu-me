@@ -15,7 +15,9 @@ const { items } = Astro.props;
         <dd>{s.value}</dd>
         {(s.title || s.text) && (
           <dd class="more">
-            {s.title && <strong>{s.title}</strong>} {s.text}
+            {/* On its own line, so the trailing period from the Notion text is dropped */}
+            {s.title && <strong>{s.title.replace(/[.。]$/, '')}</strong>}
+            {s.text}
           </dd>
         )}
       </div>
@@ -60,7 +62,10 @@ const { items } = Astro.props;
     line-height: 1.55;
     color: var(--color-text-body);
   }
+  /* The title sits on its own line above the text */
   .more strong {
+    display: block;
+    margin-bottom: 2px;
     color: var(--color-text);
     font-weight: 600;
   }
