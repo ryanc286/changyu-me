@@ -48,6 +48,7 @@
       credit card to voucher animation (Credit Card Sunset).
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
+      Add Title | Text columns for a short explanation above each number (pain points, say).
   - Headings, paragraphs, lists, bold            -> plain Markdown
   Writes to src/content/work/<slug>.mdx, or src/content/tools/<slug>.mdx for tools.
   Pages with 語言 = 中文 are the Chinese version of the same Slug and go to
@@ -345,7 +346,13 @@ for (let i = 0; i < lines.length; i++) {
       }
     }
     const body = line.includes('header-row="true"') ? rows.slice(1) : rows;
-    const items = body.map(([value, label]) => ({ value, label }));
+    // Optional 3rd and 4th columns (Title | Text) add an explanation above each number
+    const items = body.map(([value, label, title, text]) => ({
+      value,
+      label,
+      ...(title ? { title } : {}),
+      ...(text ? { text } : {}),
+    }));
     blocks.push({ type: 'block', md: `<Stats items={${JSON.stringify(items)}} />` });
     continue;
   }
