@@ -47,9 +47,15 @@ const { items } = Astro.props;
     color: var(--color-text);
     font-variant-numeric: tabular-nums;
   }
-  /* The explanation under a number: a little gap, then body text */
+  dt {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.45;
+  }
+  /* Detailed cards (e.g. pain points): the explanation comes first, then the number and what it means */
   .more {
-    margin: var(--space-2) 0 0;
+    order: -2;
+    margin: 0 0 var(--space-2);
     font-size: var(--text-sm);
     line-height: 1.55;
     color: var(--color-text-body);
@@ -58,13 +64,20 @@ const { items } = Astro.props;
     color: var(--color-text);
     font-weight: 600;
   }
-  /* With explanations, keep three across on desktop and stack on phones */
+  /* Three across on desktop, stacked on phones. Rows are shared so the numbers line up even when the texts differ in length */
   .stats.detailed {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   }
-  dt {
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    line-height: 1.45;
+  @supports (grid-template-rows: subgrid) {
+    .stats.detailed div {
+      display: grid;
+      grid-row: span 3;
+      grid-template-rows: subgrid;
+      row-gap: 2px;
+      align-content: start;
+    }
+    .stats.detailed .more {
+      align-self: start;
+    }
   }
 </style>
