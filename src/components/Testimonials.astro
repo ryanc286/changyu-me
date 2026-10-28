@@ -5,10 +5,13 @@
   Phones (600px and under): tap someone to read their words in a half sheet.
   Text lives in copy.json (testimonials.<n>.quote, testimonials.<n>.by = "Name, Title · Company"),
   synced with Notion. Photos: public/images/people/person-<n>.webp.
+  Each person shows as a black and white pixel portrait (src/data/pixel-people.json, 36 × 36).
+  Choosing someone sharpens it into their photo in a few steps (person-<n>-px12/24/48.png, then the photo).
 */
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import Burst from './Burst.astro';
+import pixelPeople from '../data/pixel-people.json';
 import { t, tOpt, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -17,7 +20,11 @@ interface Props {
 const { lang } = Astro.props;
 const closeLabel = lang === 'zh-tw' ? '關閉' : 'Close';
 
-const items: { quote: string; name: string; title: string; company: string; photo?: string }[] = [];
+const items: { quote: string; name: string; title: string; company: string; photo?: string; pixel?: string; n: number }[] = [];
+const pixels = pixelPeople.paths as Record<string, string>;
+// The steps between the pixel portrait and the photo, coarse to fine
+const STEPS = [12, 24, 48];
+const stepSrc = (n: number, k: number) => `/images/people/person-${n}-px${k}.png`;
 for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
   const by = t(lang, `testimonials.${n}.by`);
   const [who, company = ''] = by.split(' · ');
@@ -29,6 +36,8 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     title: rest.join(', ').trim(),
     company: company.trim(),
     photo: existsSync(join(process.cwd(), 'public', photo)) ? photo : undefined,
+    pixel: pixels[String(n)],
+    n,
   });
 }
 ---
@@ -50,11 +59,20 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
               data-name={it.name}
               data-role={[it.title, it.company].filter(Boolean).join(' · ')}
               data-photo={it.photo}
+              data-steps={it.photo && it.pixel ? STEPS.map((k) => stepSrc(it.n, k)).join(' ') : undefined}
               aria-describedby={`quote-${i}`}
               aria-expanded="false"
               aria-controls="people-quote"
             >
-              <span class="photo">{it.photo && <img src={it.photo} alt="" loading="lazy" />}</span>
+              <span class="photo" data-step={it.pixel ? '0' : '4'}>
+                {it.pixel && (
+                  <svg class="px-art" viewBox={`0 0 ${pixelPeople.size} ${pixelPeople.size}`} shape-rendering="crispEdges" aria-hidden="true">
+                    <path d={it.pixel} />
+                  </svg>
+                )}
+                {it.photo && it.pixel && STEPS.map((k, s) => <img class={`s${s + 1}`} src={stepSrc(it.n, k)} alt="" loading="lazy" />)}
+                {it.photo && <img class="s4" src={it.photo} alt="" loading="lazy" />}
+              </span>
               <span class="name">{it.name}</span>
               <span class="role">{it.title}</span>
               <span class="role">{it.company}</span>
@@ -74,7 +92,10 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
           <div class="drag">
             <div class="grab" aria-hidden="true"><span /></div>
             <div class="who">
-              <span class="photo"><img alt="" /></span>
+              <span class="photo" data-step="4">
+                <svg class="px-art" viewBox={`0 0 ${pixelPeople.size} ${pixelPeople.size}`} shape-rendering="crispEdges" aria-hidden="true"><path /></svg>
+                <img class="s1" alt="" /><img class="s2" alt="" /><img class="s3" alt="" /><img class="s4" alt="" />
+              </span>
               <span>
                 <span class="name" id="tsheet-name" />
                 <span class="role" />
@@ -151,6 +172,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     transition: background-color var(--duration) var(--ease-out);
   }
   .photo {
+    position: relative;
     display: block;
     width: 72px;
     height: 72px;
@@ -158,15 +180,40 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     border-radius: 50%;
     overflow: hidden;
     background: var(--color-surface);
+    color: var(--color-text);
+    transition: scale var(--duration) var(--ease-out);
   }
-  /* Photos sit in the site's warm gray until you point at someone */
-  .photo img {
+  /* Layers: the pixel portrait, three coarse-to-fine steps, then the photo. data-step picks one. */
+  .photo > * {
+    position: absolute;
+    inset: 0;
     display: block;
     width: 100%;
     height: 100%;
+    opacity: 0;
+  }
+  .photo img {
     object-fit: cover;
-    filter: grayscale(1) sepia(0.18) contrast(0.95) brightness(1.04);
-    transition: filter 400ms var(--ease-out);
+  }
+  .photo .s1,
+  .photo .s2,
+  .photo .s3 {
+    image-rendering: pixelated;
+  }
+  .px-art path {
+    fill: currentColor;
+  }
+  /* The pixel portrait is always dark ink on a light disc, in dark mode too, so hair stays black */
+  .photo[data-step='0'] {
+    background: #eeeeea;
+    color: #1a1a1a;
+  }
+  .photo[data-step='0'] .px-art,
+  .photo[data-step='1'] .s1,
+  .photo[data-step='2'] .s2,
+  .photo[data-step='3'] .s3,
+  .photo[data-step='4'] .s4 {
+    opacity: 1;
   }
   .name {
     font-weight: 500;
@@ -255,9 +302,6 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
   .person.on {
     background: var(--color-surface);
   }
-  .person.on .photo img {
-    filter: none;
-  }
 
   /* Pointing at someone hints they can be clicked */
   @media (hover: hover) and (pointer: fine) {
@@ -267,6 +311,9 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     }
     .person.on:hover {
       background: var(--color-surface);
+    }
+    .person:hover .photo {
+      scale: 1.04;
     }
   }
 
@@ -399,9 +446,6 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       height: 48px;
       margin: 0;
     }
-    .who .photo img {
-      filter: none;
-    }
     .who .name,
     .who .role {
       display: block;
@@ -469,7 +513,30 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     const sheet = section.querySelector<HTMLDialogElement>('.tsheet')!;
     const panel = sheet.querySelector<HTMLElement>('.panel')!;
     const drag = sheet.querySelector<HTMLElement>('.drag')!;
-    const img = sheet.querySelector<HTMLImageElement>('.photo img')!;
+    const sheetPhoto = sheet.querySelector<HTMLElement>('.photo')!;
+
+    // Pixel portrait -> coarse -> finer -> photo, one step every 90ms. Back to pixels at once.
+    const timers = new WeakMap<HTMLElement, number[]>();
+    const reveal = (el: HTMLElement, on: boolean, delay = 0) => {
+      (timers.get(el) ?? []).forEach(clearTimeout);
+      timers.set(el, []);
+      if (!el.querySelector('.px-art path[d]')) return; // no pixel portrait: always the photo
+      if (!on) {
+        el.dataset.step = '0';
+        return;
+      }
+      if (el.dataset.step === '4') return;
+      if (reduce) {
+        el.dataset.step = '4';
+        return;
+      }
+      el.dataset.step = '0';
+      timers.set(
+        el,
+        [1, 2, 3, 4].map((s) => window.setTimeout(() => (el.dataset.step = String(s)), delay + (s - 1) * 90)),
+      );
+    };
+    const photoOf = (p: HTMLElement) => p.querySelector<HTMLElement>('.photo')!;
     const phone = matchMedia('(max-width: 600px)');
     let closing = false;
     const open = (p: HTMLElement) => {
@@ -478,14 +545,27 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       sheet.querySelector('.role')!.textContent = p.dataset.role ?? '';
       sheet.querySelector('.quote')!.textContent = p.dataset.quote ?? '';
       sheet.querySelector<HTMLElement>('.quote')!.scrollTop = 0;
-      if (p.dataset.photo) img.src = p.dataset.photo;
-      img.hidden = !p.dataset.photo;
+      // The sheet's photo: same pixel portrait and steps as the person tapped, then it sharpens
+      const art = p.querySelector('.px-art path')?.getAttribute('d');
+      const sheetPath = sheetPhoto.querySelector('.px-art path')!;
+      if (art) sheetPath.setAttribute('d', art);
+      else sheetPath.removeAttribute('d');
+      const steps = (p.dataset.steps ?? '').split(' ').filter(Boolean);
+      sheetPhoto.querySelectorAll<HTMLImageElement>('img').forEach((im, i) => {
+        const src = i < 3 ? steps[i] : p.dataset.photo;
+        if (src) im.src = src;
+        else im.removeAttribute('src');
+      });
+      sheetPhoto.hidden = !p.dataset.photo;
+      sheetPhoto.dataset.step = art && p.dataset.photo ? '0' : '4';
       closing = false;
       panel.style.transform = '';
       sheet.showModal();
       document.documentElement.classList.add('sheet-open');
       panel.getBoundingClientRect(); // start from below the screen
       sheet.classList.add('in');
+      // Sharpen once the sheet has mostly slid up
+      reveal(sheetPhoto, true, 260);
     };
     const close = () => {
       if (closing || !sheet.open) return;
@@ -556,6 +636,7 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
       people.forEach((o) => {
         o.classList.toggle('on', o === p);
         o.setAttribute('aria-expanded', String(o === p));
+        reveal(photoOf(o), o === p);
       });
     };
     // Point the notch at the chosen person; hide it when they scroll out of the row
