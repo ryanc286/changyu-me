@@ -540,7 +540,11 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
     const phone = matchMedia('(max-width: 600px)');
     let closing = false;
     const open = (p: HTMLElement) => {
-      people.forEach((o) => o.classList.toggle('on', o === p));
+      // The chosen person in the row behind the sheet turns into their photo too
+      people.forEach((o) => {
+        o.classList.toggle('on', o === p);
+        reveal(photoOf(o), o === p, 260);
+      });
       sheet.querySelector('.name')!.textContent = p.dataset.name ?? '';
       sheet.querySelector('.role')!.textContent = p.dataset.role ?? '';
       sheet.querySelector('.quote')!.textContent = p.dataset.quote ?? '';
@@ -577,7 +581,10 @@ for (let n = 1; tOpt(lang, `testimonials.${n}.quote`); n++) {
         if (!closing) return;
         sheet.close();
         document.documentElement.classList.remove('sheet-open');
-        people.forEach((o) => o.classList.remove('on'));
+        people.forEach((o) => {
+          o.classList.remove('on');
+          reveal(photoOf(o), false);
+        });
         closing = false;
       };
       if (reduce) done();
