@@ -57,7 +57,9 @@ The old Activity tab led with marketing. The new Updates tab leads with what nee
 
 The new tab had many kinds of updates: order actions, reviews and likes, marketing campaigns, push messages and saved searches. Instead of designing each one, I built a single notification card with optional parts: an avatar or listing image on the left, the content in the middle (title, message, countdown, text button, time), and extra details on the right (listing image, rating, a chevron). Turning parts on or off covers every type, so engineering only needs one component, and a new type doesn't need a new design.
 
-<MediaRow items={[{"id": "card-structure", "label": "The parts of the notification card", "src": "/images/notification-center/card-structure.webp"}, {"id": "card-variants", "label": "One card, set up for each type of notification", "src": "/images/notification-center/card-variants.webp"}]} />
+For the two marketing types, I also set clear rules for what marketing sets up in the admin tool: campaign names up to 75 characters, a fixed banner size, the Carousell logo when no image is uploaded, and a button made from the link. That way the team can launch campaigns on their own, and the layout still holds.
+
+<NotificationCard label="One notification card, set up for each type of notification" />
 
 ## More details
 
@@ -66,10 +68,6 @@ The new tab had many kinds of updates: order actions, reviews and likes, marketi
 ## Bringing everyone along
 
 Changing marketing placements on a high-traffic page was the riskiest part. Those spots belonged to the marketing team. Instead of trading opinions, I showed six months of tap data on the old banners. To make sure the new format wasn't a downgrade, the notification-style placement takes images, text or video, so campaigns keep their range. Marketing agreed, and a joint workshop settled how campaign notifications would work.
-
-I also set clear rules for what marketing sets up in the admin tool: campaign names up to 75 characters, a fixed banner size, the Carousell logo when no image is uploaded, and a button made from the link. That way the team can launch campaigns on their own, and the layout still holds.
-
-<Media id="marketing-rules" label="Rules for campaign notifications set up in the admin tool" src="/images/notification-center/marketing-rules.webp" />
 
 The change touched many teams, so I presented the design at the tech town hall, to the whole tech org including C-level leaders, and took their questions.
 

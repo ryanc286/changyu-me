@@ -46,6 +46,7 @@
       "style: slider wide" compares one wide image per side (e.g. a row of desktop screens).
   - Callout with the ✨ icon, text "card-to-voucher: label" -> <CardVoucher>, the looping
       credit card to voucher animation (Credit Card Sunset).
+      "notification-card: label" -> <NotificationCard>, the notification card switcher (Notification Center).
   - Quote (> ...)                               -> <Hypothesis>        (highlighted statement)
   - Table with columns Number | Label            -> <Stats />           (big numbers row)
       Add Title | Text columns for a short explanation above each number (pain points, say).
@@ -128,6 +129,10 @@ for (let i = 0; i < lines.length; i++) {
       const [id, ...rest] = unescape(inner.filter(Boolean)[0] ?? '').split(':');
       if (id.trim() === 'card-to-voucher') {
         blocks.push({ type: 'block', md: `<CardVoucher label=${JSON.stringify(rest.join(':').trim())} />` });
+        continue;
+      }
+      if (id.trim() === 'notification-card') {
+        blocks.push({ type: 'block', md: `<NotificationCard label=${JSON.stringify(rest.join(':').trim())} />` });
         continue;
       }
     }

@@ -1,0 +1,576 @@
+---
+/*
+  One notification card that sets itself up for each type of notification (Notification Center).
+  From a ✨ callout in Notion: "notification-card: label".
+  Tabs pick a type; the card's parts turn on or off, the parts list beside it lights up what is on,
+  and the two marketing types show the rules marketing works with in the admin tool.
+  Goes through every type once when first seen; any click stops that.
+*/
+import { getLangFromUrl } from '../../i18n/ui';
+
+interface Props {
+  label: string;
+}
+const { label } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const zh = lang === 'zh-tw';
+
+// The card's parts, grouped the way the spec groups them
+const groups = zh
+  ? [
+      { name: '頭像', parts: [['avatar', '頭像或商品圖']] },
+      { name: '內容', parts: [['title', '標題'], ['message', '訊息'], ['banner', '橫幅圖'], ['timer', '倒數計時'], ['button', '文字按鈕'], ['time', '時間']] },
+      { name: '額外資訊', parts: [['thumb', '商品圖'], ['rating', '評分']] },
+    ]
+  : [
+      { name: 'Avatar', parts: [['avatar', 'Profile or listing image']] },
+      { name: 'Content', parts: [['title', 'Title'], ['message', 'Message'], ['banner', 'Banner'], ['timer', 'Timer'], ['button', 'Text button'], ['time', 'Time']] },
+      { name: 'Additional', parts: [['thumb', 'Listing image'], ['rating', 'Rating']] },
+    ];
+
+type Type = {
+  id: string;
+  tab: string;
+  avatar: 'listing' | 'person' | 'logo' | 'search';
+  on: string[];
+  title?: string;
+  message: string;
+  timer?: string;
+  button?: string;
+  time: string;
+  rules?: string[];
+};
+const types: Type[] = zh
+  ? [
+      { id: 'action', tab: '待處理', avatar: 'listing', on: ['avatar', 'title', 'message', 'timer', 'button', 'time'], title: '買家已下單', message: '請出貨，否則買家將獲得退款', timer: '剩 18 小時', button: '查看訂單詳情', time: '5 天前' },
+      { id: 'normal', tab: '一般通知', avatar: 'person', on: ['avatar', 'message', 'rating', 'time'], message: '<b>jamie.lo</b> 給了你一則評價。', time: '2 天前' },
+      { id: 'campaign', tab: '行銷活動', avatar: 'logo', on: ['avatar', 'message', 'banner', 'time'], message: '使用 #WELCOME20 享 $20 折扣', time: '2 天前', rules: ['活動名稱最多 75 字', '橫幅 1125 × 522，自動縮放', '沒有上傳圖片時顯示 Carousell 標誌'] },
+      { id: 'message', tab: '行銷訊息', avatar: 'logo', on: ['avatar', 'message', 'button', 'time'], message: '使用 #WELCOME20 享 $20 折扣', button: '立即使用', time: '2 天前', rules: ['訊息最多 4 行', '依連結自動產生按鈕', '沒有上傳圖片時顯示 Carousell 標誌'] },
+      { id: 'push', tab: '推播', avatar: 'logo', on: ['avatar', 'title', 'message', 'time'], title: '刊登商品就有獎勵！', message: '今天刊登商品，就能獲得 $5 折扣碼。', time: '2 天前' },
+      { id: 'search', tab: '已儲存的搜尋', avatar: 'search', on: ['avatar', 'message', 'time'], message: '已儲存的搜尋「<b>iPad</b>」有 3 個新商品', time: '2 天前' },
+    ]
+  : [
+      { id: 'action', tab: 'For action', avatar: 'listing', on: ['avatar', 'title', 'message', 'timer', 'button', 'time'], title: 'Buyer placed an order', message: 'Ship out your order or your buyer will be refunded', timer: '18h left', button: 'View order details', time: '5 days ago' },
+      { id: 'normal', tab: 'Normal', avatar: 'person', on: ['avatar', 'message', 'rating', 'time'], message: '<b>jamie.lo</b> left you a review.', time: '2 days ago' },
+      { id: 'campaign', tab: 'Campaign', avatar: 'logo', on: ['avatar', 'message', 'banner', 'time'], message: 'Get $20 off with hashtag #WELCOME20', time: '2 days ago', rules: ['Campaign name: up to 75 characters', 'Banner: 1125 × 522, scales to fit', 'No image uploaded: Carousell logo'] },
+      { id: 'message', tab: 'Marketing message', avatar: 'logo', on: ['avatar', 'message', 'button', 'time'], message: 'Get $20 off with hashtag #WELCOME20', button: 'Use it now', time: '2 days ago', rules: ['Message: up to 4 lines', 'Button made from the link', 'No image uploaded: Carousell logo'] },
+      { id: 'push', tab: 'Push', avatar: 'logo', on: ['avatar', 'title', 'message', 'time'], title: 'Get rewarded when you list!', message: 'List an item today and earn a $5 promo code.', time: '2 days ago' },
+      { id: 'search', tab: 'Saved search', avatar: 'search', on: ['avatar', 'message', 'time'], message: '3 new matches from saved search: <b>iPad</b>', time: '2 days ago' },
+    ];
+const first = types[0];
+const rulesTitle = zh ? '行銷團隊的後台規則' : 'Rules in the admin tool';
+const partsTitle = zh ? '卡片組成' : 'Parts of the card';
+---
+
+<figure class="ncard" data-ncard aria-label={label}>
+  <div class="tabs" role="tablist" aria-label={label}>
+    {
+      types.map((t, i) => (
+        <button type="button" role="tab" class="tab" aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-i={i}>
+          {t.tab}
+        </button>
+      ))
+    }
+  </div>
+  <div class="stage">
+    <div class="card-wrap">
+      <article class="card" data-type={first.id} data-avatar={first.avatar} aria-live="polite">
+        <span class="avatar" aria-hidden="true">
+          <span class="av av-listing" />
+          <span class="av av-person">J</span>
+          <span class="av av-logo">
+            <svg viewBox="0 0 24 24"><path d="M15.5 8.2a5 5 0 1 0 0 7.6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" /></svg>
+          </span>
+          <span class="av av-search">
+            <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2" /><path d="M15 15l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+          </span>
+        </span>
+        <div class="body">
+          <div class="slot" data-slot="title"><div><p class="title" set:html={first.title ?? ''} /></div></div>
+          <div class="slot" data-slot="message"><div><p class="message" set:html={first.message} /></div></div>
+          <div class="slot" data-slot="banner">
+            <div>
+              <div class="banner" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M3 18l5-6 4 4 3-3 6 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" /><circle cx="16" cy="8" r="2" fill="currentColor" /></svg>
+              </div>
+            </div>
+          </div>
+          <div class="slot" data-slot="timer"><div><span class="timer">{first.timer}</span></div></div>
+          <div class="slot" data-slot="button"><div><span class="button">{first.button}</span></div></div>
+          <div class="slot" data-slot="time"><div><span class="time">{first.time}</span></div></div>
+        </div>
+        <span class="right" aria-hidden="true">
+          <span class="slot-x" data-slot="thumb"><span class="thumb" /></span>
+          <span class="slot-x" data-slot="rating"><span class="rating">5.0 <svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="currentColor" /></svg></span></span>
+        </span>
+      </article>
+    </div>
+    <div class="side">
+      <p class="side-title">{partsTitle}</p>
+      <div class="groups">
+        {
+          groups.map((g) => (
+            <div class="group">
+              <p class="group-name">{g.name}</p>
+              <ul>
+                {g.parts.map(([id, name]) => (
+                  <li data-part={id}>{name}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+      <div class="rules off">
+        <p class="side-title">{rulesTitle}</p>
+        <ul class="rules-list" />
+      </div>
+    </div>
+  </div>
+  <script type="application/json" class="ncard-data" set:html={JSON.stringify(types)} />
+</figure>
+
+<style>
+  .ncard {
+    margin: var(--space-5) 0;
+  }
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .tab {
+    flex: none;
+    padding: 6px 12px;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 999px;
+    background: none;
+    color: var(--color-text-muted);
+    font: inherit;
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition:
+      background-color var(--duration) var(--ease-out),
+      color var(--duration) var(--ease-out),
+      border-color var(--duration) var(--ease-out);
+  }
+  .tab:hover {
+    color: var(--color-text);
+  }
+  .tab[aria-selected='true'] {
+    border-color: var(--color-text);
+    background: var(--color-text);
+    color: var(--color-bg);
+  }
+  /* Same gray-blue as the other images in this case */
+  .stage {
+    display: grid;
+    gap: 28px;
+    padding: 48px 8% 40px;
+    border-radius: var(--radius);
+    background:
+      radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
+      linear-gradient(115deg, #3d475a 0%, #75839a 42%, #4a5468 70%, #262c3b 100%);
+    color: #fff;
+  }
+  /* Room for the tallest card, so switching types doesn't move the page */
+  .card-wrap {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    min-height: 230px;
+  }
+  .card-wrap .card {
+    width: min(100%, 380px);
+  }
+
+  /* The card itself: always light, like the app */
+  .card {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    gap: 0 16px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: #fff;
+    color: #2c2c2c;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 20px;
+    box-shadow: 0 12px 32px rgb(10 14 24 / 0.28);
+  }
+  .avatar {
+    position: relative;
+    width: 48px;
+    height: 48px;
+  }
+  .av {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transition: opacity 250ms var(--ease-out);
+  }
+  .av svg {
+    width: 26px;
+    height: 26px;
+  }
+  .av-listing {
+    border-radius: 6px;
+    background: linear-gradient(135deg, #c9cdd3, #8e959f);
+  }
+  .av-person {
+    border-radius: 50%;
+    background: #f0d9c8;
+    color: #7a5440;
+    font-weight: 600;
+  }
+  .av-logo {
+    border-radius: 50%;
+    background: #ef2c39;
+  }
+  .av-search {
+    border-radius: 50%;
+    background: #eef0f2;
+    color: #57606a;
+  }
+  .card[data-avatar='listing'] .av-listing,
+  .card[data-avatar='person'] .av-person,
+  .card[data-avatar='logo'] .av-logo,
+  .card[data-avatar='search'] .av-search {
+    opacity: 1;
+  }
+  .body {
+    min-width: 0;
+  }
+  /* Each part opens and closes smoothly */
+  .slot {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows 320ms var(--ease-out),
+      opacity 220ms var(--ease-out);
+  }
+  .slot > div {
+    min-height: 0;
+    overflow: hidden;
+  }
+  .slot.on {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+  .title,
+  .message {
+    margin: 0;
+  }
+  .title {
+    font-weight: 700;
+  }
+  .message :global(b) {
+    font-weight: 700;
+  }
+  .banner {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1125 / 522;
+    margin-top: 8px;
+    border-radius: 6px;
+    background: #e9ebee;
+    color: #a3a9b1;
+  }
+  .banner svg {
+    width: 36px;
+    height: 36px;
+  }
+  .timer {
+    display: inline-flex;
+    margin-top: 8px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: #e5352f;
+    color: #fff;
+    font-size: 11px;
+    line-height: 18px;
+    font-weight: 600;
+  }
+  .button {
+    display: inline-block;
+    margin-top: 8px;
+    color: #008f79;
+    font-weight: 700;
+  }
+  .button::after {
+    content: ' ›';
+  }
+  .time {
+    display: block;
+    margin-top: 4px;
+    color: #8a8f96;
+    font-size: 12px;
+  }
+  .right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  .slot-x {
+    display: none;
+  }
+  .slot-x.on {
+    display: block;
+    animation: pop 250ms var(--ease-out);
+  }
+  .thumb {
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #c9cdd3, #8e959f);
+  }
+  .rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-weight: 600;
+  }
+  .rating svg {
+    width: 16px;
+    height: 16px;
+    color: #f6b100;
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      scale: 0.9;
+    }
+  }
+
+  /* Parts list: what is on lights up */
+  .side-title {
+    margin: 0 0 10px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: rgb(255 255 255 / 0.9);
+  }
+  .side {
+    padding-top: 20px;
+    border-top: 1px solid rgb(255 255 255 / 0.16);
+  }
+  .groups {
+    display: grid;
+    gap: 10px;
+  }
+  /* Group name on the left, its parts beside it */
+  .group {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    align-items: start;
+  }
+  .group-name {
+    padding-top: 3px;
+  }
+  /* Beat the case page's list spacing */
+  .ncard .group ul,
+  .ncard .rules-list {
+    margin: 0;
+    padding: 0;
+  }
+  .ncard li,
+  .ncard .title,
+  .ncard .message,
+  .ncard .group-name {
+    margin: 0;
+  }
+  .ncard .side-title {
+    margin: 0 0 10px;
+  }
+  .group-name {
+    margin: 0 0 4px;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: rgb(255 255 255 / 0.55);
+  }
+  .group ul,
+  .rules-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .group li {
+    white-space: nowrap;
+    padding: 2px 10px;
+    border: 1px solid rgb(255 255 255 / 0.18);
+    border-radius: 999px;
+    font-size: 12px;
+    line-height: 20px;
+    color: rgb(255 255 255 / 0.35);
+    transition:
+      color 250ms var(--ease-out),
+      background-color 250ms var(--ease-out),
+      border-color 250ms var(--ease-out);
+  }
+  .group li.on {
+    border-color: rgb(255 255 255 / 0.9);
+    background: rgb(255 255 255 / 0.14);
+    color: #fff;
+  }
+  .rules {
+    margin-top: 20px;
+    min-height: 92px;
+  }
+  .rules.off {
+    visibility: hidden;
+  }
+  .rules:not(.off) {
+    animation: pop 250ms var(--ease-out);
+  }
+  .rules-list {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .rules-list :global(li) {
+    position: relative;
+    padding-left: 14px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgb(255 255 255 / 0.9);
+  }
+  .rules-list :global(li)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ef2c39;
+  }
+
+  @media (max-width: 600px) {
+    .stage {
+      gap: 20px;
+      padding: 24px 16px 24px;
+    }
+    .card-wrap {
+      min-height: 220px;
+    }
+    .rules {
+      min-height: 110px;
+    }
+    .group {
+      grid-template-columns: 72px 1fr;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .slot,
+    .av,
+    .group li,
+    .tab {
+      transition: none;
+    }
+    .slot-x.on,
+    .rules {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  type Type = {
+    id: string;
+    avatar: string;
+    on: string[];
+    title?: string;
+    message: string;
+    timer?: string;
+    button?: string;
+    time: string;
+    rules?: string[];
+  };
+  document.querySelectorAll<HTMLElement>('[data-ncard]').forEach((fig) => {
+    const types: Type[] = JSON.parse(fig.querySelector('.ncard-data')!.textContent || '[]');
+    const tabs = [...fig.querySelectorAll<HTMLButtonElement>('.tab')];
+    const card = fig.querySelector<HTMLElement>('.card')!;
+    const parts = [...fig.querySelectorAll<HTMLElement>('[data-part]')];
+    const rules = fig.querySelector<HTMLElement>('.rules')!;
+    const rulesList = fig.querySelector<HTMLElement>('.rules-list')!;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const set = (sel: string, html: string | undefined) => {
+      const el = card.querySelector<HTMLElement>(sel);
+      if (el && html !== undefined) el.innerHTML = html;
+    };
+    let current = 0;
+    const show = (i: number) => {
+      current = i;
+      const t = types[i];
+      tabs.forEach((b, k) => {
+        b.setAttribute('aria-selected', String(k === i));
+        b.tabIndex = k === i ? 0 : -1;
+      });
+      card.dataset.type = t.id;
+      card.dataset.avatar = t.avatar;
+      // Text only changes for parts that stay visible, so closing parts don't flash new text
+      set('.title', t.title);
+      set('.message', t.message);
+      set('.timer', t.timer);
+      set('.button', t.button);
+      set('.time', t.time);
+      card.querySelectorAll<HTMLElement>('[data-slot]').forEach((s) => s.classList.toggle('on', t.on.includes(s.dataset.slot!)));
+      parts.forEach((p) => p.classList.toggle('on', t.on.includes(p.dataset.part!)));
+      rules.classList.toggle('off', !t.rules);
+      rulesList.innerHTML = (t.rules ?? []).map((r) => `<li>${r}</li>`).join('');
+    };
+    show(0);
+
+    let timer = 0;
+    let touched = false;
+    const stop = () => {
+      touched = true;
+      clearTimeout(timer);
+    };
+    tabs.forEach((b, i) =>
+      b.addEventListener('click', () => {
+        stop();
+        show(i);
+        b.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }),
+    );
+    fig.querySelector('.tabs')!.addEventListener('keydown', (e) => {
+      const k = (e as KeyboardEvent).key;
+      if (k !== 'ArrowRight' && k !== 'ArrowLeft') return;
+      e.preventDefault();
+      stop();
+      const n = (current + (k === 'ArrowRight' ? 1 : -1) + types.length) % types.length;
+      show(n);
+      tabs[n].focus();
+    });
+
+    // First time in view: go through each type once, then back to the first
+    if (reduce || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        const step = (n: number) => {
+          if (touched) return;
+          show(n % types.length);
+          if (n < types.length) timer = window.setTimeout(() => step(n + 1), 2200);
+        };
+        timer = window.setTimeout(() => step(1), 2000);
+      },
+      { threshold: 0.5 },
+    );
+    io.observe(fig);
+  });
+</script>
