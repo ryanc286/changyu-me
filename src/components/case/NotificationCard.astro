@@ -2,7 +2,8 @@
 /*
   One notification card that sets itself up for each type of notification (Notification Center).
   From a ✨ callout in Notion: "notification-card: label".
-  Tabs pick a type; the card's parts turn on or off, the parts list beside it lights up what is on,
+  Tabs pick a type; the card's parts turn on or off, each part in use gets a dashed box and a number,
+  listed below the card,
   and the two marketing types show the rules marketing works with in the admin tool.
   Goes through every type once when first seen; any click stops that.
 */
@@ -15,18 +16,10 @@ const { label } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const zh = lang === 'zh-tw';
 
-// The card's parts, grouped the way the spec groups them
-const groups = zh
-  ? [
-      { name: '頭像', parts: [['avatar', '頭像或商品圖']] },
-      { name: '內容', parts: [['title', '標題'], ['message', '訊息'], ['banner', '橫幅圖'], ['timer', '倒數計時'], ['button', '文字按鈕'], ['time', '時間']] },
-      { name: '額外資訊', parts: [['thumb', '商品圖'], ['rating', '評分']] },
-    ]
-  : [
-      { name: 'Avatar', parts: [['avatar', 'Profile or listing image']] },
-      { name: 'Content', parts: [['title', 'Title'], ['message', 'Message'], ['banner', 'Banner'], ['timer', 'Timer'], ['button', 'Text button'], ['time', 'Time']] },
-      { name: 'Additional', parts: [['thumb', 'Listing image'], ['rating', 'Rating']] },
-    ];
+// Short names for the card's parts, in reading order (left, middle, right)
+const partNames: Record<string, string> = zh
+  ? { avatar: '頭像', title: '標題', message: '訊息', banner: '橫幅圖', timer: '倒數計時', button: '文字按鈕', time: '時間', thumb: '商品圖', rating: '評分' }
+  : { avatar: 'Avatar', title: 'Title', message: 'Message', banner: 'Banner', timer: 'Timer', button: 'Text button', time: 'Time', thumb: 'Listing image', rating: 'Rating' };
 
 type Type = {
   id: string;
@@ -58,6 +51,7 @@ const types: Type[] = zh
       { id: 'search', tab: 'Saved search', avatar: 'search', on: ['avatar', 'message', 'time'], message: '3 new matches from saved search: <b>iPad</b>', time: '2 days ago' },
     ];
 const first = types[0];
+const order = Object.keys(partNames);
 const rulesTitle = zh ? '行銷團隊的後台規則' : 'Rules in the admin tool';
 const partsTitle = zh ? '卡片組成' : 'Parts of the card';
 ---
@@ -104,30 +98,18 @@ const partsTitle = zh ? '卡片組成' : 'Parts of the card';
           <span class="slot-x" data-slot="rating"><span class="rating">5.0 <svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="currentColor" /></svg></span></span>
         </span>
       </article>
+      <div class="marks" aria-hidden="true" />
     </div>
     <div class="side">
       <p class="side-title">{partsTitle}</p>
-      <div class="groups">
-        {
-          groups.map((g) => (
-            <div class="group">
-              <p class="group-name">{g.name}</p>
-              <ul>
-                {g.parts.map(([id, name]) => (
-                  <li data-part={id}>{name}</li>
-                ))}
-              </ul>
-            </div>
-          ))
-        }
-      </div>
+      <ol class="legend" />
       <div class="rules off">
         <p class="side-title">{rulesTitle}</p>
         <ul class="rules-list" />
       </div>
     </div>
   </div>
-  <script type="application/json" class="ncard-data" set:html={JSON.stringify(types)} />
+  <script type="application/json" class="ncard-data" set:html={JSON.stringify({ types, partNames, order })} />
 </figure>
 
 <style>
@@ -364,67 +346,79 @@ const partsTitle = zh ? '卡片組成' : 'Parts of the card';
     padding-top: 20px;
     border-top: 1px solid rgb(255 255 255 / 0.16);
   }
-  .groups {
-    display: grid;
-    gap: 10px;
-  }
-  /* Group name on the left, its parts beside it */
-  .group {
-    display: grid;
-    grid-template-columns: 88px 1fr;
-    align-items: start;
-  }
-  .group-name {
-    padding-top: 3px;
-  }
   /* Beat the case page's list spacing */
-  .ncard .group ul,
+  .ncard .legend,
   .ncard .rules-list {
     margin: 0;
     padding: 0;
   }
-  .ncard li,
+  .ncard .legend :global(li),
+  .ncard .rules-list :global(li),
   .ncard .title,
-  .ncard .message,
-  .ncard .group-name {
+  .ncard .message {
     margin: 0;
   }
   .ncard .side-title {
     margin: 0 0 10px;
   }
-  .group-name {
-    margin: 0 0 4px;
-    font-size: 12px;
-    letter-spacing: 0.02em;
-    color: rgb(255 255 255 / 0.55);
-  }
-  .group ul,
+  .legend,
   .rules-list {
     list-style: none;
-    margin: 0;
-    padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+  }
+  .legend {
+    gap: 8px 18px;
+  }
+  .legend :global(li) {
+    display: inline-flex;
     align-items: center;
-  }
-  .group li {
-    white-space: nowrap;
-    padding: 2px 10px;
-    border: 1px solid rgb(255 255 255 / 0.18);
-    border-radius: 999px;
-    font-size: 12px;
+    gap: 6px;
+    font-size: 13px;
     line-height: 20px;
-    color: rgb(255 255 255 / 0.35);
-    transition:
-      color 250ms var(--ease-out),
-      background-color 250ms var(--ease-out),
-      border-color 250ms var(--ease-out);
-  }
-  .group li.on {
-    border-color: rgb(255 255 255 / 0.9);
-    background: rgb(255 255 255 / 0.14);
     color: #fff;
+    animation: pop 250ms var(--ease-out);
+  }
+  .legend :global(b),
+  .marks :global(.num) {
+    display: inline-grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--mark);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  /* Dashed boxes and numbers drawn over the card */
+  .ncard {
+    --mark: #3d7bf2;
+  }
+  .card-wrap {
+    position: relative;
+  }
+  .marks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .marks :global(.box) {
+    position: absolute;
+    border: 1.5px dashed var(--mark);
+    border-radius: 4px;
+    animation: fade 250ms var(--ease-out);
+  }
+  .marks :global(.num) {
+    position: absolute;
+    animation: fade 250ms var(--ease-out);
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
   }
   .rules {
     margin-top: 20px;
@@ -437,6 +431,7 @@ const partsTitle = zh ? '卡片組成' : 'Parts of the card';
     animation: pop 250ms var(--ease-out);
   }
   .rules-list {
+    gap: 4px;
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
@@ -485,19 +480,17 @@ const partsTitle = zh ? '卡片組成' : 'Parts of the card';
     .rules {
       min-height: 110px;
     }
-    .group {
-      grid-template-columns: 72px 1fr;
-    }
   }
   @media (prefers-reduced-motion: reduce) {
     .slot,
     .av,
-    .group li,
     .tab {
       transition: none;
     }
     .slot-x.on,
-    .rules {
+    .rules,
+    .legend :global(li),
+    .marks :global(*) {
       animation: none;
     }
   }
@@ -516,10 +509,51 @@ const partsTitle = zh ? '卡片組成' : 'Parts of the card';
     rules?: string[];
   };
   document.querySelectorAll<HTMLElement>('[data-ncard]').forEach((fig) => {
-    const types: Type[] = JSON.parse(fig.querySelector('.ncard-data')!.textContent || '[]');
+    const data = JSON.parse(fig.querySelector('.ncard-data')!.textContent || '{}');
+    const types: Type[] = data.types;
+    const names: Record<string, string> = data.partNames;
+    const order: string[] = data.order;
     const tabs = [...fig.querySelectorAll<HTMLButtonElement>('.tab')];
     const card = fig.querySelector<HTMLElement>('.card')!;
-    const parts = [...fig.querySelectorAll<HTMLElement>('[data-part]')];
+    const wrap = fig.querySelector<HTMLElement>('.card-wrap')!;
+    const marks = fig.querySelector<HTMLElement>('.marks')!;
+    const legend = fig.querySelector<HTMLElement>('.legend')!;
+    let active: string[] = [];
+    // The element each number points at
+    const target = (id: string) =>
+      id === 'avatar'
+        ? card.querySelector<HTMLElement>('.avatar')
+        : id === 'thumb' || id === 'rating'
+          ? card.querySelector<HTMLElement>(`[data-slot="${id}"] > *`)
+          : card.querySelector<HTMLElement>(`[data-slot="${id}"] > * > *`);
+    const build = () => {
+      marks.innerHTML = active.map((_, i) => `<span class="box"></span><span class="num">${i + 1}</span>`).join('');
+      legend.innerHTML = active.map((id, i) => `<li><b>${i + 1}</b>${names[id]}</li>`).join('');
+    };
+    // Boxes follow the parts while they open and close
+    const place = () => {
+      const w = wrap.getBoundingClientRect();
+      const boxes = marks.querySelectorAll<HTMLElement>('.box');
+      const nums = marks.querySelectorAll<HTMLElement>('.num');
+      active.forEach((id, i) => {
+        const el = target(id);
+        if (!el || !boxes[i]) return;
+        const r = el.getBoundingClientRect();
+        Object.assign(boxes[i].style, { left: `${r.left - w.left - 3}px`, top: `${r.top - w.top - 3}px`, width: `${r.width + 6}px`, height: `${r.height + 6}px` });
+        Object.assign(nums[i].style, { left: `${r.right - w.left - 6}px`, top: `${r.top - w.top - 12}px` });
+      });
+    };
+    let follow = 0;
+    const track = () => {
+      cancelAnimationFrame(follow);
+      const end = performance.now() + 450;
+      const loop = () => {
+        place();
+        if (performance.now() < end) follow = requestAnimationFrame(loop);
+      };
+      loop();
+    };
+    new ResizeObserver(place).observe(wrap);
     const rules = fig.querySelector<HTMLElement>('.rules')!;
     const rulesList = fig.querySelector<HTMLElement>('.rules-list')!;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -544,7 +578,9 @@ const partsTitle = zh ? '卡片組成' : 'Parts of the card';
       set('.button', t.button);
       set('.time', t.time);
       card.querySelectorAll<HTMLElement>('[data-slot]').forEach((s) => s.classList.toggle('on', t.on.includes(s.dataset.slot!)));
-      parts.forEach((p) => p.classList.toggle('on', t.on.includes(p.dataset.part!)));
+      active = order.filter((id) => t.on.includes(id));
+      build();
+      track();
       rules.classList.toggle('off', !t.rules);
       rulesList.innerHTML = (t.rules ?? []).map((r) => `<li>${r}</li>`).join('');
     };
