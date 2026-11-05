@@ -30,19 +30,19 @@ type Type = {
 const types: Type[] = zh
   ? [
       { id: 'action', tab: '待處理', avatar: 'listing', on: ['avatar', 'title', 'message', 'timer', 'button', 'time'], title: '買家已下單', message: '請出貨，否則買家將獲得退款', timer: '剩 18 小時', button: '查看訂單詳情', time: '5 天前' },
-      { id: 'normal', tab: '一般通知', avatar: 'person', on: ['avatar', 'message', 'rating', 'time'], message: '<b>jamie.lo</b> 給了你一則評價。', time: '2 天前' },
-      { id: 'campaign', tab: '行銷活動', avatar: 'logo', on: ['avatar', 'message', 'banner', 'time'], message: '使用 #WELCOME20 享 $20 折扣', time: '2 天前', rules: ['活動名稱最多 75 字', '橫幅 1125 × 522，自動縮放', '沒有上傳圖片時顯示 Carousell 標誌'] },
-      { id: 'message', tab: '行銷訊息', avatar: 'logo', on: ['avatar', 'message', 'button', 'time'], message: '使用 #WELCOME20 享 $20 折扣', button: '立即使用', time: '2 天前', rules: ['訊息最多 4 行', '依連結自動產生按鈕', '沒有上傳圖片時顯示 Carousell 標誌'] },
-      { id: 'push', tab: '推播', avatar: 'logo', on: ['avatar', 'title', 'message', 'time'], title: '刊登商品就有獎勵！', message: '今天刊登商品，就能獲得 $5 折扣碼。', time: '2 天前' },
-      { id: 'search', tab: '已儲存的搜尋', avatar: 'search', on: ['avatar', 'message', 'time'], message: '已儲存的搜尋「<b>iPad</b>」有 3 個新商品', time: '2 天前' },
+      { id: 'normal', tab: '一般通知', avatar: 'listing', on: ['avatar', 'message', 'rating', 'time'], message: '<b>jamie.lo</b> 給了你一則評價。', time: '2 天前' },
+      { id: 'campaign', tab: '行銷活動', avatar: 'listing', on: ['avatar', 'message', 'banner', 'time'], message: '使用 #WELCOME20 享 $20 折扣', time: '2 天前', rules: ['活動名稱最多 75 字', '橫幅 1125 × 522，自動縮放', '沒有上傳圖片時顯示 Carousell 標誌'] },
+      { id: 'message', tab: '行銷訊息', avatar: 'listing', on: ['avatar', 'message', 'button', 'time'], message: '使用 #WELCOME20 享 $20 折扣', button: '立即使用', time: '2 天前', rules: ['訊息最多 4 行', '依連結自動產生按鈕', '沒有上傳圖片時顯示 Carousell 標誌'] },
+      { id: 'push', tab: '推播', avatar: 'listing', on: ['avatar', 'title', 'message', 'time'], title: '刊登商品就有獎勵！', message: '今天刊登商品，就能獲得 $5 折扣碼。', time: '2 天前' },
+      { id: 'search', tab: '已儲存的搜尋', avatar: 'listing', on: ['avatar', 'message', 'time'], message: '已儲存的搜尋「<b>iPad</b>」有 3 個新商品', time: '2 天前' },
     ]
   : [
       { id: 'action', tab: 'For action', avatar: 'listing', on: ['avatar', 'title', 'message', 'timer', 'button', 'time'], title: 'Buyer placed an order', message: 'Ship out your order or your buyer will be refunded', timer: '18h left', button: 'View order details', time: '5 days ago' },
-      { id: 'normal', tab: 'Normal', avatar: 'person', on: ['avatar', 'message', 'rating', 'time'], message: '<b>jamie.lo</b> left you a review.', time: '2 days ago' },
-      { id: 'campaign', tab: 'Campaign', avatar: 'logo', on: ['avatar', 'message', 'banner', 'time'], message: 'Get $20 off with hashtag #WELCOME20', time: '2 days ago', rules: ['Campaign name: up to 75 characters', 'Banner: 1125 × 522, scales to fit', 'No image uploaded: Carousell logo'] },
-      { id: 'message', tab: 'Marketing message', avatar: 'logo', on: ['avatar', 'message', 'button', 'time'], message: 'Get $20 off with hashtag #WELCOME20', button: 'Use it now', time: '2 days ago', rules: ['Message: up to 4 lines', 'Button made from the link', 'No image uploaded: Carousell logo'] },
-      { id: 'push', tab: 'Push', avatar: 'logo', on: ['avatar', 'title', 'message', 'time'], title: 'Get rewarded when you list!', message: 'List an item today and earn a $5 promo code.', time: '2 days ago' },
-      { id: 'search', tab: 'Saved search', avatar: 'search', on: ['avatar', 'message', 'time'], message: '3 new matches from saved search: <b>iPad</b>', time: '2 days ago' },
+      { id: 'normal', tab: 'Normal', avatar: 'listing', on: ['avatar', 'message', 'rating', 'time'], message: '<b>jamie.lo</b> left you a review.', time: '2 days ago' },
+      { id: 'campaign', tab: 'Campaign', avatar: 'listing', on: ['avatar', 'message', 'banner', 'time'], message: 'Get $20 off with hashtag #WELCOME20', time: '2 days ago', rules: ['Campaign name: up to 75 characters', 'Banner: 1125 × 522, scales to fit', 'No image uploaded: Carousell logo'] },
+      { id: 'message', tab: 'Marketing message', avatar: 'listing', on: ['avatar', 'message', 'button', 'time'], message: 'Get $20 off with hashtag #WELCOME20', button: 'Use it now', time: '2 days ago', rules: ['Message: up to 4 lines', 'Button made from the link', 'No image uploaded: Carousell logo'] },
+      { id: 'push', tab: 'Push', avatar: 'listing', on: ['avatar', 'title', 'message', 'time'], title: 'Get rewarded when you list!', message: 'List an item today and earn a $5 promo code.', time: '2 days ago' },
+      { id: 'search', tab: 'Saved search', avatar: 'listing', on: ['avatar', 'message', 'time'], message: '3 new matches from saved search: <b>iPad</b>', time: '2 days ago' },
     ];
 const first = types[0];
 const rulesTitle = zh ? '行銷團隊的後台規則' : 'Rules in the admin tool';
