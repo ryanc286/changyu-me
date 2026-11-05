@@ -63,16 +63,16 @@ const partsTitle = zh ? '卡片組成' : 'Parts of the card';
 ---
 
 <figure class="ncard" data-ncard aria-label={label}>
-  <div class="tabs" role="tablist" aria-label={label}>
-    {
-      types.map((t, i) => (
-        <button type="button" role="tab" class="tab" aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-i={i}>
-          {t.tab}
-        </button>
-      ))
-    }
-  </div>
   <div class="stage">
+    <div class="tabs" role="tablist" aria-label={label}>
+      {
+        types.map((t, i) => (
+          <button type="button" role="tab" class="tab" aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-i={i}>
+            {t.tab}
+          </button>
+        ))
+      }
+    </div>
     <div class="card-wrap">
       <article class="card" data-type={first.id} data-avatar={first.avatar} aria-live="polite">
         <span class="avatar" aria-hidden="true">
@@ -134,23 +134,20 @@ const partsTitle = zh ? '卡片組成' : 'Parts of the card';
   .ncard {
     margin: var(--space-5) 0;
   }
+  /* Tabs sit on the gradient, centered above the card */
   .tabs {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 6px;
-    margin-bottom: 12px;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .tabs::-webkit-scrollbar {
-    display: none;
   }
   .tab {
     flex: none;
-    padding: 6px 12px;
-    border: 1px solid var(--color-line-strong);
+    padding: 5px 12px;
+    border: 1px solid rgb(255 255 255 / 0.28);
     border-radius: 999px;
     background: none;
-    color: var(--color-text-muted);
+    color: rgb(255 255 255 / 0.75);
     font: inherit;
     font-size: var(--text-sm);
     cursor: pointer;
@@ -160,18 +157,23 @@ const partsTitle = zh ? '卡片組成' : 'Parts of the card';
       border-color var(--duration) var(--ease-out);
   }
   .tab:hover {
-    color: var(--color-text);
+    border-color: rgb(255 255 255 / 0.6);
+    color: #fff;
+  }
+  .tab:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
   }
   .tab[aria-selected='true'] {
-    border-color: var(--color-text);
-    background: var(--color-text);
-    color: var(--color-bg);
+    border-color: #fff;
+    background: #fff;
+    color: #2c3444;
   }
   /* Same gray-blue as the other images in this case */
   .stage {
     display: grid;
     gap: 28px;
-    padding: 48px 8% 40px;
+    padding: 32px 8% 40px;
     border-radius: var(--radius);
     background:
       radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.14), transparent 60%),
@@ -460,7 +462,22 @@ const partsTitle = zh ? '卡片組成' : 'Parts of the card';
   @media (max-width: 600px) {
     .stage {
       gap: 20px;
-      padding: 24px 16px 24px;
+      padding: 20px 0 24px;
+    }
+    /* Tabs scroll sideways, edge to edge */
+    .tabs {
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 0 16px;
+    }
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+    .card-wrap,
+    .side {
+      margin: 0 16px;
     }
     .card-wrap {
       min-height: 220px;
