@@ -53,6 +53,12 @@ notion: "https://app.notion.com/p/3f7eaff6ece381b5b804e5702f751411"
 
 <CompareSlider before={[{"id":"old-activity","label":"舊版動態頁","src":"/images/notification-center/old-activity.webp"}]} after={[{"id":"new-updates","label":"新版更新頁","src":"/images/notification-center/new-updates.webp"}]} />
 
+## 一張卡片，套用所有通知
+
+新的頁面有許多種更新：待處理的訂單、評價與按讚、行銷活動、推播訊息，以及已儲存的搜尋。我沒有逐一設計，而是做了一張可以開關各個區塊的通知卡片：左邊是頭像或商品圖，中間是內容（標題、訊息、倒數計時、文字按鈕、時間），右邊是額外資訊（商品圖、評分、展開箭頭）。只要開關不同區塊，就能套用到每一種通知，工程只需要開發一個元件，之後新增通知類型也不必重新設計。
+
+<MediaRow items={[{"id": "card-structure", "label": "通知卡片的組成", "src": "/images/notification-center/card-structure.webp"}, {"id": "card-variants", "label": "同一張卡片，套用到各種通知", "src": "/images/notification-center/card-variants.webp"}]} />
+
 ## 更多細節
 
 <DetailList items={[{"id":"detail-urgent","label":"緊急事項置頂，並顯示倒數計時","src":"/images/notification-center/detail-urgent.webp","title":"緊急事項置頂。","text":"通知依主題與緊急程度分組，緊急事項會顯示倒數計時與明確的按鈕。"},{"id":"detail-timeline","label":"每筆訂單一條時間軸","src":"/images/notification-center/detail-timeline.webp","title":"每筆訂單一條時間軸。","text":"同一筆訂單的更新會整合為可展開的項目，避免遺漏，列表也不會過長。"},{"id":"detail-bundled","label":"按讚通知合併為一則","src":"/images/notification-center/detail-bundled.webp","title":"合併次要通知。","text":"同類且較不重要的更新，例如商品被按讚，會合併為一則。"},{"id":"detail-marketing","label":"以通知形式呈現的行銷內容","src":"/images/notification-center/detail-marketing.webp","title":"行銷內容通知化。","text":"橫幅改為通知樣式，更容易快速瀏覽，活動內容也同樣能被看見。"}]} />
@@ -60,6 +66,10 @@ notion: "https://app.notion.com/p/3f7eaff6ece381b5b804e5702f751411"
 ## 讓所有人達成共識
 
 在高流量頁面調整行銷版位，是整個專案風險最高的部分，因為這些版位屬於行銷團隊。我沒有與他們爭論意見，而是提出舊橫幅六個月的點擊數據。為了確保新形式不是降級，通知樣式的版位支援圖片、文字或影片，讓活動依然能有多元的呈現方式。行銷團隊同意了這項調整，我們也共同舉辦工作坊，決定活動通知的運作方式。
+
+我也替行銷團隊在後台設定的內容訂了清楚的規則：活動名稱最多 75 字、固定的橫幅尺寸、沒有上傳圖片時顯示 Carousell 標誌，以及依連結自動產生按鈕。這樣行銷團隊可以自己發布活動，版面也不會跑掉。
+
+<Media id="marketing-rules" label="行銷團隊在後台設定活動通知的規則" src="/images/notification-center/marketing-rules.webp" />
 
 這次改版牽涉許多團隊，因此我在技術部門的全員大會上，向包含 C-level 主管在內的整個技術部門說明設計，並回答大家的提問。
 
